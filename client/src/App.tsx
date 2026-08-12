@@ -33,8 +33,17 @@ export default function App() {
       </button>
 
       {state === "success" && (
-        <div className="alert alert-success mt-3" role="status">
-          <strong>System Status: Online</strong>
+        <div className="mt-3">
+          <div className="alert alert-success" role="status">
+            <strong>System Status: Online</strong>
+          </div>
+          <ul className="list-group">
+            {categories.map((cat) => (
+              <li key={cat.id} className="list-group-item">
+                {cat.name}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

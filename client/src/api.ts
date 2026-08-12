@@ -21,9 +21,20 @@ export async function checkSystem(): Promise<SystemStatus> {
     if (!healthRes.ok) {
       throw new Error(`API health check returned status ${healthRes.status}`);
     }
-    return { online: true, categories: [] };
+
+    const catRes = await fetch(`${API_URL}/api/categories`);
+    if (!catRes.ok) {
+      throw new Error(`Failed to fetch categories (status ${catRes.status})`);
+    }
+    const categories: Category[] = await catRes.json();
+
+    return { online: true, categories };
   } catch (err: any) {
-    if (err.message && err.message.startsWith("API health check")) {
+    if (
+      err.message &&
+      (err.message.startsWith("API health check") ||
+        err.message.startsWith("Failed to fetch categories"))
+    ) {
       throw err;
     }
     throw new Error("Unable to connect to TokTickIT API server (Server is offline or unreachable)");
