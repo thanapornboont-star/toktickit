@@ -7,13 +7,19 @@ type UiState = "idle" | "loading" | "success" | "error";
 export default function App() {
   const [state, setState] = useState<UiState>("idle");
   const [categories, setCategories] = useState<Category[]>([]);
-  void categories;
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   async function handleCheck() {
-    // TODO(Issue 4): set loading, call checkSystem(), then either
-    //   - success: store categories and show Online + the list, or
-    //   - error: show Offline + a useful message.
     setState("loading");
+    setErrorMessage("");
+    try {
+      const res = await checkSystem();
+      setCategories(res.categories);
+      setState("success");
+    } catch (err: any) {
+      setErrorMessage(err.message ?? "Unable to connect to backend server");
+      setState("error");
+    }
   }
 
   return (
@@ -26,7 +32,26 @@ export default function App() {
         {state === "loading" ? "Loading…" : "Check System"}
       </button>
 
-      {/* TODO(Issue 4): render loading / success (Online + categories) / error (Offline) states. */}
+      {state === "success" && (
+        <div className="mt-3">
+          <div className="alert alert-success" role="status">
+            <strong>System Status: Online</strong>
+          </div>
+          <ul className="list-group">
+            {categories.map((cat) => (
+              <li key={cat.id} className="list-group-item">
+                {cat.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {state === "error" && (
+        <div className="alert alert-danger mt-3" role="alert">
+          <strong>System Status: Offline</strong> — {errorMessage}
+        </div>
+      )}
     </div>
   );
 }
