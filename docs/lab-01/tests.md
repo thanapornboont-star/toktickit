@@ -14,9 +14,9 @@
 
 ## 2. Automated Test Cases Table
 
-| Test ID | Tool | Scope | File Location | Test Description | Status (Issue 1) |
+| Test ID | Tool | Scope | File Location | Test Description | Status |
 |---|---|---|---|---|---|
-| **API-01** | Supertest | Server API | `server/tests/lab-01/health.test.ts` | `GET /api/health` คืนค่า HTTP 200 พร้อม `{ status: "ok", service: "TokTickIT API" }` | Pending (Issue 2) |
+| **API-01** | Supertest | Server API | `server/tests/lab-01/health.test.ts` | `GET /api/health` คืนค่า HTTP 200 พร้อม `{ status: "ok", service: "TokTickIT API" }` | ✅ PASS (Issue 2) |
 | **API-02** | Supertest | Server API | `server/tests/lab-01/categories.test.ts` | `GET /api/categories` คืนค่า 4 หมวดหมู่ที่ seeded ไว้เรียงตาม ID | Pending (Issue 4) |
 | **UI-01** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | แสดงผล Header `TokTickIT IT Service Desk` ได้ถูกต้อง | ✅ PASS |
 | **UI-02** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | เมื่อกดปุ่มและ API สำเร็จ จะแสดง `System Status: Online` พร้อมรายการ 4 categories | Pending (Issue 4) |
@@ -24,13 +24,24 @@
 
 ---
 
-## 3. Terminal Test Execution Output Log (Issue 1 Foundation Check)
+## 3. Terminal Test Execution Output Log (Issue 2 Check)
+
+### Server Test Output (`npm test` in `server/`)
+```text
+ RUN  v2.1.9 D:/Lab1_Starter_Scaffold/toktickit/server
+
+ ↓ tests/lab-01/categories.test.ts (1 test | 1 skipped)
+ ✓ tests/lab-01/health.test.ts (1 test) 36ms
+
+ Test Files  1 passed | 1 skipped (2)
+      Tests  1 passed | 1 todo (2)
+```
 
 ### Client Test Output (`npm test` in `client/`)
 ```text
  RUN  v2.1.9 D:/Lab1_Starter_Scaffold/toktickit/client
 
- ✓ tests/lab-01/App.test.tsx (3 tests | 2 skipped) 38ms
+ ✓ tests/lab-01/App.test.tsx (3 tests | 2 skipped) 34ms
 
  Test Files  1 passed (1)
       Tests  1 passed | 2 todo (3)
