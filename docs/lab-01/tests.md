@@ -19,8 +19,8 @@
 | **API-01** | Supertest | Server API | `server/tests/lab-01/health.test.ts` | `GET /api/health` คืนค่า HTTP 200 พร้อม `{ status: "ok", service: "TokTickIT API" }` | ✅ PASS (Issue 2) |
 | **API-02** | Supertest | Server API | `server/tests/lab-01/categories.test.ts` | `GET /api/categories` คืนค่า 4 หมวดหมู่ที่ seeded ไว้เรียงตาม ID | Pending (Issue 4) |
 | **UI-01** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | แสดงผล Header `TokTickIT IT Service Desk` ได้ถูกต้อง | ✅ PASS |
-| **UI-02** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | เมื่อกดปุ่มและ API สำเร็จ จะแสดง `System Status: Online` พร้อมรายการ 4 categories | Pending (Issue 4) |
-| **UI-03** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | เมื่อ API ล้มเหลว จะแสดง `System Status: Offline` พร้อม error message | Pending (Issue 4) |
+| **UI-02** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | เมื่อกดปุ่มและ API สำเร็จ จะแสดง `System Status: Online` (โค้ด UI ใน `App.tsx` รองรับใน Issue 2, Vitest assertion พร้อมทดสอบ Category List ใน Issue 4) | UI Implemented / Vitest Assertion Pending (Issue 4) |
+| **UI-03** | Vitest + React Testing Library | Client UI | `client/tests/lab-01/App.test.tsx` | เมื่อ API ล้มเหลว จะแสดง `System Status: Offline` พร้อม error message (โค้ด UI ใน `App.tsx` รองรับใน Issue 2, Vitest assertion ใน Issue 4) | UI Implemented / Vitest Assertion Pending (Issue 4) |
 
 ---
 
