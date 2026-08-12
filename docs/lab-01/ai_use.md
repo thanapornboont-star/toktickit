@@ -23,6 +23,7 @@
 | 6 | "รันและตรวจสอบเฉพาะ tests และ commands ที่เกี่ยวกับ Foundation" | รัน `npm install`, `npm run build`, `npm test` ทั้งใน `client` และ `server` แล้วสรุปผลลัพธ์การทดสอบ | ยืนยันว่า UI-01 ผ่าน และ backend test (API-01) ตอบกลับ 501 เพื่อเตรียมรอดำเนินการต่อใน Issue 2 |
 | 7 | "ช่วยแก้ไฟล์ tests.md กับเพิ่ม ai_use.md ให้หน่อย" | ปรับแต่ง `docs/lab-01/tests.md` ให้มีตาราง Test Cases (API-01–02, UI-01–03) และเขียน `docs/lab-01/ai_use.md` บันทึกประวัติการใช้ AI | ตรวจสอบความถูกต้องของตาราง Test Plan และ Reflection ให้ตรงตามเกณฑ์ให้คะแนน Part 3 |
 | 8 | "เริ่มทำเลย (Issue 2 — API Health Check)" | สร้าง branch `feature/2-health-check`, implement `GET /api/health` คืน 200 `{ status: "ok", service: "TokTickIT API" }`, อัปเดต `checkSystem()` ใน client และทดสอบ Supertest (API-01 PASS) | รัน `npm test` ยืนยันว่า `health.test.ts` ผ่าน 100% |
+| 9 | "ทำ Issue 3 เลย (Create & Seed Categories)" | สร้าง branch `feature/3-category-seed`, นิยาม `Category` model ใน `schema.prisma`, เขียน idempotent seed script ใน `seed.ts` ด้วย `upsert` | รัน `npx prisma generate` และ `npm run build` ผ่านสมบูรณ์ |
 
 ---
 
