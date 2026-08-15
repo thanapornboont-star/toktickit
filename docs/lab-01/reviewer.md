@@ -8,8 +8,8 @@
 |----|--------|------------------|
 |  #5  | feature/1-project-foundation | Approve |
 |  #6  | feature/2-health-check | Approve |
-|    | feature/3-category-seed |  |
-|    | feature/4-category-list |  |
+|  #7  | feature/3-category-seed | Approve |
+|  #8  | feature/4-category-list | Approve |
 
 Reviewer comment I received: <เช็คตาม acceptance criteria ครบแล้วครับ> 
 
@@ -26,10 +26,20 @@ tests.md บอกว่า UI-02/UI-03 (Online/Offline display) ยัง Pendi
 Issue 4 — อยากเช็คว่านี่ตั้งใจ defer จริง เพราะ App.tsx ดูเหมือนมีโค้ด
 แสดงผล success/error state พร้อมอยู่แล้ว/ เรียบร้อยดีแล้วครับ ไปกันต่อออ!>
 
+<เช็คตาม acceptance criteria ของ Issue 3 ครบแล้วครับ
+Category model, migration, และ seed script (upsert) ถูกต้องตรงสเปคทั้งหมด
+ผ่านครับ เยี่ยมครับ สวยครับ>
 
+<เช็คตาม acceptance criteria ของ Issue 4 ครบทุกข้อครับ
 
+GET /api/categories ดึงจาก DB จริง เรียง id ตามลำดับที่กำหนด
+error handling ฝั่ง server ปลอดภัย (ไม่หลุด internal details)
+Supertest ตรวจครบทั้ง status/count/ชื่อ/ลำดับ ไม่ใช่แค่ assert ผิวเผิน
+UI ดึงจาก API จริง มี loading/success/error state ครบ
+เห็นว่าแก้ปัญหา try/catch ใน api.ts ที่ค้างจาก Issue 2 เรียบร้อยแล้วด้วย
+ผ่านเลยครับ>
 
-How I responded: <ขอบคุณจ้า ><ขอบคุณคับ เดี๋ยวแก้ไขคับ/ แก้ไขเรียบร้อยแล้วคับ ช่วยตรวจให้อีกทีแล้วapprove ให้หน่อยคับ>
+How I responded: <ขอบคุณจ้า ><ขอบคุณคับ เดี๋ยวแก้ไขคับ/ แก้ไขเรียบร้อยแล้วคับ ช่วยตรวจให้อีกทีแล้วapprove ให้หน่อยคับ><เริ่ดคับ><ขอบคุณมากคับ>
 
 ## Pull Requests I reviewed for my partner
 My comment: <README.md ครบถ้วนและเป็นมืออาชีพ — มีการระบุ Tech Stack, Prerequisites, 
@@ -41,4 +51,16 @@ ai_use.md บันทึก Prompt และ Reflection ได้ตรงต�
 Reviewer ครบถ้วน tests.md มีการระบุสถานะของ Test แต่ละข้อชัดเจน>
 
 <ดีหมดคับ/ กดให้ Approve ให้แล้วคับ>
-Partner's response: <ขอบคุณครับ ผมจะทำการรีวิวอีกรอบแล้วค่อย merge เข้าครับ><ขอบคุณครับ! ให้ผม merge เลยไหม>
+
+<โดยรวมโครงสร้างของ Category model, migration และ seed ตรงตาม requirement ของ Issue 3คับ ดีมากคับ>
+
+<มี 2 จุดที่อยากให้ช่วยแก้:
+-ใน client/src/api.ts ตรงการเรียก /api/categories มีการเรียก API ซ้ำใน catch และมีการประกาศ categories ซ้ำภายใน scope เดียวกัน รบกวนช่วยปรับ logic ให้เรียบง่ายและไม่มีการเรียก API ซ้ำโดยไม่จำเป็นครับ
+-ใน client/tests/lab-01/App.test.tsx ยังมี it.todo() สำหรับ success/error state อยู่ ทั้งที่มี test จริง implement อยู่ด้านล่างแล้ว รบกวนลบ it.todo() ที่ซ้ำออก เพื่อไม่ให้ test tracking สับสนคับ>
+
+
+Partner's response: <ขอบคุณครับ ผมจะทำการรีวิวอีกรอบแล้วค่อย merge เข้าครับ><ขอบคุณครับ! ให้ผม merge เลยไหม><ขอบคุณครับ><ขอบคุณครับ! ผมแก้ไขทั้ง 2 จุดตามที่แนะนำเรียบร้อยครับ:
+
+ปรับปรุง logic ใน client/src/api.ts ให้กระชับ ยิงเรียก /api/health และ /api/categories โดยไม่มีการเรียกซ้ำแล้วครับ
+ลบ it.todo() ที่ซ้ำซ้อนใน App.test.tsx ออกแล้วครับ
+Push commit แก้ไขขึ้นเรียบร้อย รบกวนตรวจและ Approve ให้หน่อยนะครับคนสวย>
