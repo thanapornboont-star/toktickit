@@ -26,9 +26,9 @@
 
 ### PR for Issue #11: Engineering Contract and Test Plan
 - **Reviewer Comment (@jiraphat-j):**
-  > "ดีแล้วครับแต่อย่าลืมในส่วนของ ai_use.md, reviewer.md ด้วยนะครับ ถ้าเสร็จแล้วบอกครับ เดี๋ยวผมจะทำการ approve และ merge ให้"
+  > "ดีแล้วครับแต่อย่าลืมในส่วนของ ai_use.md, reviewer.md ด้วยนะครับ ถ้าเสร็จแล้วบอกครับ เดี๋ยวผมจะทำการ approveและ merge ให้"
 - **My Response (@thanapornboont-star):**
-  > "เพิ่มไฟล์ `docs/lab-02/ai-use.md` และ `docs/lab-02/reviewer.md` ใน commit ล่าสุดเรียบร้อยแล้วครับ ขอบคุณครับ รบกวนตรวจทานและ Approve / Merge ได้เลยครับ"
+  > "เพิ่มไฟล์ docs/lab-02/ai-use.md และ docs/lab-02/reviewer.md ใน commit ล่าสุดเรียบร้อยแล้ว รบกวนตรวจทานและ Approve / Merge ได้เลยค่ะ"
 
 ---
 
@@ -36,6 +36,6 @@
 
 - **Partner's PR Link:** [PR on Partner's Repository]
 - **My Review Comment:**
-  > "ตรวจสอบเอกสาร Specification, API contract, UI spec และ Test Plan ครบถ้วนตามมาตรฐาน Zen Green และมีโครงสร้างการทดสอบครอบคลุมทุก Acceptance Criteria ครับ"
+  > "จากที่ดูค่อนข้างครบถ้วนค่ะ"
 - **Partner's Response:**
   > "ขอบคุณครับ ได้ทำการอัปเดตและเตรียมพร้อมสำหรับการเริ่ม Implement Phase ต่อไปเรียบร้อยแล้วครับ"

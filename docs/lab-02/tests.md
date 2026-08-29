@@ -14,9 +14,10 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 
 | Test ID | Level | AC / BR | Scenario | Expected Result | Actual Test File | Final Status |
 |---|---|---|---|---|---|---|
+| **API-00** | API | BR-04, BR-05 | List active dev-requesters, categories, related-systems & test context middleware | 200 OK for active; 403 for inactive requester | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
 | **API-01** | API | AC-01, BR-01 | Create ticket with valid data | 201 Created; returns official `TKT-YYYY-XXXXXX` | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
 | **API-02** | API | AC-05, BR-10 | Create ticket with missing summary/description | 400 Bad Request; field-specific validation errors | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
-| **API-03** | API | AC-04, BR-04 | Call API with inactive `X-Dev-Requester-Id` | 403 Forbidden; request rejected | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
+| **API-03** | API | AC-04, BR-04 | Call API with inactive `X-Dev-Requester-Id` | 403 Forbidden; request rejected | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
 | **API-04** | API | BR-09 | Reject client-supplied `ticketNumber` or `requesterId` | Backend overrides or rejects values | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
 | **API-05** | API | AC-06, BR-12 | Query tickets with keyword search | Returns only matching tickets for requester | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
 | **API-06** | API | AC-07, BR-12 | Query tickets with combined filters | Returns tickets matching all criteria | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
@@ -41,7 +42,7 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 | **AC-01** (Ticket Creation & Official Number) | `API-01`, `UI-03`, `E2E-01` | Automated API 201 response + UI Ticket Number rendered |
 | **AC-02** (Selector Required when Unset) | `UI-01`, `E2E-01` | Navigation redirected / selector displayed |
 | **AC-03** (Cross-Requester Ticket Access 404) | `API-07`, `E2E-01` | API returns 404 and UI displays not found |
-| **AC-04** (Inactive Requester Rejection) | `API-03` | API returns 403 / 400 |
+| **AC-04** (Inactive Requester Rejection) | `API-00`, `API-03` | API returns 403 / 400 |
 | **AC-05** (Field Validation & Error Placement) | `API-02`, `UI-02` | Inline error messages placed under respective inputs |
 | **AC-06** (Ticket Keyword Search) | `API-05`, `E2E-01` | Filtered list matches substring |
 | **AC-07** (Combined Filter & Pagination) | `API-06`, `E2E-01` | Query results obey category, priority, page sizes |
