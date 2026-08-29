@@ -14,18 +14,18 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 
 | Test ID | Level | AC / BR | Scenario | Expected Result | Actual Test File | Final Status |
 |---|---|---|---|---|---|---|
-| **API-00** | API | BR-04, BR-05 | List active dev-requesters, categories, related-systems & test context middleware | 200 OK for active; 403 for inactive requester | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
-| **API-01** | API | AC-01, BR-01 | Create ticket with valid data | 201 Created; returns official `TKT-YYYY-XXXXXX` | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
-| **API-02** | API | AC-05, BR-10 | Create ticket with missing summary/description | 400 Bad Request; field-specific validation errors | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
-| **API-03** | API | AC-04, BR-04 | Call API with inactive `X-Dev-Requester-Id` | 403 Forbidden; request rejected | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
-| **API-04** | API | BR-09 | Reject client-supplied `ticketNumber` or `requesterId` | Backend overrides or rejects values | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
-| **API-05** | API | AC-06, BR-12 | Query tickets with keyword search | Returns only matching tickets for requester | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
-| **API-06** | API | AC-07, BR-12 | Query tickets with combined filters | Returns tickets matching all criteria | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
-| **API-07** | API | AC-03, BR-06 | Retrieve Ticket Detail owned by another requester | 404 Not Found (safe ownership rejection) | `server/tests/lab-02/ticket-detail.api.test.ts` | Planned |
-| **API-08** | API | AC-08, BR-07 | Upload file > 5 MB or invalid extension | 413 Payload Too Large / 415 Unsupported Type | `server/tests/lab-02/attachments.api.test.ts` | Planned |
-| **API-09** | API | AC-09, BR-07 | Upload 6th active attachment to a ticket | 400 Bad Request; max 5 limit reached | `server/tests/lab-02/attachments.api.test.ts` | Planned |
-| **API-10** | API | AC-10, BR-08 | Soft remove attachment with valid reason | 200 OK; `isRemoved: true`, reason recorded | `server/tests/lab-02/attachments.api.test.ts` | Planned |
-| **API-11** | API | AC-11, BR-08 | Download soft-removed attachment | 404 Not Found; download blocked | `server/tests/lab-02/attachments.api.test.ts` | Planned |
+| **API-01** | API | BR-04, BR-11 | List active dev-requesters, categories, and related-systems | 200 OK containing only active records | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
+| **API-02** | API | AC-04, BR-05 | Context middleware rejects missing or inactive `X-Dev-Requester-Id` | 400 Bad Request / 403 Forbidden | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
+| **API-03** | API | AC-01, BR-01 | Create ticket with valid data | 201 Created; returns official `TKT-YYYY-XXXXXX` | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
+| **API-04** | API | AC-05, BR-10 | Create ticket with missing summary/description | 400 Bad Request; field-specific validation errors | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
+| **API-05** | API | BR-09 | Reject client-supplied `ticketNumber` or `requesterId` in body | Backend overrides or rejects values | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
+| **API-06** | API | AC-06, BR-12 | Query tickets with keyword search | Returns only matching tickets for requester | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
+| **API-07** | API | AC-07, BR-12 | Query tickets with combined filters and pagination | Returns tickets matching all criteria | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
+| **API-08** | API | AC-03, BR-06 | Retrieve Ticket Detail owned by another requester | 404 Not Found (safe ownership rejection) | `server/tests/lab-02/ticket-detail.api.test.ts` | Planned |
+| **API-09** | API | AC-08, BR-07 | Upload file > 5 MB or invalid extension | 413 Payload Too Large / 415 Unsupported Type | `server/tests/lab-02/attachments.api.test.ts` | Planned |
+| **API-10** | API | AC-09, BR-07 | Upload 6th active attachment to a ticket | 400 Bad Request; max 5 limit reached | `server/tests/lab-02/attachments.api.test.ts` | Planned |
+| **API-11** | API | AC-10, BR-08 | Soft remove attachment with valid reason | 200 OK; `isRemoved: true`, reason recorded | `server/tests/lab-02/attachments.api.test.ts` | Planned |
+| **API-12** | API | AC-11, BR-08 | Download soft-removed attachment | 404 Not Found; download blocked | `server/tests/lab-02/attachments.api.test.ts` | Planned |
 | **UI-01** | UI | AC-02, BR-03 | Render Requester Selector if unselected | Shows selector with active users dropdown | `client/tests/lab-02/RequesterSelector.test.tsx` | Planned |
 | **UI-02** | UI | AC-05, BR-10 | Submit Create Ticket with empty fields | Shows inline red validation errors | `client/tests/lab-02/CreateTicket.test.tsx` | Planned |
 | **UI-03** | UI | AC-01, BR-01 | Submit Create Ticket successfully | Shows success banner with Ticket Number | `client/tests/lab-02/CreateTicket.test.tsx` | Planned |
@@ -39,17 +39,17 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 
 | Acceptance Criterion | Covered By Test IDs | Verification Method |
 |---|---|---|
-| **AC-01** (Ticket Creation & Official Number) | `API-01`, `UI-03`, `E2E-01` | Automated API 201 response + UI Ticket Number rendered |
+| **AC-01** (Ticket Creation & Official Number) | `API-03`, `UI-03`, `E2E-01` | Automated API 201 response + UI Ticket Number rendered |
 | **AC-02** (Selector Required when Unset) | `UI-01`, `E2E-01` | Navigation redirected / selector displayed |
-| **AC-03** (Cross-Requester Ticket Access 404) | `API-07`, `E2E-01` | API returns 404 and UI displays not found |
-| **AC-04** (Inactive Requester Rejection) | `API-00`, `API-03` | API returns 403 / 400 |
-| **AC-05** (Field Validation & Error Placement) | `API-02`, `UI-02` | Inline error messages placed under respective inputs |
-| **AC-06** (Ticket Keyword Search) | `API-05`, `E2E-01` | Filtered list matches substring |
-| **AC-07** (Combined Filter & Pagination) | `API-06`, `E2E-01` | Query results obey category, priority, page sizes |
-| **AC-08** (Attachment Type & Size Constraints) | `API-08` | Rejection of non-whitelisted MIME and files > 5MB |
-| **AC-09** (Maximum 5 Active Attachments) | `API-09` | 6th upload blocked with informative error |
-| **AC-10** (Attachment Soft-Removal with Reason) | `API-10`, `UI-05` | Metadata retained, reason saved, status updated |
-| **AC-11** (Blocked Download on Removed File) | `API-11` | Download binary endpoint returns 404 |
+| **AC-03** (Cross-Requester Ticket Access 404) | `API-08`, `E2E-01` | API returns 404 and UI displays not found |
+| **AC-04** (Inactive Requester Rejection) | `API-01`, `API-02` | API returns 403 / 400 |
+| **AC-05** (Field Validation & Error Placement) | `API-04`, `UI-02` | Inline error messages placed under respective inputs |
+| **AC-06** (Ticket Keyword Search) | `API-06`, `E2E-01` | Filtered list matches substring |
+| **AC-07** (Combined Filter & Pagination) | `API-07`, `E2E-01` | Query results obey category, priority, page sizes |
+| **AC-08** (Attachment Type & Size Constraints) | `API-09` | Rejection of non-whitelisted MIME and files > 5MB |
+| **AC-09** (Maximum 5 Active Attachments) | `API-10` | 6th upload blocked with informative error |
+| **AC-10** (Attachment Soft-Removal with Reason) | `API-11`, `UI-05` | Metadata retained, reason saved, status updated |
+| **AC-11** (Blocked Download on Removed File) | `API-12` | Download binary endpoint returns 404 |
 | **AC-12** (Requester Switching Data Isolation) | `UI-04`, `E2E-01` | Requester A data disappears when switching to B |
 
 ---
