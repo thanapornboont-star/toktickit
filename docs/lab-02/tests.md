@@ -16,9 +16,9 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 |---|---|---|---|---|---|---|
 | **API-01** | API | BR-04, BR-11 | List active dev-requesters, categories, and related-systems | 200 OK containing only active records | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
 | **API-02** | API | AC-04, BR-05 | Context middleware rejects missing or inactive `X-Dev-Requester-Id` | 400 Bad Request / 403 Forbidden | `server/tests/lab-02/dev-requesters.api.test.ts` | Pass |
-| **API-03** | API | AC-01, BR-01 | Create ticket with valid data | 201 Created; returns official `TKT-YYYY-XXXXXX` | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
-| **API-04** | API | AC-05, BR-10 | Create ticket with missing summary/description | 400 Bad Request; field-specific validation errors | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
-| **API-05** | API | BR-09 | Reject client-supplied `ticketNumber` or `requesterId` in body | Backend overrides or rejects values | `server/tests/lab-02/create-ticket.api.test.ts` | Planned |
+| **API-03** | API | AC-01, BR-01 | Create ticket with valid data | 201 Created; returns official `TKT-YYYY-XXXXXX` | `server/tests/lab-02/create-ticket.api.test.ts` | Pass |
+| **API-04** | API | AC-05, BR-10 | Create ticket with missing summary/description | 400 Bad Request; field-specific validation errors | `server/tests/lab-02/create-ticket.api.test.ts` | Pass |
+| **API-05** | API | BR-09 | Reject client-supplied `ticketNumber` or `requesterId` in body | Backend overrides or rejects values | `server/tests/lab-02/create-ticket.api.test.ts` | Pass |
 | **API-06** | API | AC-06, BR-12 | Query tickets with keyword search | Returns only matching tickets for requester | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
 | **API-07** | API | AC-07, BR-12 | Query tickets with combined filters and pagination | Returns tickets matching all criteria | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
 | **API-08** | API | AC-03, BR-06 | Retrieve Ticket Detail owned by another requester | 404 Not Found (safe ownership rejection) | `server/tests/lab-02/ticket-detail.api.test.ts` | Planned |
