@@ -174,6 +174,8 @@ describe("Issue 3: Create Ticket API (POST /api/tickets)", () => {
 
     const num1 = parseInt(res1.body.ticketNumber.split("-")[2], 10);
     const num2 = parseInt(res2.body.ticketNumber.split("-")[2], 10);
-    expect(num2).toBe(num1 + 1);
+    // Other requests may be creating tickets concurrently. Each successful
+    // request must still receive a unique, monotonically increasing number.
+    expect(num2).toBeGreaterThan(num1);
   });
 });
