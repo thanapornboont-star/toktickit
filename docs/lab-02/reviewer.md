@@ -12,7 +12,7 @@
 | #21 | `feature/11-lab2-contract` | `lab2-staging` | Closes #11 | Approved | @jiraphat-j |
 | #26 | `feature/12-dev-requester-context` | `lab2-staging` | Closes #12 | Approved | @jiraphat-j |
 | | `feature/13-create-ticket-api` | `lab2-staging` | Closes #13 | | @jiraphat-j |
-| | `feature/#NN-attachments-api` | `lab2-staging` | Closes #NN | | @jiraphat-j |
+| | `feature/14-attachments-api` | `lab2-staging` | Closes #14 | Pending review | @jiraphat-j |
 | | `feature/#NN-requester-selector-ui` | `lab2-staging` | Closes #NN | | @jiraphat-j |
 | | `feature/#NN-create-ticket-ui` | `lab2-staging` | Closes #NN | | @jiraphat-j |
 | | `feature/#NN-my-tickets` | `lab2-staging` | Closes #NN | | @jiraphat-j |
