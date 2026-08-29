@@ -31,10 +31,15 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
       errors.description = "Ticket description must be between 10 and 2000 characters.";
     }
 
-    // 3. Validate requestedPriority
+    // 3. Validate requestedPriority (optional, defaults to MEDIUM)
     const validPriorities = Object.values(RequestedPriority);
-    if (!requestedPriority || !validPriorities.includes(requestedPriority as RequestedPriority)) {
-      errors.requestedPriority = `Requested priority must be one of: ${validPriorities.join(", ")}.`;
+    let finalPriority: RequestedPriority = RequestedPriority.MEDIUM;
+    if (requestedPriority !== undefined && requestedPriority !== null && requestedPriority !== "") {
+      if (!validPriorities.includes(requestedPriority as RequestedPriority)) {
+        errors.requestedPriority = `Requested priority must be one of: ${validPriorities.join(", ")}.`;
+      } else {
+        finalPriority = requestedPriority as RequestedPriority;
+      }
     }
 
     // 4. Validate categoryId
@@ -96,7 +101,7 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
           ticketNumber,
           summary: trimmedSummary,
           description: trimmedDescription,
-          requestedPriority: requestedPriority as RequestedPriority,
+          requestedPriority: finalPriority,
           status: "NEW",
           requesterId: req.devRequester!.id,
           categoryId: catId,

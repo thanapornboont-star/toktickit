@@ -46,6 +46,25 @@ describe("Issue 3: Create Ticket API (POST /api/tickets)", () => {
     expect(res.body.relatedSystem.id).toBe(ctx.relatedSystemId);
   });
 
+  it("defaults requestedPriority to MEDIUM when omitted", async () => {
+    const ctx = await getActiveContext();
+
+    const payload = {
+      summary: "Default priority ticket test",
+      description: "Testing that omitting requestedPriority properly defaults to MEDIUM.",
+      categoryId: ctx.categoryId,
+      relatedSystemId: ctx.relatedSystemId,
+    };
+
+    const res = await request(app)
+      .post("/api/tickets")
+      .set("X-Dev-Requester-Id", String(ctx.requesterId))
+      .send(payload);
+
+    expect(res.status).toBe(201);
+    expect(res.body.requestedPriority).toBe("MEDIUM");
+  });
+
   it("API-04: rejects ticket creation with missing or invalid fields (400 Bad Request)", async () => {
     const ctx = await getActiveContext();
 
