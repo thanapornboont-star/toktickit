@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { getPrisma } from "./prisma.js";
 import { requireDevRequester } from "./middleware/devRequester.js";
+import { ticketRouter } from "./routes/tickets.js";
 
 export const app = express();
 
@@ -69,5 +70,10 @@ app.get("/api/dev-requesters", async (_req: Request, res: Response) => {
 app.get("/api/dev-requesters/me", requireDevRequester, (req: Request, res: Response) => {
   res.status(200).json(req.devRequester);
 });
+
+// ---------------------------------------------------------------------------
+// Ticket Endpoints (Lab 2)
+// ---------------------------------------------------------------------------
+app.use("/api/tickets", ticketRouter);
 
 export default app;

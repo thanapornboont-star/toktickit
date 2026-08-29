@@ -34,7 +34,7 @@
 - **Reviewer Comment (@jiraphat-j):**
   > "ตรวจ final diff แล้วครับ จุด implementation หลักโอเคแล้ว เหลือ docs/lab-02/tests.md ที่ API-03 มีรายการซ้ำกัน รบกวนเช็ก/จัดให้ test ID ไม่ซ้ำกันครับ แล้วผมจะ review ต่อครับ"
 - **My Response (@thanapornboont-star):**
-  > "แก้ไขจัดเรียง Test ID ใน `docs/lab-02/tests.md` ใหม่ตั้งแต่ API-01 ถึง API-12 ไม่ให้มีรายการซ้ำกัน และอัปเดต Traceability Matrix ให้สอดคล้องกันเรียบร้อยแล้วครับ รบกวนตรวจทานอีกครั้งครับ"
+   > "แก้ไขจัดเรียง Test ID ใน docs/lab-02/tests.md ใหม่ตั้งแต่ API-01 ถึง API-12 ไม่ให้มีรายการซ้ำกัน และอัปเดต Traceability Matrix ให้สอดคล้องกันเรียบร้อยแล้วใน commit ล่าสุดแล้วค่ะ ช่วยเช็คอีกทีนะคะ"
 
 ---
 
@@ -43,5 +43,6 @@
 - **Partner's PR Link:** [PR on Partner's Repository]
 - **My Review Comment:**
   > "จากที่ดูค่อนข้างครบถ้วนค่ะ"
+  > "ตรวจแล้วค่ะ โครงสร้าง schema, migration, seed และ API โดยรวมครบถ้วน และ seed ใช้ upsert ทำให้รันซ้ำได้โดยไม่เกิดข้อมูลซ้ำ LGTM"
 - **Partner's Response:**
-  > "ขอบคุณครับ ได้ทำการอัปเดตและเตรียมพร้อมสำหรับการเริ่ม Implement Phase ต่อไปเรียบร้อยแล้วครับ"
+  > "ค้าบขอบคุณครับ"
