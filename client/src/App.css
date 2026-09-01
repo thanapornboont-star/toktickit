@@ -1,7 +1,277 @@
-:root { --zen-primary: #006b3c; --zen-secondary: #0b7a46; --zen-pale: #eaf6ef; --zen-bg: #f5f7f6; --zen-text: #1a2e26; --zen-muted: #5c7168; --zen-border: #d1dcd6; }
-body { background: var(--zen-bg); color: var(--zen-text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; } button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid var(--zen-secondary); outline-offset: 2px; }
-.selector-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; } .selector-card { width: min(100%, 560px); background: #fff; border: 1px solid var(--zen-border); border-radius: 16px; box-shadow: 0 12px 32px rgba(26, 46, 38, .1); padding: 32px; } .selector-card h1, .shell-content h1 { font-size: 1.75rem; font-weight: 700; } .eyebrow { color: var(--zen-primary); font-size: .875rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-.testing-notice, .shell-disclaimer { background: var(--zen-pale); border-left: 4px solid var(--zen-secondary); border-radius: 4px; color: var(--zen-text); font-size: .925rem; padding: 12px; } .zen-primary-button { background: var(--zen-primary); border-color: var(--zen-primary); color: #fff; } .zen-primary-button:hover, .zen-primary-button:focus { background: var(--zen-secondary); border-color: var(--zen-secondary); color: #fff; }
-.app-header { background: var(--zen-primary); color: #fff; } .app-header-content { align-items: center; display: flex; gap: 24px; margin: 0 auto; max-width: 1200px; min-height: 72px; padding: 12px 24px; } .brand, .main-nav a { color: #fff; text-decoration: none; } .brand { align-items: center; display: inline-flex; font-size: 1.2rem; font-weight: 700; gap: 8px; } .brand-mark { align-items: center; background: #fff; border-radius: 6px; color: var(--zen-primary); display: inline-flex; height: 28px; justify-content: center; width: 28px; } .main-nav { display: flex; gap: 20px; } .main-nav a { border-bottom: 3px solid transparent; padding: 8px 0; } .main-nav a.active { border-bottom-color: #fff; font-weight: 700; }
-.requester-controls { align-items: center; display: flex; gap: 12px; margin-left: auto; } .requester-badge { align-items: center; display: flex; gap: 8px; line-height: 1.1; } .requester-badge small { display: block; opacity: .82; } .avatar { align-items: center; background: var(--zen-pale); border-radius: 50%; color: var(--zen-primary); display: inline-flex; font-size: .75rem; font-weight: 700; height: 34px; justify-content: center; width: 34px; } .shell-disclaimer { border-radius: 0; border-left: 0; text-align: center; } .shell-content { background: #fff; border: 1px solid var(--zen-border); border-radius: 16px; margin: 48px auto; max-width: 1200px; padding: 32px; width: calc(100% - 48px); }
-@media (max-width: 767px) { .app-header-content { align-items: flex-start; flex-direction: column; gap: 10px; } .requester-controls { margin-left: 0; width: 100%; } .requester-badge { flex: 1; } .main-nav { width: 100%; } .main-nav a { flex: 1; text-align: center; } .selector-card { padding: 24px; } }
+:root {
+  --zen-primary: #006b3c;
+  --zen-secondary: #0b7a46;
+  --zen-pale: #eaf6ef;
+  --zen-bg: #f5f7f6;
+  --zen-surface: #ffffff;
+  --zen-text: #1a2e26;
+  --zen-muted: #5c7168;
+  --zen-border: #d1dcd6;
+  --zen-field-readonly: #eaefea;
+  --zen-error: #b3261e;
+  --zen-warning: #b58105;
+  --zen-success: #198754;
+}
+
+body {
+  background: var(--zen-bg);
+  color: var(--zen-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--zen-secondary);
+  outline-offset: 2px;
+}
+
+/* Typography & General Utilities */
+.eyebrow {
+  color: var(--zen-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.text-primary-green {
+  color: var(--zen-primary) !important;
+}
+
+.zen-field-readonly {
+  background-color: var(--zen-field-readonly) !important;
+  color: var(--zen-text) !important;
+  border-color: var(--zen-border) !important;
+  cursor: not-allowed;
+}
+
+/* Cards & Containers */
+.zen-card {
+  background: var(--zen-surface);
+  border: 1px solid var(--zen-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(26, 46, 38, 0.06);
+  padding: 32px;
+}
+
+.selector-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.selector-card {
+  width: min(100%, 560px);
+  background: var(--zen-surface);
+  border: 1px solid var(--zen-border);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(26, 46, 38, 0.1);
+  padding: 32px;
+}
+
+.selector-card h1,
+.shell-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Notices & Alerts */
+.testing-notice,
+.shell-disclaimer {
+  background: var(--zen-pale);
+  border-left: 4px solid var(--zen-secondary);
+  border-radius: 4px;
+  color: var(--zen-text);
+  font-size: 0.925rem;
+  padding: 12px;
+}
+
+.shell-disclaimer {
+  border-radius: 0;
+  border-left: 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Buttons */
+.zen-primary-button {
+  background: var(--zen-primary);
+  border-color: var(--zen-primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.zen-primary-button:hover,
+.zen-primary-button:focus {
+  background: var(--zen-secondary);
+  border-color: var(--zen-secondary);
+  color: #fff;
+}
+
+/* Header & Shell */
+.app-header {
+  background: var(--zen-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.app-header-content {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 1200px;
+  min-height: 72px;
+  padding: 12px 24px;
+}
+
+.brand,
+.main-nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.brand {
+  align-items: center;
+  display: inline-flex;
+  font-size: 1.25rem;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.brand-mark {
+  align-items: center;
+  background: #fff;
+  border-radius: 6px;
+  color: var(--zen-primary);
+  display: inline-flex;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+  font-weight: 800;
+}
+
+.main-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.main-nav a {
+  border-bottom: 3px solid transparent;
+  padding: 8px 4px;
+  transition: all 0.2s ease;
+}
+
+.main-nav a.active {
+  border-bottom-color: #fff;
+  font-weight: 700;
+}
+
+.requester-controls {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.requester-badge {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  line-height: 1.2;
+}
+
+.requester-badge small {
+  display: block;
+  opacity: 0.85;
+}
+
+.avatar {
+  align-items: center;
+  background: var(--zen-pale);
+  border-radius: 50%;
+  color: var(--zen-primary);
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 700;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+.shell-content {
+  margin: 32px auto;
+  max-width: 1200px;
+  width: calc(100% - 48px);
+}
+
+/* Success Confirmation Card */
+.success-card {
+  border-top: 5px solid var(--zen-success);
+}
+
+.success-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.success-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--zen-pale);
+  color: var(--zen-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 2px solid var(--zen-success);
+}
+
+.ticket-confirmation-details {
+  background-color: var(--zen-bg);
+  border: 1px solid var(--zen-border);
+}
+
+/* Responsive Rules */
+@media (max-width: 767px) {
+  .app-header-content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+  .requester-controls {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .requester-badge {
+    flex: 1;
+  }
+  .main-nav {
+    width: 100%;
+  }
+  .main-nav a {
+    flex: 1;
+    text-align: center;
+  }
+  .selector-card,
+  .zen-card {
+    padding: 20px;
+  }
+  .shell-content {
+    margin: 16px auto;
+    width: calc(100% - 24px);
+  }
+}
