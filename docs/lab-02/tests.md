@@ -27,8 +27,8 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 | **API-11** | API | AC-10, BR-08 | Soft remove attachment with a valid 5–255 character reason | 200 OK; `isRemoved: true`, reason recorded | `server/tests/lab-02/attachments.api.test.ts` | Pass |
 | **API-12** | API | AC-11, BR-08 | Download soft-removed attachment | 404 Not Found; download blocked while metadata remains visible | `server/tests/lab-02/attachments.api.test.ts` | Pass |
 | **UI-01** | UI | AC-02, BR-03, BR-04, BR-05 | Render Requester Selector if unselected; validate selected context | Shows loading/error/empty states, active users dropdown, session persistence, and revalidation | `client/tests/lab-02/RequesterSelector.test.tsx` | Pass |
-| **UI-02** | UI | AC-05, BR-10 | Submit Create Ticket with empty fields | Shows inline red validation errors | `client/tests/lab-02/CreateTicket.test.tsx` | Planned |
-| **UI-03** | UI | AC-01, BR-01 | Submit Create Ticket successfully | Shows success banner with Ticket Number | `client/tests/lab-02/CreateTicket.test.tsx` | Planned |
+| **UI-02** | UI | AC-05, BR-10 | Submit Create Ticket with empty fields | Shows inline red validation errors | `client/tests/lab-02/CreateTicket.test.tsx` | Pass |
+| **UI-03** | UI | AC-01, BR-01 | Submit Create Ticket successfully | Shows success banner with Ticket Number | `client/tests/lab-02/CreateTicket.test.tsx` | Pass |
 | **UI-04** | UI | AC-12, BR-14 | Switch Requester in shell | Clears previous tickets and reloads for new user | `client/tests/lab-02/MyTickets.test.tsx` | Planned |
 | **UI-05** | UI | AC-10, BR-08 | Remove attachment via confirmation modal | Modal requires reason >= 5 chars, updates UI | `client/tests/lab-02/TicketDetail.test.tsx` | Planned |
 | **E2E-01** | E2E | AC-01..12 | Complete user flow: select -> create -> list -> detail -> remove | Full flow succeeds across all viewports | `e2e/lab-02/requester-ticket-flow.spec.ts` | Planned |
