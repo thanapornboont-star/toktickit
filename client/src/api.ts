@@ -1,42 +1,32 @@
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
-export interface Category {
+export interface DevRequester {
   id: number;
   name: string;
+  email: string;
+  department: string;
+  isActive: boolean;
 }
 
-export interface SystemStatus {
-  online: boolean;
-  categories: Category[];
+export const DEV_REQUESTER_STORAGE_KEY = "toktickit.devRequester";
+
+export async function getDevRequesters(): Promise<DevRequester[]> {
+  const response = await fetch(`${API_URL}/api/dev-requesters`);
+  if (!response.ok) throw new Error("Unable to load development requesters. Please try again.");
+  return response.json();
 }
 
-// Issue 2 + Issue 4 — call the backend.
-// Steps: fetch `${API_URL}/api/health`; if not ok, throw.
-//        then fetch `${API_URL}/api/categories`; if not ok, throw.
-//        return { online: true, categories }.
-// Throwing on failure lets the UI show a single Offline/error state.
-export async function checkSystem(): Promise<SystemStatus> {
-  try {
-    const healthRes = await fetch(`${API_URL}/api/health`);
-    if (!healthRes.ok) {
-      throw new Error(`API health check returned status ${healthRes.status}`);
-    }
+export function getStoredDevRequester(): DevRequester | null {
+  const stored = sessionStorage.getItem(DEV_REQUESTER_STORAGE_KEY);
+  if (!stored) return null;
+  try { return JSON.parse(stored) as DevRequester; }
+  catch { sessionStorage.removeItem(DEV_REQUESTER_STORAGE_KEY); return null; }
+}
 
-    const catRes = await fetch(`${API_URL}/api/categories`);
-    if (!catRes.ok) {
-      throw new Error(`Failed to fetch categories (status ${catRes.status})`);
-    }
-    const categories: Category[] = await catRes.json();
+export function storeDevRequester(requester: DevRequester) {
+  sessionStorage.setItem(DEV_REQUESTER_STORAGE_KEY, JSON.stringify(requester));
+}
 
-    return { online: true, categories };
-  } catch (err: any) {
-    if (
-      err.message &&
-      (err.message.startsWith("API health check") ||
-        err.message.startsWith("Failed to fetch categories"))
-    ) {
-      throw err;
-    }
-    throw new Error("Unable to connect to TokTickIT API server (Server is offline or unreachable)");
-  }
+export function clearStoredDevRequester() {
+  sessionStorage.removeItem(DEV_REQUESTER_STORAGE_KEY);
 }
