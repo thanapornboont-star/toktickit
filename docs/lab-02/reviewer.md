@@ -15,9 +15,9 @@
 | #28 | `feature/14-attachments-api` | `lab2-staging` | Closes #14 | Approved | @jiraphat-j |
 | #29 | `feature/15-requester-selector-ui` | `lab2-staging` | Closes #15 | Approved | @jiraphat-j |
 | #30 | `feature/16-create-ticket-ui` | `lab2-staging` | Closes #16 | Approved | @jiraphat-j |
-| #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | | @jiraphat-j |
+| #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | Approved | @jiraphat-j |
 | #32 | `feature/24-ticket-detail-ui` | `lab2-staging` | Closes #24 | Approved | @jiraphat-j |
-| | `feature/25-lab2-e2e-qa` | `lab2-staging` | Closes #25 | | @jiraphat-j |
+| #33 | `feature/25-lab2-e2e-qa` | `lab2-staging` | Closes #25 | Approved | @jiraphat-j |
 | | `lab2-staging` | `main` | Release Lab 2 | | @jiraphat-j |
 
 ---
@@ -62,12 +62,21 @@
 
 ### PR #31 (for Issue #23: My Tickets API and UI)
 - **Reviewer Comment (@jiraphat-j):**
-  > ""
+  > "ตรวจ PR ให้แล้วนะ โค้ดส่วนใหญ่ทำมาโอเคเลย ทั้ง backend API ที่ทำพวก search, filter, pagination แล้วก็หน้า UI MyTickets ทำงานได้ครบตามสเปก เทสต์ที่เขียนก็ครอบคลุมดี มีจุดตกหล่นเรื่องเอกสารกับสไตล์นิดหน่อย อยากให้ช่วยแก้ก่อน merge: ใน docs/lab-02/tests.md เห็นมีเทสต์ API-06 กับ API-07 ที่รันผ่านใน my-tickets.api.test.ts แล้ว แต่ในตารางสถานะยังเป็น Planned อยู่ รบกวนแก้เป็น Pass ให้หน่อย เดี๋ยวคะแนน traceability จะหาย ใน docs/lab-02/reviewer.md ตรงตารางแถว PR #31 ช่อง status ยังเว้นว่างอยู่ ฝากเติมเป็น Pending review ด้วย ใน MyTickets.tsx ปุ่ม View ตอนนี้ใช้ btn-outline-primary มันจะขึ้นเป็นสีฟ้าของ bootstrap แนะนำเปลี่ยนเป็น btn-outline-success หรือ btn-outline-secondary จะได้เข้ากับโทนสีเขียว Zen Green ถ้าแก้ commit แล้วบอกนะ เดี๋ยวเข้ามา approve และกด merge เข้า lab2-staging ให้"
 - **My Response (@thanapornboont-star):**
-  > ""
+  > "แก้ไขเรียบร้อยแล้วค่ะ"
 
 ### PR #32 (for Issue #24: Ticket Detail and Attachment UI)
-- No review comments were requested; @jiraphat-j approved and merged the PR directly.
+- **Reviewer Comment (@jiraphat-j):**
+  > "ตรวจโค้ด PR #32 เรียบร้อยแล้วครับ ตัวฟังก์ชันทำได้ครบถ้วนมาก ทั้งการเช็ค ownership 404, การแยกตาราง active/removed attachment, การจำกัด 5 ไฟล์ และ modal บังคับกรอกเหตุผลลบ 5 ตัวอักษรขึ้นไป เทสต์ใน tests.md ก็อัปเดตครบถ้วนครับ"
+- **My Response (@thanapornboont-star):**
+  > "ขอบคุณค่ะ"
+
+### PR #33 (for Issue #25: E2E, Visual QA, Documentation, and Release Readiness)
+- **Reviewer Comment (@jiraphat-j):**
+  > "ตรวจ PR #33 เรียบร้อยแล้วครับ ละเอียดและสมบูรณ์มาก ทั้งการเขียน E2E flow ครบวงจร, การเก็บ screenshot หลักฐานครบ 3 viewports รวมถึงการแก้จุด overflow บน mobile ใน TicketDetail ให้แสดงผลเป็น card layout เรียบร้อยดีครับ"
+- **My Response (@thanapornboont-star):**
+  > "ขอบคุณมากค่าาาา"
 
 ---
 
@@ -80,7 +89,11 @@
   > "ตรวจแล้วค่ะ โดยรวม schema, validation, ticket number, requester binding และ idempotency ทำได้ครบ แนะนำเพิ่ม test กรณี concurrent requests ที่ใช้ Idempotency-Key เดียวกัน เพื่อยืนยันว่าไม่เกิด ticket ซ้ำค่า"
   > "โดยรวม Attachment model, upload/download, soft removal, file size/type validation, จำกัด 5 active attachments และ ownership isolation ทำได้ครบค่ะ"
   > "ตรวจ PR แล้วครับ โดยรวม Create Ticket UI, form validation, loading/busy state และ error handling ทำได้ครบและสอดคล้องกับ spec ค่ะ มีการเชื่อมต่อ API และส่ง requester/idempotency headers ได้ถูกต้อง รวมถึงรองรับ attachment validation ด้วยค่ะ"
+  > "ถูกต้องครบถ้วนค่ะ คาดว่าตอนนี้ยังไม่มีปัญหาค่ะ"
+  > "ครบค่ะ ขอApproveให้เลยนะคะ"
+  > "ตรวจ PR แล้วครับ โดยรวม Playwright E2E, responsive/accessibility tests และ visual QA ทำได้ครบดี มีการครอบคลุม requester flow ตั้งแต่ Create Ticket → My Tickets → Ticket Detail รวมถึง Desktop/Tablet/Mobile และ keyboard navigation และมีการอัปเดต tests.md พร้อมผล 86/86 tests ผ่านค่ะ"
 - **Partner's Response:**
   > "เพิ่ม test สำหรับกรณี concurrent requests ที่ใช้ Idempotency-Key เดียวกันพร้อมกันเรียบร้อยแล้วใน commit 10da627 และเพิ่ม error handling ป้องกัน race condition เพื่อยืนยันว่าจะได้ Ticket เดิมและไม่เกิด ticket ซ้ำอย่างแน่นอนครับ ขอบคุณสำหรับคำแนะนำครับ รบกวนตรวจทานและ Approve / Merge ได้เลยครับ"
   > "ขอบคุณครับ"
   > "ค้าบขอบคุณครับ"
+  > "ขอบคุณมากครับ"
