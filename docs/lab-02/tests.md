@@ -31,7 +31,7 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 | **UI-03** | UI | AC-01, BR-01 | Submit Create Ticket successfully | Shows success banner with Ticket Number | `client/tests/lab-02/CreateTicket.test.tsx` | Pass |
 | **UI-04** | UI | AC-12, BR-14 | Switch Requester in shell | Clears previous tickets and reloads for new user | `client/tests/lab-02/MyTickets.test.tsx` | Pass |
 | **UI-05** | UI | AC-10, BR-08 | Remove attachment via confirmation modal | Modal requires reason >= 5 chars, updates UI | `client/tests/lab-02/TicketDetail.test.tsx` | Pass |
-| **E2E-01** | E2E | AC-01..12 | Complete user flow: select -> create -> list -> detail -> remove | Full flow succeeds across all viewports | `e2e/lab-02/requester-ticket-flow.spec.ts` | Planned |
+| **E2E-01** | E2E | AC-01..12 | Complete user flow: select -> create -> list -> detail -> remove | Full flow succeeds across all viewports | `e2e/lab-02/requester-ticket-flow.spec.ts` | Pass |
 
 ---
 
@@ -56,11 +56,13 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 
 ## 4. Responsive and Visual Checklist
 
-- [ ] **Desktop (>=992px)**: Header, navigation, multi-column Create Ticket form, table layout in My Tickets, max-width centered container.
-- [ ] **Tablet (768px - 991px)**: Form fields adapt gracefully, table remains readable without breaking page width.
-- [ ] **Mobile (<768px)**: Stacked single-column fields, cards in My Tickets, full-width touch buttons, zero horizontal overflow.
-- [ ] **Zen Green Styling**: Verification of `#006B3C` headers/buttons, `#EAF6EF` selection highlights, `#F5F7F6` background.
-- [ ] **Read-only Distinction**: Visual difference between editable and read-only inputs.
+- [x] **Desktop (>=992px)**: Header, navigation, multi-column Create Ticket form, table layout in My Tickets, max-width centered container. Verified via `desktop-*.png` screenshots in `artifacts/lab-02/screenshots/`.
+- [x] **Tablet (768px - 991px)**: Form fields adapt gracefully, table remains readable without breaking page width. Verified via `tablet-*.png` screenshots.
+- [x] **Mobile (<768px)**: Stacked single-column fields, cards in My Tickets **and** in the Ticket Detail attachment tables (Issue #25 fixed the attachment table overflowing off-screen on mobile by adding a card layout, matching the existing My Tickets pattern), full-width touch buttons, zero horizontal overflow. Verified via `mobile-*.png` screenshots.
+- [x] **Zen Green Styling**: Verification of `#006B3C` headers/buttons, `#EAF6EF` selection highlights, `#F5F7F6` background across all captured screenshots.
+- [x] **Read-only Distinction**: Visual difference between editable and read-only inputs (`.zen-field-readonly` grey background) confirmed in Create Ticket and Ticket Detail screenshots.
+
+Screenshot evidence: `artifacts/lab-02/screenshots/{create-ticket,my-tickets,ticket-detail}/{desktop,tablet,mobile}-*.png`, captured by the Playwright E2E-01 spec across all three viewport projects.
 
 ---
 
@@ -73,6 +75,8 @@ npm --prefix server test -- --run
 # Frontend Component Tests
 npm --prefix client test -- --run
 
-# Playwright E2E Tests
+# Playwright E2E Tests (first-time setup, from repo root)
+npm install
+npx playwright install chromium
 npx playwright test
 ```

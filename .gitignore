@@ -15,3 +15,8 @@ server/prisma/*.db
 # local file storage / attachments
 uploads/
 server/uploads/
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

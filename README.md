@@ -9,7 +9,7 @@ TokTickIT คือระบบ IT Service Desk แบบ Full-Stack สำห�
 - **Frontend**: React 18, TypeScript, Vite, Bootstrap 5
 - **Backend**: Node.js, Express, TypeScript
 - **Database**: PostgreSQL, Prisma ORM
-- **Testing**: Vitest (Frontend UI Test), Supertest + Vitest (Backend Integration Test)
+- **Testing**: Vitest (Frontend UI Test), Supertest + Vitest (Backend Integration Test), Playwright (E2E & Visual QA)
 - **Architecture**: REST-style API architecture
 
 ---
@@ -143,7 +143,31 @@ Backend API Server จะเปิดให้บริการที่ `http:
 
 ---
 
+### 5. End-to-End Testing (Playwright)
+
+ทดสอบ flow แบบ end-to-end จริง (เลือก requester → สร้าง ticket → ค้นหาใน My Tickets → เปิด Ticket Detail → เพิ่ม/ลบ attachment) ผ่าน Desktop, Tablet และ Mobile viewport พร้อมเก็บ screenshot ไว้ที่ `artifacts/lab-02/screenshots/`
+
+```bash
+# 1. รันจาก root ของ repo (toktickit/) — ต้องมี client และ server dev server พร้อมใช้งาน
+#    (Playwright จะพยายามสตาร์ตให้อัตโนมัติถ้ายังไม่ได้รันอยู่)
+npm install
+
+# 2. ติดตั้ง Chromium browser สำหรับ Playwright (ครั้งแรกเท่านั้น)
+npx playwright install chromium
+
+# 3. รัน E2E tests ทั้ง 3 viewports (Desktop, Tablet, Mobile)
+npx playwright test
+
+# ดู UI runner แบบ interactive (optional)
+npx playwright test --ui
+```
+
+> **หมายเหตุ**: ต้อง seed database และมี active Development Requester อย่างน้อย 1 คนก่อนรัน E2E tests (ดูขั้นตอนที่ 4)
+
+---
+
 ## การทดสอบ (Testing Framework)
 
 - **Frontend Tests**: ใช้ Vitest + `@testing-library/react` ทดสอบ React Components ภายใต้สภาพแวดล้อม `jsdom` (คำสั่ง `npm test` ใน `client/`)
 - **Backend Tests**: ใช้ Vitest + Supertest ทดสอบ Express API Router ภายใต้สภาพแวดล้อม `node` (คำสั่ง `npm test` ใน `server/`)
+- **E2E & Visual QA Tests**: ใช้ Playwright ทดสอบ flow แบบ end-to-end จริงผ่าน Chromium ครอบคลุม Desktop/Tablet/Mobile viewport พร้อมเก็บ screenshot หลักฐาน (คำสั่ง `npx playwright test` จาก root ของ repo) — ดูรายละเอียดที่ `docs/lab-02/tests.md`

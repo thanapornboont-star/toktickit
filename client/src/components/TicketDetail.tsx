@@ -338,56 +338,98 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
         {activeAttachments.length === 0 ? (
           <p className="text-muted small">No active attachments.</p>
         ) : (
-          <div className="table-responsive mb-3">
-            <table className="table table-sm table-hover align-middle border mb-0">
-              <thead className="table-light">
-                <tr>
-                  <th scope="col">Filename</th>
-                  <th scope="col">File Size</th>
-                  <th scope="col">Upload Date</th>
-                  <th scope="col" className="text-end">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeAttachments.map((attachment) => (
-                  <tr key={attachment.id}>
-                    <td className="text-truncate" style={{ maxWidth: "260px" }}>
-                      📎 {attachment.originalFilename}
-                    </td>
-                    <td>{formatFileSize(attachment.fileSize)}</td>
-                    <td className="small text-muted">{formatDateTime(attachment.createdAt)}</td>
-                    <td className="text-end">
-                      <div className="d-flex gap-2 justify-content-end">
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => void handleDownload(attachment)}
-                        >
-                          Download
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => openRemoveModal(attachment)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </td>
+          <>
+            {/* Desktop/Tablet table */}
+            <div className="table-responsive mb-3 d-none d-md-block">
+              <table
+                className="table table-sm table-hover align-middle border mb-0"
+                aria-label="Active attachments"
+              >
+                <thead className="table-light">
+                  <tr>
+                    <th scope="col">Filename</th>
+                    <th scope="col">File Size</th>
+                    <th scope="col">Upload Date</th>
+                    <th scope="col" className="text-end">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {activeAttachments.map((attachment) => (
+                    <tr key={attachment.id}>
+                      <td className="text-truncate" style={{ maxWidth: "260px" }}>
+                        📎 {attachment.originalFilename}
+                      </td>
+                      <td>{formatFileSize(attachment.fileSize)}</td>
+                      <td className="small text-muted">{formatDateTime(attachment.createdAt)}</td>
+                      <td className="text-end">
+                        <div className="d-flex gap-2 justify-content-end">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() => void handleDownload(attachment)}
+                          >
+                            Download
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => openRemoveModal(attachment)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card list */}
+            <div className="d-md-none d-flex flex-column gap-2 mb-3">
+              {activeAttachments.map((attachment) => (
+                <div key={attachment.id} className="card p-3 border rounded">
+                  <div className="text-truncate fw-semibold mb-1">
+                    📎 {attachment.originalFilename}
+                  </div>
+                  <div className="d-flex justify-content-between text-muted small mb-2">
+                    <span>{formatFileSize(attachment.fileSize)}</span>
+                    <span>{formatDateTime(attachment.createdAt)}</span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary flex-fill"
+                      onClick={() => void handleDownload(attachment)}
+                    >
+                      Download
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-danger flex-fill"
+                      onClick={() => openRemoveModal(attachment)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         {removedAttachments.length > 0 && (
           <>
             <h4 className="h6 fw-semibold">Removed Attachments</h4>
-            <div className="table-responsive mb-3">
-              <table className="table table-sm align-middle border mb-0">
+
+            {/* Desktop/Tablet table */}
+            <div className="table-responsive mb-3 d-none d-md-block">
+              <table
+                className="table table-sm align-middle border mb-0"
+                aria-label="Removed attachments"
+              >
                 <thead className="table-light">
                   <tr>
                     <th scope="col">Filename</th>
@@ -421,6 +463,29 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile card list */}
+            <div className="d-md-none d-flex flex-column gap-2 mb-3">
+              {removedAttachments.map((attachment) => (
+                <div key={attachment.id} className="card p-3 border rounded text-muted">
+                  <div className="text-decoration-line-through text-truncate fw-semibold mb-1">
+                    📎 {attachment.originalFilename}
+                  </div>
+                  <div className="d-flex justify-content-between small mb-2">
+                    <span>{formatFileSize(attachment.fileSize)}</span>
+                    <span>
+                      {attachment.removedAt ? formatDateTime(attachment.removedAt) : "—"}
+                    </span>
+                  </div>
+                  <span className="badge bg-secondary mb-2 align-self-start">
+                    {attachment.removalReason}
+                  </span>
+                  <button type="button" className="btn btn-sm btn-outline-secondary" disabled>
+                    Unavailable
+                  </button>
+                </div>
+              ))}
             </div>
           </>
         )}

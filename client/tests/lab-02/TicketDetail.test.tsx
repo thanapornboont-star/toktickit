@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { TicketDetail } from "../../src/components/TicketDetail.js";
 import * as api from "../../src/api.js";
 
@@ -102,11 +102,17 @@ describe("TicketDetail Component", () => {
 
     render(<TicketDetail requester={mockRequester} ticketId={101} onBack={vi.fn()} />);
 
-    expect(await screen.findByText(/screenshot.png/)).toBeInTheDocument();
-    expect(screen.getByText(/old-log.pdf/)).toBeInTheDocument();
-    expect(screen.getByText("Uploaded the wrong file by mistake")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Download" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Unavailable" })).toBeDisabled();
+    // The desktop table and mobile card list both render in jsdom (CSS
+    // media queries that toggle d-none/d-md-block don't apply here), so
+    // scope assertions to each table by its accessible name.
+    const activeTable = await screen.findByRole("table", { name: "Active attachments" });
+    expect(within(activeTable).getByText(/screenshot.png/)).toBeInTheDocument();
+    expect(within(activeTable).getByRole("button", { name: "Download" })).toBeInTheDocument();
+
+    const removedTable = screen.getByRole("table", { name: "Removed attachments" });
+    expect(within(removedTable).getByText(/old-log.pdf/)).toBeInTheDocument();
+    expect(within(removedTable).getByText("Uploaded the wrong file by mistake")).toBeInTheDocument();
+    expect(within(removedTable).getByRole("button", { name: "Unavailable" })).toBeDisabled();
   });
 
   it("UI-05 (AC-10/BR-08): requires a reason of at least 5 characters before confirming removal", async () => {
@@ -141,7 +147,8 @@ describe("TicketDetail Component", () => {
 
     render(<TicketDetail requester={mockRequester} ticketId={101} onBack={vi.fn()} />);
 
-    fireEvent.click(await screen.findByRole("button", { name: "Remove" }));
+    const activeTable = await screen.findByRole("table", { name: "Active attachments" });
+    fireEvent.click(within(activeTable).getByRole("button", { name: "Remove" }));
 
     expect(
       screen.getByText("Are you sure you want to remove this attachment?")
@@ -180,7 +187,8 @@ describe("TicketDetail Component", () => {
 
     render(<TicketDetail requester={mockRequester} ticketId={101} onBack={vi.fn()} />);
 
-    await screen.findByText(/file-1.pdf/);
+    const activeTable = await screen.findByRole("table", { name: "Active attachments" });
+    expect(within(activeTable).getByText(/file-1.pdf/)).toBeInTheDocument();
     expect(screen.queryByLabelText(/\+ Upload Attachment/i)).not.toBeInTheDocument();
     expect(screen.getByText(/Maximum of 5 active attachments reached/i)).toBeInTheDocument();
   });
