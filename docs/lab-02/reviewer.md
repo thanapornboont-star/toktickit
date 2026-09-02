@@ -15,9 +15,9 @@
 | #28 | `feature/14-attachments-api` | `lab2-staging` | Closes #14 | Approved | @jiraphat-j |
 | #29 | `feature/15-requester-selector-ui` | `lab2-staging` | Closes #15 | Approved | @jiraphat-j |
 | #30 | `feature/16-create-ticket-ui` | `lab2-staging` | Closes #16 | Approved | @jiraphat-j |
-| #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | | @jiraphat-j |
+| #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | Approved | @jiraphat-j |
 | #32 | `feature/24-ticket-detail-ui` | `lab2-staging` | Closes #24 | Approved | @jiraphat-j |
-| #33 | `feature/25-lab2-e2e-qa` | `lab2-staging` | Closes #25 | | @jiraphat-j |
+| #33 | `feature/25-lab2-e2e-qa` | `lab2-staging` | Closes #25 | Approved | @jiraphat-j |
 | | `lab2-staging` | `main` | Release Lab 2 | | @jiraphat-j |
 
 ---
@@ -72,7 +72,7 @@
 - **My Response (@thanapornboont-star):**
   > "ขอบคุณค่ะ"
 
-### PR #33 (for Issue #23: My Tickets API and UI)
+### PR #33 (for Issue #25: E2E, Visual QA, Documentation, and Release Readiness)
 - **Reviewer Comment (@jiraphat-j):**
   > "ตรวจ PR #33 เรียบร้อยแล้วครับ ละเอียดและสมบูรณ์มาก ทั้งการเขียน E2E flow ครบวงจร, การเก็บ screenshot หลักฐานครบ 3 viewports รวมถึงการแก้จุด overflow บน mobile ใน TicketDetail ให้แสดงผลเป็น card layout เรียบร้อยดีครับ"
 - **My Response (@thanapornboont-star):**
