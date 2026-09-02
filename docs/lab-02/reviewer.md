@@ -15,7 +15,7 @@
 | #28 | `feature/14-attachments-api` | `lab2-staging` | Closes #14 | Approved | @jiraphat-j |
 | #29 | `feature/15-requester-selector-ui` | `lab2-staging` | Closes #15 | Approved | @jiraphat-j |
 | #30 | `feature/16-create-ticket-ui` | `lab2-staging` | Closes #16 | Approved | @jiraphat-j |
-| | `feature/#NN-my-tickets` | `lab2-staging` | Closes #NN | | @jiraphat-j |
+| #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | | @jiraphat-j |
 | | `feature/#NN-ticket-detail-ui` | `lab2-staging` | Closes #NN | | @jiraphat-j |
 | | `feature/#NN-lab2-e2e-qa` | `lab2-staging` | Closes #NN | | @jiraphat-j |
 | | `lab2-staging` | `main` | Release Lab 2 | | @jiraphat-j |
@@ -26,9 +26,9 @@
 
 ### PR #21 (for Issue #11: Engineering Contract and Test Plan)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ดีแล้วครับแต่อย่าลืมในส่วนของ ai_use.md, reviewer.md ด้วยนะครับ ถ้าเสร็จแล้วบอกครับ เดี๋ยวผมจะทำการ approve และ merge ให้"
+  > "ดีแล้วครับแต่อย่าลืมในส่วนของ ai_use.md, reviewer.md ด้วยนะครับ ถ้าเสร็จแล้วบอกครับ เดี๋ยวผมจะทำการ approveและ merge ให้"
 - **My Response (@thanapornboont-star):**
-  > "เพิ่มไฟล์ `docs/lab-02/ai-use.md` และ `docs/lab-02/reviewer.md` ใน commit ล่าสุดเรียบร้อยแล้วครับ ขอบคุณครับ รบกวนตรวจทานและ Approve / Merge ได้เลยครับ"
+  > "เพิ่มไฟล์ docs/lab-02/ai-use.md และ docs/lab-02/reviewer.md ใน commit ล่าสุดเรียบร้อยแล้ว รบกวนตรวจทานและ Approve / Merge ได้เลยค่ะ"
 
 ### PR #26 (for Issue #12: Development Requester schema, seed, and context API)
 - **Reviewer Comment (@jiraphat-j):**
@@ -40,25 +40,31 @@
 - **Reviewer Comment (@jiraphat-j):**
   > "ตรวจ final code แล้วครับ เหลือจุดเดียวที่อยากให้เช็ก: requestedPriority ใน schema มี default เป็น MEDIUM แต่ API ตอนนี้บังคับให้ client ต้องส่งค่า ถ้า requirement ต้องการใช้ default ควรปรับ validation ให้ไม่บังคับ field นี้ครับ นอกนั้นโดยรวมโอเคครับ"
 - **My Response (@thanapornboont-star):**
-  > "แก้ไข validation ใน `server/src/routes/tickets.ts` ให้ `requestedPriority` เป็น optional โดยมีค่าเริ่มต้น (default) เป็น `MEDIUM` ตาม schema และเพิ่ม automated test รองรับเรียบร้อยแล้วใน commit ล่าสุด ขอบคุณสำหรับคำแนะนำครับ รบกวนตรวจทานอีกครั้งและ Approve / Merge ได้เลยครับ"
+  > "แก้ไข validation ใน server/src/routes/tickets.ts ให้ requestedPriority เป็น optional โดยมีค่าเริ่มต้น (default) เป็น MEDIUM ตาม schema และเพิ่ม automated test รองรับเรียบร้อยแล้วใน commit ล่าสุด ขอบคุณสำหรับคำแนะนำคับ"
 
 ### PR #28 (for Issue #14: Attachment upload, download, and soft removal API)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจสอบโค้ดการจัดการ Attachment ครบถ้วนทั้ง upload จำกัด 5MB/5ไฟล์, download และ soft-delete พร้อมบันทึกเหตุผลเรียบร้อยดีครับ"
+  > "ตรวจโค้ด Attachment APIs และ Test suite โดยรวมทำได้ดีและถูกต้องตาม spec มากครับ:Storage & Validation:มีการจัดเก็บไฟล์ด้วย UUID (Opaque filename) ในโฟลเดอร์ uploads และจำกัดขนาดไม่เกิน 5 MB (413) รวมถึงกรองประเภทไฟล์ (415) ได้ถูกต้อง Soft-removal & Slot Freeing:การทำ soft-removal มีการเก็บเหตุผล (reason), timestamp และปลดล็อคโควตา active attachment (AC-15) พร้อมทั้ง block การ download ด้วย 404 ได้ถูกต้องตาม BR-22 Ownership Isolation: มีการตรวจ ownership อย่างรัดกุม คืนค่า 404 สำหรับ unowned ticket/attachment"
 - **My Response (@thanapornboont-star):**
-  > "ขอบคุณมากครับ ได้เพิ่ม automated tests ครอบคลุม API-08..API-12 ครบถ้วนแล้วครับ"
+  > "ขอบคุณค่า"
 
 ### PR #29 (for Issue #15: Zen Green shell and Development Requester selector UI)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจสอบหน้า Selector และ Zen Green App Shell แล้ว การแสดงผลและ Responsive สวยงามตรงตามสเปกครับ"
+  > "ตรวจเช็ค PR #29 เรียบร้อยแล้วครับ ภาพรวมการทำงานของฟีเจอร์ Requester Selector และ App Shell ทำงานได้ถูกต้อง ครอบคลุมทั้ง Loading state, Error + Retry, Session persistence และ Revalidation ตามเงื่อนไขของ Lab 2 แล้วครับ"
 - **My Response (@thanapornboont-star):**
-  > "ขอบคุณครับ ได้ทำการ Revalidate session storage กับ API พร้อม component tests เรียบร้อยแล้วครับ"
+  > "ขอบคุณค่ะ"
 
-### PR #30 (for Issue #16: Create Ticket UI and validation)
+### PR #30 (for Issue #16 : Create Ticket UI and validation)
 - **Reviewer Comment (@jiraphat-j):**
   > "ตรวจเช็ค PR #30 เรียบร้อยครับรอบนี้โค้ดจัด Format ได้สะอาดมาก การทำ Form Validation, Real-time Character Counter, การเก็บค่าฟอร์มเดิมไว้เวลามี Error, และ Busy State ทำออกมาได้สมบูรณ์และถูกต้องตาม Spec ทุกจุดเลยครับ มีเพียงข้อปรับปรุงเล็กน้อยเกี่ยวกับ CSS และเอกสารที่อยากรบกวนให้ช่วย Commit เพิ่มเติมก่อน Approve & Merge ครับ: CSS Classes ที่ขาดหายใน client/src/App.css ใน CreateTicket.tsx มีการเรียกใช้ .zen-card, .zen-field-readonly, .text-primary-green, .success-header, .success-icon แต่ใน App.css ยังไม่มีการประกาศคลาสเหล่านี้ ทำให้กล่องการ์ดและสีพื้นหลังของช่อง Read-only อาจยังไม่แสดงผลครับ"
 - **My Response (@thanapornboont-star):**
-  > "เพิ่ม CSS Classes ที่เกี่ยวข้องทั้งหมด (`.zen-card`, `.zen-field-readonly`, `.text-primary-green`, `.success-header`, `.success-icon`, `.success-card`, `.ticket-confirmation-details`) ใน `client/src/App.css` เรียบร้อยแล้วใน commit ล่าสุด ขอบคุณมากครับที่ช่วยตรวจเช็คจุดนี้ รบกวนตรวจทานอีกครั้งและ Approve / Merge ได้เลยครับ"
+  > "เพิ่ม CSS Classes ที่เกี่ยวข้องทั้งหมด (.zen-card, .zen-field-readonly, .text-primary-green, .success-header, .success-icon, .success-card, .ticket-confirmation-details) ใน client/src/App.css เรียบร้อยแล้วใน commit ล่าสุด ขอบคุณมากค่ะ"
+
+### PR #31 (for Issue #23: My Tickets API and UI)
+- **Reviewer Comment (@jiraphat-j):**
+  > ""
+- **My Response (@thanapornboont-star):**
+  > ""
 
 ---
 
@@ -68,5 +74,10 @@
 - **My Review Comment:**
   > "จากที่ดูค่อนข้างครบถ้วนค่ะ"
   > "ตรวจแล้วค่ะ โครงสร้าง schema, migration, seed และ API โดยรวมครบถ้วน และ seed ใช้ upsert ทำให้รันซ้ำได้โดยไม่เกิดข้อมูลซ้ำ LGTM"
+  > "ตรวจแล้วค่ะ โดยรวม schema, validation, ticket number, requester binding และ idempotency ทำได้ครบ แนะนำเพิ่ม test กรณี concurrent requests ที่ใช้ Idempotency-Key เดียวกัน เพื่อยืนยันว่าไม่เกิด ticket ซ้ำค่า"
+  > "โดยรวม Attachment model, upload/download, soft removal, file size/type validation, จำกัด 5 active attachments และ ownership isolation ทำได้ครบค่ะ"
+  > "ตรวจ PR แล้วครับ โดยรวม Create Ticket UI, form validation, loading/busy state และ error handling ทำได้ครบและสอดคล้องกับ spec ค่ะ มีการเชื่อมต่อ API และส่ง requester/idempotency headers ได้ถูกต้อง รวมถึงรองรับ attachment validation ด้วยค่ะ"
 - **Partner's Response:**
+  > "เพิ่ม test สำหรับกรณี concurrent requests ที่ใช้ Idempotency-Key เดียวกันพร้อมกันเรียบร้อยแล้วใน commit 10da627 และเพิ่ม error handling ป้องกัน race condition เพื่อยืนยันว่าจะได้ Ticket เดิมและไม่เกิด ticket ซ้ำอย่างแน่นอนครับ ขอบคุณสำหรับคำแนะนำครับ รบกวนตรวจทานและ Approve / Merge ได้เลยครับ"
+  > "ขอบคุณครับ"
   > "ค้าบขอบคุณครับ"

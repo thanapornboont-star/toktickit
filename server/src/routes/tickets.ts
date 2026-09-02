@@ -4,7 +4,7 @@ import { getPrisma } from "../prisma.js";
 import { requireDevRequester } from "../middleware/devRequester.js";
 import { generateTicketNumber } from "../services/ticketNumber.js";
 import { upload, handleUploadErrors, hasAllowedFileSignature } from "../middleware/upload.js";
-import { RequestedPriority } from "@prisma/client";
+import { RequestedPriority, Prisma } from "@prisma/client";
 
 export const ticketRouter = Router();
 
@@ -34,6 +34,127 @@ function toAttachmentResponse(attachment: {
 
 // Apply requireDevRequester to all ticket routes
 ticketRouter.use(requireDevRequester);
+
+// ---------------------------------------------------------------------------
+// GET /api/tickets - List Requester's Tickets with Search, Filter & Pagination
+// ---------------------------------------------------------------------------
+ticketRouter.get("/", async (req: Request, res: Response) => {
+  try {
+    const prisma = getPrisma();
+    const requesterId = req.devRequester!.id;
+
+    const {
+      search,
+      categoryId,
+      requestedPriority,
+      status,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+      page = "1",
+      pageSize = "8",
+    } = req.query;
+
+    const where: Prisma.TicketWhereInput = {
+      requesterId,
+    };
+
+    // 1. Search keyword (ticketNumber or summary)
+    if (typeof search === "string" && search.trim() !== "") {
+      const trimmedSearch = search.trim();
+      where.OR = [
+        { ticketNumber: { contains: trimmedSearch, mode: "insensitive" } },
+        { summary: { contains: trimmedSearch, mode: "insensitive" } },
+      ];
+    }
+
+    // 2. Filter by categoryId
+    if (categoryId) {
+      const catId = parseInt(categoryId as string, 10);
+      if (!isNaN(catId) && catId > 0) {
+        where.categoryId = catId;
+      }
+    }
+
+    // 3. Filter by requestedPriority
+    if (
+      requestedPriority &&
+      Object.values(RequestedPriority).includes(requestedPriority as RequestedPriority)
+    ) {
+      where.requestedPriority = requestedPriority as RequestedPriority;
+    }
+
+    // 4. Filter by status
+    if (typeof status === "string" && status.trim() !== "") {
+      where.status = status.trim();
+    }
+
+    // 5. Pagination
+    const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
+    const rawPageSize = parseInt(pageSize as string, 10) || 8;
+    const allowedPageSizes = [8, 20, 50];
+    const take = allowedPageSizes.includes(rawPageSize) ? rawPageSize : 8;
+    const skip = (pageNum - 1) * take;
+
+    // 6. Sorting
+    const allowedSortFields = ["createdAt", "ticketNumber", "requestedPriority"];
+    const sortField = allowedSortFields.includes(sortBy as string) ? (sortBy as string) : "createdAt";
+    const order = (sortOrder as string).toLowerCase() === "asc" ? "asc" : "desc";
+
+    const [totalItems, tickets] = await Promise.all([
+      prisma.ticket.count({ where }),
+      prisma.ticket.findMany({
+        where,
+        orderBy: [{ [sortField]: order }, { id: "desc" }],
+        skip,
+        take,
+        include: {
+          category: { select: { id: true, name: true } },
+          relatedSystem: { select: { id: true, name: true } },
+          attachments: {
+            where: { isRemoved: false },
+            select: { id: true },
+          },
+        },
+      }),
+    ]);
+
+    const data = tickets.map((t) => ({
+      id: t.id,
+      ticketNumber: t.ticketNumber,
+      summary: t.summary,
+      description: t.description,
+      requestedPriority: t.requestedPriority,
+      status: t.status,
+      requesterId: t.requesterId,
+      categoryId: t.categoryId,
+      relatedSystemId: t.relatedSystemId,
+      createdAt: t.createdAt,
+      updatedAt: t.updatedAt,
+      category: t.category,
+      relatedSystem: t.relatedSystem,
+      activeAttachmentCount: t.attachments.length,
+    }));
+
+    const totalPages = Math.ceil(totalItems / take) || 1;
+
+    return res.status(200).json({
+      data,
+      pagination: {
+        page: pageNum,
+        pageSize: take,
+        totalItems,
+        totalPages,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch tickets.",
+      },
+    });
+  }
+});
 
 // ---------------------------------------------------------------------------
 // POST /api/tickets - Create Ticket

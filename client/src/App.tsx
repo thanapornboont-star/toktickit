@@ -7,6 +7,7 @@ import {
   storeDevRequester,
 } from "./api.js";
 import { CreateTicket } from "./components/CreateTicket.js";
+import { MyTickets } from "./components/MyTickets.js";
 import "./App.css";
 
 type LoadState = "loading" | "ready" | "error";
@@ -72,7 +73,7 @@ function ApplicationShell({
   requester: DevRequester;
   onChangeRequester: () => void;
 }) {
-  const [activeView, setActiveView] = useState<View>("create-ticket");
+  const [activeView, setActiveView] = useState<View>("my-tickets");
   const initials = requester.name
     .split(" ")
     .map((part) => part[0])
@@ -152,24 +153,10 @@ function ApplicationShell({
             onNavigateToMyTickets={() => setActiveView("my-tickets")}
           />
         ) : (
-          <div>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <div>
-                <p className="eyebrow mb-1">Requester workspace</p>
-                <h1 className="mb-0">My Tickets</h1>
-              </div>
-              <button
-                type="button"
-                className="btn zen-primary-button"
-                onClick={() => setActiveView("create-ticket")}
-              >
-                + Create Ticket
-              </button>
-            </div>
-            <p className="text-muted mb-0">
-              Ticket listing will be available in the My Tickets increment.
-            </p>
-          </div>
+          <MyTickets
+            requester={requester}
+            onCreateTicket={() => setActiveView("create-ticket")}
+          />
         )}
       </main>
     </div>
