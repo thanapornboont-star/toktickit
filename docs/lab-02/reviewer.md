@@ -15,7 +15,7 @@
 | #28 | `feature/14-attachments-api` | `lab2-staging` | Closes #14 | Approved | @jiraphat-j |
 | #29 | `feature/15-requester-selector-ui` | `lab2-staging` | Closes #15 | Approved | @jiraphat-j |
 | #30 | `feature/16-create-ticket-ui` | `lab2-staging` | Closes #16 | Approved | @jiraphat-j |
-| | `feature/#NN-my-tickets` | `lab2-staging` | Closes #NN | | @jiraphat-j |
+| #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | | @jiraphat-j |
 | | `feature/#NN-ticket-detail-ui` | `lab2-staging` | Closes #NN | | @jiraphat-j |
 | | `feature/#NN-lab2-e2e-qa` | `lab2-staging` | Closes #NN | | @jiraphat-j |
 | | `lab2-staging` | `main` | Release Lab 2 | | @jiraphat-j |
@@ -26,33 +26,45 @@
 
 ### PR #21 (for Issue #11: Engineering Contract and Test Plan)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ดีแล้วครับแต่อย่าลืมในส่วนของ ai_use.md, reviewer.md ด้วยนะครับ ถ้าเสร็จแล้วบอกครับ เดี๋ยวผมจะทำการ approve และ merge ให้"
+  > ""
 - **My Response (@thanapornboont-star):**
-  > "เพิ่มไฟล์ `docs/lab-02/ai-use.md` และ `docs/lab-02/reviewer.md` ใน commit ล่าสุดเรียบร้อยแล้วครับ ขอบคุณครับ รบกวนตรวจทานและ Approve / Merge ได้เลยครับ"
+  > ""
 
 ### PR #26 (for Issue #12: Development Requester schema, seed, and context API)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจ final diff แล้วครับ จุด implementation หลักโอเคแล้ว เหลือ docs/lab-02/tests.md ที่ API-03 มีรายการซ้ำกัน รบกวนเช็ก/จัดให้ test ID ไม่ซ้ำกันครับ แล้วผมจะ review ต่อครับ"
+  > ""
 - **My Response (@thanapornboont-star):**
-  > "แก้ไขจัดเรียง Test ID ใน docs/lab-02/tests.md ใหม่ตั้งแต่ API-01 ถึง API-12 ไม่ให้มีรายการซ้ำกัน และอัปเดต Traceability Matrix ให้สอดคล้องกันเรียบร้อยแล้วใน commit ล่าสุดแล้วค่ะ ช่วยเช็คอีกทีนะคะ"
+  > ""
 
 ### PR #27 (for Issue #13: Ticket schema, ticket number, and Create Ticket API)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจ final code แล้วครับ เหลือจุดเดียวที่อยากให้เช็ก: requestedPriority ใน schema มี default เป็น MEDIUM แต่ API ตอนนี้บังคับให้ client ต้องส่งค่า ถ้า requirement ต้องการใช้ default ควรปรับ validation ให้ไม่บังคับ field นี้ครับ นอกนั้นโดยรวมโอเคครับ"
+  > ""
 - **My Response (@thanapornboont-star):**
-  > "แก้ไข validation ใน `server/src/routes/tickets.ts` ให้ `requestedPriority` เป็น optional โดยมีค่าเริ่มต้น (default) เป็น `MEDIUM` ตาม schema และเพิ่ม automated test รองรับเรียบร้อยแล้วใน commit ล่าสุด ขอบคุณสำหรับคำแนะนำครับ รบกวนตรวจทานอีกครั้งและ Approve / Merge ได้เลยครับ"
+  > ""
 
 ### PR #28 (for Issue #14: Attachment upload, download, and soft removal API)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจสอบโค้ดการจัดการ Attachment ครบถ้วนทั้ง upload จำกัด 5MB/5ไฟล์, download และ soft-delete พร้อมบันทึกเหตุผลเรียบร้อยดีครับ"
+  > ""
 - **My Response (@thanapornboont-star):**
-  > "ขอบคุณมากครับ ได้เพิ่ม automated tests ครอบคลุม API-08..API-12 ครบถ้วนแล้วครับ"
+  > ""
 
 ### PR #29 (for Issue #15: Zen Green shell and Development Requester selector UI)
 - **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจสอบหน้า Selector และ Zen Green App Shell แล้ว การแสดงผลและ Responsive สวยงามตรงตามสเปกครับ"
+  > ""
 - **My Response (@thanapornboont-star):**
-  > "ขอบคุณครับ ได้ทำการ Revalidate session storage กับ API พร้อม component tests เรียบร้อยแล้วครับ"
+  > ""
+
+### PR #30 (for Issue #16 : Create Ticket UI and validation)
+- **Reviewer Comment (@jiraphat-j):**
+  > ""
+- **My Response (@thanapornboont-star):**
+  > ""
+
+### PR #31 (for Issue #23: My Tickets API and UI)
+- **Reviewer Comment (@jiraphat-j):**
+  > ""
+- **My Response (@thanapornboont-star):**
+  > ""
 
 ---
 
