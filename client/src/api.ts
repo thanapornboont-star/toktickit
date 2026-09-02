@@ -152,6 +152,67 @@ export async function getMyTickets(
   return response.json();
 }
 
+export async function getTicketById(id: number, requesterId: number): Promise<Ticket> {
+  const response = await fetch(`${API_URL}/api/tickets/${id}`, {
+    headers: {
+      "X-Dev-Requester-Id": String(requesterId),
+    },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error: any = new Error(data?.error?.message || "Failed to load ticket.");
+    error.status = response.status;
+    throw error;
+  }
+
+  return data;
+}
+
+export async function removeAttachment(
+  ticketId: number,
+  attachmentId: number,
+  reason: string,
+  requesterId: number
+): Promise<AttachmentItem> {
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/attachments/${attachmentId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Dev-Requester-Id": String(requesterId),
+    },
+    body: JSON.stringify({ reason }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.error?.message || "Failed to remove attachment.");
+  }
+
+  return data;
+}
+
+export async function downloadAttachment(
+  ticketId: number,
+  attachmentId: number,
+  requesterId: number
+): Promise<Blob> {
+  const response = await fetch(
+    `${API_URL}/api/tickets/${ticketId}/attachments/${attachmentId}/download`,
+    {
+      headers: {
+        "X-Dev-Requester-Id": String(requesterId),
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to download attachment.");
+  }
+
+  return response.blob();
+}
+
 export async function uploadAttachment(
   ticketId: number,
   file: File,

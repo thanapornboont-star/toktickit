@@ -282,6 +282,59 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /api/tickets/:id - Retrieve owned ticket detail with attachments
+// ---------------------------------------------------------------------------
+ticketRouter.get("/:id", async (req: Request, res: Response) => {
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findFirst({
+      where: { id: ticketId, requesterId: req.devRequester!.id },
+      include: {
+        requester: { select: { id: true, name: true, email: true } },
+        category: { select: { id: true, name: true } },
+        relatedSystem: { select: { id: true, name: true } },
+        attachments: { orderBy: { createdAt: "asc" } },
+      },
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found or not owned by requester." },
+      });
+    }
+
+    return res.status(200).json({
+      id: ticket.id,
+      ticketNumber: ticket.ticketNumber,
+      summary: ticket.summary,
+      description: ticket.description,
+      requestedPriority: ticket.requestedPriority,
+      status: ticket.status,
+      requesterId: ticket.requesterId,
+      categoryId: ticket.categoryId,
+      relatedSystemId: ticket.relatedSystemId,
+      createdAt: ticket.createdAt,
+      updatedAt: ticket.updatedAt,
+      requester: ticket.requester,
+      category: ticket.category,
+      relatedSystem: ticket.relatedSystem,
+      attachments: ticket.attachments.map(toAttachmentResponse),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to fetch ticket detail." },
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // Attachment Endpoints (Issue 4)
 // ---------------------------------------------------------------------------
 

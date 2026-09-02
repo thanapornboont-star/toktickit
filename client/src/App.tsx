@@ -8,10 +8,11 @@ import {
 } from "./api.js";
 import { CreateTicket } from "./components/CreateTicket.js";
 import { MyTickets } from "./components/MyTickets.js";
+import { TicketDetail } from "./components/TicketDetail.js";
 import "./App.css";
 
 type LoadState = "loading" | "ready" | "error";
-type View = "my-tickets" | "create-ticket";
+type View = "my-tickets" | "create-ticket" | "ticket-detail";
 
 function RequesterSelector({
   requesters,
@@ -74,6 +75,7 @@ function ApplicationShell({
   onChangeRequester: () => void;
 }) {
   const [activeView, setActiveView] = useState<View>("my-tickets");
+  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
   const initials = requester.name
     .split(" ")
     .map((part) => part[0])
@@ -152,10 +154,20 @@ function ApplicationShell({
             requester={requester}
             onNavigateToMyTickets={() => setActiveView("my-tickets")}
           />
+        ) : activeView === "ticket-detail" && selectedTicketId !== null ? (
+          <TicketDetail
+            requester={requester}
+            ticketId={selectedTicketId}
+            onBack={() => setActiveView("my-tickets")}
+          />
         ) : (
           <MyTickets
             requester={requester}
             onCreateTicket={() => setActiveView("create-ticket")}
+            onViewTicketDetail={(ticketId) => {
+              setSelectedTicketId(ticketId);
+              setActiveView("ticket-detail");
+            }}
           />
         )}
       </main>
