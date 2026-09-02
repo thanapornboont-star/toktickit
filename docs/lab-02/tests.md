@@ -19,8 +19,8 @@ The testing strategy ensures complete coverage of all Acceptance Criteria and Bu
 | **API-03** | API | AC-01, BR-01 | Create ticket with valid data | 201 Created; returns official `TKT-YYYY-XXXXXX` | `server/tests/lab-02/create-ticket.api.test.ts` | Pass |
 | **API-04** | API | AC-05, BR-10 | Create ticket with missing summary/description | 400 Bad Request; field-specific validation errors | `server/tests/lab-02/create-ticket.api.test.ts` | Pass |
 | **API-05** | API | BR-09 | Reject client-supplied `ticketNumber` or `requesterId` in body | Backend overrides or rejects values | `server/tests/lab-02/create-ticket.api.test.ts` | Pass |
-| **API-06** | API | AC-06, BR-12 | Query tickets with keyword search | Returns only matching tickets for requester | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
-| **API-07** | API | AC-07, BR-12 | Query tickets with combined filters and pagination | Returns tickets matching all criteria | `server/tests/lab-02/my-tickets.api.test.ts` | Planned |
+| **API-06** | API | AC-06, BR-12 | Query tickets with keyword search | Returns only matching tickets for requester | `server/tests/lab-02/my-tickets.api.test.ts` | Pass |
+| **API-07** | API | AC-07, BR-12 | Query tickets with combined filters and pagination | Returns tickets matching all criteria | `server/tests/lab-02/my-tickets.api.test.ts` | Pass |
 | **API-08** | API | AC-03, BR-06 | Retrieve Ticket Detail owned by another requester | 404 Not Found (safe ownership rejection) | `server/tests/lab-02/ticket-detail.api.test.ts` | Planned |
 | **API-09** | API | AC-08, BR-07 | Upload valid file; reject invalid MIME and file > 5 MB | 201 Created / 413 Payload Too Large / 415 Unsupported Type | `server/tests/lab-02/attachments.api.test.ts` | Pass |
 | **API-10** | API | AC-09, BR-07 | Upload 6th active attachment to a ticket | 400 Bad Request; max 5 limit reached | `server/tests/lab-02/attachments.api.test.ts` | Pass |

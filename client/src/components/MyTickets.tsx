@@ -339,7 +339,7 @@ export function MyTickets({ requester, onCreateTicket, onViewTicketDetail }: MyT
                     <td className="text-end">
                       <button
                         type="button"
-                        className="btn btn-sm btn-outline-primary"
+                        className="btn btn-sm btn-outline-success"
                         onClick={() => onViewTicketDetail && onViewTicketDetail(ticket.id)}
                       >
                         View
@@ -370,7 +370,7 @@ export function MyTickets({ requester, onCreateTicket, onViewTicketDetail }: MyT
                   ) : null}
                   <button
                     type="button"
-                    className="btn btn-sm btn-outline-primary ms-auto"
+                    className="btn btn-sm btn-outline-success ms-auto"
                     onClick={() => onViewTicketDetail && onViewTicketDetail(ticket.id)}
                   >
                     View
