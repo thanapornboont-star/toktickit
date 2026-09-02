@@ -16,8 +16,8 @@
 | #29 | `feature/15-requester-selector-ui` | `lab2-staging` | Closes #15 | Approved | @jiraphat-j |
 | #30 | `feature/16-create-ticket-ui` | `lab2-staging` | Closes #16 | Approved | @jiraphat-j |
 | #31 | `feature/23-my-tickets` | `lab2-staging` | Closes #23 | | @jiraphat-j |
-| | `feature/#NN-ticket-detail-ui` | `lab2-staging` | Closes #NN | | @jiraphat-j |
-| | `feature/#NN-lab2-e2e-qa` | `lab2-staging` | Closes #NN | | @jiraphat-j |
+| #32 | `feature/24-ticket-detail-ui` | `lab2-staging` | Closes #24 | Approved | @jiraphat-j |
+| | `feature/25-lab2-e2e-qa` | `lab2-staging` | Closes #25 | | @jiraphat-j |
 | | `lab2-staging` | `main` | Release Lab 2 | | @jiraphat-j |
 
 ---
@@ -65,6 +65,9 @@
   > ""
 - **My Response (@thanapornboont-star):**
   > ""
+
+### PR #32 (for Issue #24: Ticket Detail and Attachment UI)
+- No review comments were requested; @jiraphat-j approved and merged the PR directly.
 
 ---
 

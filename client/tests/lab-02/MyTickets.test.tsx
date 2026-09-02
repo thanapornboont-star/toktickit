@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { MyTickets } from "../../src/components/MyTickets.js";
 import App from "../../src/App.js";
 import * as api from "../../src/api.js";
@@ -114,10 +114,14 @@ describe("MyTickets Component", () => {
 
     expect(screen.getByText(/Loading your tickets/i)).toBeInTheDocument();
 
-    expect(await screen.findByText("TKT-2026-000101")).toBeInTheDocument();
-    expect(screen.getByText("Cannot access VPN network from home")).toBeInTheDocument();
-    expect(screen.getByText("TKT-2026-000102")).toBeInTheDocument();
-    expect(screen.getByText("📎 2")).toBeInTheDocument();
+    // Both the desktop table and mobile card list render in jsdom (CSS
+    // media queries that toggle `d-none`/`d-md-block` don't apply here),
+    // so scope assertions to the single <table> to avoid duplicate matches.
+    const table = await screen.findByRole("table");
+    expect(within(table).getByText("TKT-2026-000101")).toBeInTheDocument();
+    expect(within(table).getByText("Cannot access VPN network from home")).toBeInTheDocument();
+    expect(within(table).getByText("TKT-2026-000102")).toBeInTheDocument();
+    expect(within(table).getByText("📎 2")).toBeInTheDocument();
   });
 
   it("renders empty state when requester has no tickets", async () => {
@@ -134,8 +138,13 @@ describe("MyTickets Component", () => {
       />
     );
 
-    expect(await screen.findByText("No Tickets Created Yet")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "+ Create Ticket" })).toBeInTheDocument();
+    const emptyStateHeading = await screen.findByText("No Tickets Created Yet");
+    // The header's "+ Create Ticket" button also renders alongside the
+    // empty-state CTA, so scope this assertion to the empty-state container.
+    const emptyStateContainer = emptyStateHeading.closest("div")!;
+    expect(
+      within(emptyStateContainer).getByRole("button", { name: "+ Create Ticket" })
+    ).toBeInTheDocument();
   });
 
   it("handles keyword search and filter changes", async () => {
@@ -149,8 +158,9 @@ describe("MyTickets Component", () => {
       />
     );
 
+    const table = await screen.findByRole("table");
     await waitFor(() => {
-      expect(screen.getByText("TKT-2026-000101")).toBeInTheDocument();
+      expect(within(table).getByText("TKT-2026-000101")).toBeInTheDocument();
     });
 
     // Type in search box and submit
@@ -187,8 +197,9 @@ describe("MyTickets Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     // Requester A's tickets shown
-    expect(await screen.findByText("TKT-2026-000101")).toBeInTheDocument();
-    expect(screen.queryByText("TKT-2026-000201")).not.toBeInTheDocument();
+    let table = await screen.findByRole("table");
+    expect(within(table).getByText("TKT-2026-000101")).toBeInTheDocument();
+    expect(within(table).queryByText("TKT-2026-000201")).not.toBeInTheDocument();
 
     // 2. Click "Change Requester"
     fireEvent.click(screen.getByRole("button", { name: /Change Requester/i }));
@@ -199,7 +210,8 @@ describe("MyTickets Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     // Requester B's tickets shown, Requester A's tickets gone!
-    expect(await screen.findByText("TKT-2026-000201")).toBeInTheDocument();
-    expect(screen.queryByText("TKT-2026-000101")).not.toBeInTheDocument();
+    table = await screen.findByRole("table");
+    expect(within(table).getByText("TKT-2026-000201")).toBeInTheDocument();
+    expect(within(table).queryByText("TKT-2026-000101")).not.toBeInTheDocument();
   });
 });
