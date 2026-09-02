@@ -54,12 +54,6 @@
 - **My Response (@thanapornboont-star):**
   > "ขอบคุณครับ ได้ทำการ Revalidate session storage กับ API พร้อม component tests เรียบร้อยแล้วครับ"
 
-### PR #30 (for Issue #16: Create Ticket UI and validation)
-- **Reviewer Comment (@jiraphat-j):**
-  > "ตรวจเช็ค PR #30 เรียบร้อยครับรอบนี้โค้ดจัด Format ได้สะอาดมาก การทำ Form Validation, Real-time Character Counter, การเก็บค่าฟอร์มเดิมไว้เวลามี Error, และ Busy State ทำออกมาได้สมบูรณ์และถูกต้องตาม Spec ทุกจุดเลยครับ มีเพียงข้อปรับปรุงเล็กน้อยเกี่ยวกับ CSS และเอกสารที่อยากรบกวนให้ช่วย Commit เพิ่มเติมก่อน Approve & Merge ครับ: CSS Classes ที่ขาดหายใน client/src/App.css ใน CreateTicket.tsx มีการเรียกใช้ .zen-card, .zen-field-readonly, .text-primary-green, .success-header, .success-icon แต่ใน App.css ยังไม่มีการประกาศคลาสเหล่านี้ ทำให้กล่องการ์ดและสีพื้นหลังของช่อง Read-only อาจยังไม่แสดงผลครับ"
-- **My Response (@thanapornboont-star):**
-  > "เพิ่ม CSS Classes ที่เกี่ยวข้องทั้งหมด (`.zen-card`, `.zen-field-readonly`, `.text-primary-green`, `.success-header`, `.success-icon`, `.success-card`, `.ticket-confirmation-details`) ใน `client/src/App.css` เรียบร้อยแล้วใน commit ล่าสุด ขอบคุณมากครับที่ช่วยตรวจเช็คจุดนี้ รบกวนตรวจทานอีกครั้งและ Approve / Merge ได้เลยครับ"
-
 ---
 
 ## Pull Requests I Reviewed for My Partner

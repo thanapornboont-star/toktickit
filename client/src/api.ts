@@ -39,7 +39,7 @@ export interface Ticket {
   summary: string;
   description: string;
   requestedPriority: "LOW" | "MEDIUM" | "HIGH";
-  status: "NEW";
+  status: string;
   requesterId: number;
   categoryId: number;
   relatedSystemId: number;
@@ -48,6 +48,7 @@ export interface Ticket {
   category?: { id: number; name: string };
   relatedSystem?: { id: number; name: string };
   requester?: { id: number; name: string; email: string };
+  activeAttachmentCount?: number;
   attachments?: AttachmentItem[];
 }
 
@@ -57,6 +58,27 @@ export interface CreateTicketPayload {
   categoryId: number;
   relatedSystemId: number;
   requestedPriority: "LOW" | "MEDIUM" | "HIGH";
+}
+
+export interface GetTicketsParams {
+  search?: string;
+  categoryId?: number | string;
+  requestedPriority?: string;
+  status?: string;
+  sortBy?: "createdAt" | "ticketNumber" | "requestedPriority";
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginatedTicketsResponse {
+  data: Ticket[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    totalItems: number;
+    totalPages: number;
+  };
 }
 
 export const DEV_REQUESTER_STORAGE_KEY = "toktickit.devRequester";
@@ -101,6 +123,33 @@ export async function createTicket(
   }
 
   return data;
+}
+
+export async function getMyTickets(
+  params: GetTicketsParams,
+  requesterId: number
+): Promise<PaginatedTicketsResponse> {
+  const query = new URLSearchParams();
+  if (params.search) query.set("search", params.search);
+  if (params.categoryId) query.set("categoryId", String(params.categoryId));
+  if (params.requestedPriority) query.set("requestedPriority", params.requestedPriority);
+  if (params.status) query.set("status", params.status);
+  if (params.sortBy) query.set("sortBy", params.sortBy);
+  if (params.sortOrder) query.set("sortOrder", params.sortOrder);
+  if (params.page) query.set("page", String(params.page));
+  if (params.pageSize) query.set("pageSize", String(params.pageSize));
+
+  const response = await fetch(`${API_URL}/api/tickets?${query.toString()}`, {
+    headers: {
+      "X-Dev-Requester-Id": String(requesterId),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch tickets.");
+  }
+
+  return response.json();
 }
 
 export async function uploadAttachment(
