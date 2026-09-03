@@ -28,6 +28,10 @@ test.describe("E2E-01: Requester select -> create ticket -> My Tickets -> Ticket
     await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(page.getByRole("heading", { name: "My IT Support Tickets" })).toBeVisible();
+    // Wait for the initial ticket fetch to resolve before capturing evidence,
+    // otherwise the screenshot can race the API call and catch the loading
+    // spinner instead of the actual table/card list.
+    await expect(page.getByText("Loading your tickets")).toBeHidden();
     await shot(page, viewport, "my-tickets", "initial");
 
     // 2. Create Ticket
