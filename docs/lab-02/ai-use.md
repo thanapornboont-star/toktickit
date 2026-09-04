@@ -5,8 +5,10 @@
 ---
 
 ## AI Model & Agent Environment
-- **LLM / Model Name**: Gemini 3.7 Flash (High Reasoning)
-- **Agent Framework**: Antigravity AI Coding Assistant (Google DeepMind)
+- **LLM / Model Name**: Gemini 3.7 Flash (High Reasoning) — Prompts 1–10 below
+- **Agent Framework**: Antigravity AI Coding Assistant (Google DeepMind) — Prompts 1–10 below
+- **LLM / Model Name (Prompt 11)**: Claude Sonnet 5
+- **Agent Framework (Prompt 11)**: Claude Code (Anthropic)
 - **Role**: Pair Programming Assistant & Incremental Spec/Test/Code Implementer
 
 ---
@@ -25,6 +27,7 @@
 | 8 | My Tickets Screen | "สร้างหน้า My Tickets พร้อม Search, Filter, Sort, Pagination และความสามารถสลับ Requester" | สร้างตารางบน Desktop และการ์ดบน Mobile, ทำ Dynamic Query parameters และ Empty/No-results states | ทดสอบสลับ Requester A -> B แล้วยืนยันว่า Ticket ของ A หายไปทั้งหมด |
 | 9 | Ticket Detail View | "สร้างหน้า Ticket Detail แสดงข้อมูลแบบ Read-only และจัดการ Attachments (Upload/Download/Soft-Delete)" | สร้าง Read-only detail layout, ตาราง Active/Removed attachments และ modal ยืนยันการลบพร้อมกรอกเหตุผล | ยืนยันว่าไม่มีปุ่ม IT staff/comment/status change และทดสอบเปิดไฟล์ของ user อื่นต้องได้ 404 |
 | 10 | E2E & Visual QA | "เขียน Playwright E2E test และจับภาพ Screenshots ตามขนาด Desktop, Tablet, Mobile" | รัน Playwright automated test ตรวจสอบ end-to-end flow และถ่ายรูปบันทึกใน `artifacts/lab-02/screenshots/` | ตรวจสอบผลรันทุก test suite (100% pass) เพื่อเตรียมหลักฐานส่งใน PDF Report |
+| 11 | Missing Screenshot Evidence (Claude Code) | "ช่วยหา screenshot ที่ยังขาดตาม checklist (Part 6 validation/invalid-attachment/API-failure, Part 7 empty/no-results state) แล้วทำเป็นหลักฐานใหม่" | เขียน Playwright spec ใหม่ `e2e/lab-02/additional-evidence.spec.ts` ที่บังคับ validation error, แนบไฟล์ประเภทไม่ถูกต้อง, จำลอง 500 ผ่าน route interception, และหา requester ที่มี 0 ticket จริงผ่าน API เพื่อจับภาพ empty state แยกจาก no-results state อย่างถูกต้อง | ยืนยันภาพทั้ง 5 สถานะ x 3 viewport (15 ไฟล์) ตรงตามที่ checklist ต้องการก่อนใส่ในรายงาน และตรวจ curl evidence จริงสำหรับ unauthorized ticket/attachment access (404) |
 
 ---
 
