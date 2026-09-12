@@ -78,8 +78,30 @@ app.get("/api/dev-requesters/me", requireDevRequester, (req: Request, res: Respo
 });
 
 // ---------------------------------------------------------------------------
-// Ticket Endpoints (Lab 2)
+// Ticket Endpoints (Lab 2 & Lab 3 Requester)
 // ---------------------------------------------------------------------------
 app.use("/api/tickets", ticketRouter);
+
+// ---------------------------------------------------------------------------
+// IT Staff Endpoints Guard (Work Item 4 RBAC boundary & Work Item 5)
+// ---------------------------------------------------------------------------
+import { Router } from "express";
+import { authenticateToken, requirePasswordChangeCompleted, requireRole } from "./middleware/auth.js";
+import { Role } from "@prisma/client";
+
+const staffRouter = Router();
+staffRouter.use(authenticateToken);
+staffRouter.use(requirePasswordChangeCompleted);
+staffRouter.use(requireRole(Role.IT_STAFF, Role.ADMINISTRATOR));
+app.use("/api/staff", staffRouter);
+
+// ---------------------------------------------------------------------------
+// Administrator Endpoints Guard (Work Item 4 RBAC boundary & Work Item 7)
+// ---------------------------------------------------------------------------
+const adminRouter = Router();
+adminRouter.use(authenticateToken);
+adminRouter.use(requirePasswordChangeCompleted);
+adminRouter.use(requireRole(Role.ADMINISTRATOR));
+app.use("/api/admin", adminRouter);
 
 export default app;

@@ -39,8 +39,11 @@ export interface Ticket {
   summary: string;
   description: string;
   requestedPriority: "LOW" | "MEDIUM" | "HIGH";
+  itPriority?: "LOW" | "MEDIUM" | "HIGH";
   status: string;
+  requesterIndicatedResolved?: boolean;
   requesterId: number;
+  ownerId?: number | null;
   categoryId: number;
   relatedSystemId: number;
   createdAt: string;
@@ -101,16 +104,27 @@ export async function getRelatedSystems(): Promise<RelatedSystem[]> {
   return response.json();
 }
 
+function getAuthHeaders(requesterId?: number): Record<string, string> {
+  const headers: Record<string, string> = {};
+  const auth = getStoredAuth();
+  if (auth?.token) {
+    headers["Authorization"] = `Bearer ${auth.token}`;
+  } else if (requesterId) {
+    headers["X-Dev-Requester-Id"] = String(requesterId);
+  }
+  return headers;
+}
+
 export async function createTicket(
   payload: CreateTicketPayload,
-  requesterId: number
+  requesterId?: number
 ): Promise<Ticket> {
+  const headers = getAuthHeaders(requesterId);
+  headers["Content-Type"] = "application/json";
+
   const response = await fetch(`${API_URL}/api/tickets`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Dev-Requester-Id": String(requesterId),
-    },
+    headers,
     body: JSON.stringify(payload),
   });
 
@@ -127,7 +141,7 @@ export async function createTicket(
 
 export async function getMyTickets(
   params: GetTicketsParams,
-  requesterId: number
+  requesterId?: number
 ): Promise<PaginatedTicketsResponse> {
   const query = new URLSearchParams();
   if (params.search) query.set("search", params.search);
@@ -140,9 +154,7 @@ export async function getMyTickets(
   if (params.pageSize) query.set("pageSize", String(params.pageSize));
 
   const response = await fetch(`${API_URL}/api/tickets?${query.toString()}`, {
-    headers: {
-      "X-Dev-Requester-Id": String(requesterId),
-    },
+    headers: getAuthHeaders(requesterId),
   });
 
   if (!response.ok) {
@@ -152,11 +164,9 @@ export async function getMyTickets(
   return response.json();
 }
 
-export async function getTicketById(id: number, requesterId: number): Promise<Ticket> {
+export async function getTicketById(id: number, requesterId?: number): Promise<Ticket> {
   const response = await fetch(`${API_URL}/api/tickets/${id}`, {
-    headers: {
-      "X-Dev-Requester-Id": String(requesterId),
-    },
+    headers: getAuthHeaders(requesterId),
   });
 
   const data = await response.json();
@@ -173,14 +183,14 @@ export async function removeAttachment(
   ticketId: number,
   attachmentId: number,
   reason: string,
-  requesterId: number
+  requesterId?: number
 ): Promise<AttachmentItem> {
+  const headers = getAuthHeaders(requesterId);
+  headers["Content-Type"] = "application/json";
+
   const response = await fetch(`${API_URL}/api/tickets/${ticketId}/attachments/${attachmentId}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Dev-Requester-Id": String(requesterId),
-    },
+    headers,
     body: JSON.stringify({ reason }),
   });
 
@@ -195,14 +205,12 @@ export async function removeAttachment(
 export async function downloadAttachment(
   ticketId: number,
   attachmentId: number,
-  requesterId: number
+  requesterId?: number
 ): Promise<Blob> {
   const response = await fetch(
     `${API_URL}/api/tickets/${ticketId}/attachments/${attachmentId}/download`,
     {
-      headers: {
-        "X-Dev-Requester-Id": String(requesterId),
-      },
+      headers: getAuthHeaders(requesterId),
     }
   );
 
@@ -216,22 +224,94 @@ export async function downloadAttachment(
 export async function uploadAttachment(
   ticketId: number,
   file: File,
-  requesterId: number
+  requesterId?: number
 ): Promise<AttachmentItem> {
   const formData = new FormData();
   formData.append("file", file);
 
   const response = await fetch(`${API_URL}/api/tickets/${ticketId}/attachments`, {
     method: "POST",
-    headers: {
-      "X-Dev-Requester-Id": String(requesterId),
-    },
+    headers: getAuthHeaders(requesterId),
     body: formData,
   });
 
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data?.error?.message || "Failed to upload attachment.");
+  }
+
+  return data;
+}
+
+export interface PublicCommentItem {
+  id: number;
+  ticketId: number;
+  content: string;
+  author: {
+    id: number;
+    name: string;
+    role: Role;
+  };
+  createdAt: string;
+}
+
+export async function getPublicComments(
+  ticketId: number,
+  requesterId?: number
+): Promise<PublicCommentItem[]> {
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/public-comments`, {
+    headers: getAuthHeaders(requesterId),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error: any = new Error(data?.error?.message || "Failed to load public comments.");
+    error.status = response.status;
+    throw error;
+  }
+
+  return data;
+}
+
+export async function createPublicComment(
+  ticketId: number,
+  content: string,
+  requesterId?: number
+): Promise<{ comment: PublicCommentItem }> {
+  const headers = getAuthHeaders(requesterId);
+  headers["Content-Type"] = "application/json";
+
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/public-comments`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ content }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error: any = new Error(data?.error?.message || "Failed to post comment.");
+    error.status = response.status;
+    error.code = data?.error?.code;
+    throw error;
+  }
+
+  return data;
+}
+
+export async function indicateProblemResolved(
+  ticketId: number,
+  requesterId?: number
+): Promise<{ message: string; ticket: { id: number; requesterIndicatedResolved: boolean } }> {
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/indicate-resolved`, {
+    method: "POST",
+    headers: getAuthHeaders(requesterId),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error: any = new Error(data?.error?.message || "Failed to indicate problem resolved.");
+    error.status = response.status;
+    throw error;
   }
 
   return data;

@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
 import fs from "fs";
 import { getPrisma } from "../prisma.js";
-import { requireDevRequester } from "../middleware/devRequester.js";
+import { authenticateSessionOrDev } from "../middleware/auth.js";
 import { generateTicketNumber } from "../services/ticketNumber.js";
 import { upload, handleUploadErrors, hasAllowedFileSignature } from "../middleware/upload.js";
-import { RequestedPriority, Prisma } from "@prisma/client";
+import { RequestedPriority, Prisma, Role } from "@prisma/client";
 
 export const ticketRouter = Router();
 
@@ -32,16 +32,33 @@ function toAttachmentResponse(attachment: {
   };
 }
 
-// Apply requireDevRequester to all ticket routes
-ticketRouter.use(requireDevRequester);
+function isRequester(req: Request): boolean {
+  return req.user?.role === Role.REQUESTER;
+}
+
+function isStaffOrAdmin(req: Request): boolean {
+  return req.user?.role === Role.IT_STAFF || req.user?.role === Role.ADMINISTRATOR;
+}
+
+// Apply authentication middleware to all ticket routes
+ticketRouter.use(authenticateSessionOrDev);
 
 // ---------------------------------------------------------------------------
 // GET /api/tickets - List Requester's Tickets with Search, Filter & Pagination
 // ---------------------------------------------------------------------------
 ticketRouter.get("/", async (req: Request, res: Response) => {
+  if (!isRequester(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role",
+      },
+    });
+  }
+
   try {
     const prisma = getPrisma();
-    const requesterId = req.devRequester!.id;
+    const requesterId = req.user!.id;
 
     const {
       search,
@@ -85,7 +102,7 @@ ticketRouter.get("/", async (req: Request, res: Response) => {
 
     // 4. Filter by status
     if (typeof status === "string" && status.trim() !== "") {
-      where.status = status.trim();
+      where.status = status.trim() as any;
     }
 
     // 5. Pagination
@@ -124,8 +141,11 @@ ticketRouter.get("/", async (req: Request, res: Response) => {
       summary: t.summary,
       description: t.description,
       requestedPriority: t.requestedPriority,
+      itPriority: t.itPriority,
       status: t.status,
+      requesterIndicatedResolved: t.requesterIndicatedResolved,
       requesterId: t.requesterId,
+      ownerId: t.ownerId,
       categoryId: t.categoryId,
       relatedSystemId: t.relatedSystemId,
       createdAt: t.createdAt,
@@ -139,10 +159,12 @@ ticketRouter.get("/", async (req: Request, res: Response) => {
 
     return res.status(200).json({
       data,
+      tickets: data,
       pagination: {
         page: pageNum,
         pageSize: take,
         totalItems,
+        totalTickets: totalItems,
         totalPages,
       },
     });
@@ -160,6 +182,15 @@ ticketRouter.get("/", async (req: Request, res: Response) => {
 // POST /api/tickets - Create Ticket
 // ---------------------------------------------------------------------------
 ticketRouter.post("/", async (req: Request, res: Response) => {
+  if (!isRequester(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role",
+      },
+    });
+  }
+
   try {
     const { summary, description, categoryId, relatedSystemId, requestedPriority } = req.body;
     const errors: Record<string, string> = {};
@@ -242,6 +273,7 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
     }
 
     // Atomic transaction for Ticket Number generation & Ticket creation
+    // BR-07, BR-10: Client-supplied requesterId, ownerId, status, and itPriority are strictly ignored
     const newTicket = await prisma.$transaction(async (tx) => {
       const ticketNumber = await generateTicketNumber(tx);
 
@@ -251,8 +283,11 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
           summary: trimmedSummary,
           description: trimmedDescription,
           requestedPriority: finalPriority,
+          itPriority: finalPriority as any,
           status: "NEW",
-          requesterId: req.devRequester!.id,
+          requesterIndicatedResolved: false,
+          requesterId: req.user!.id,
+          ownerId: null,
           categoryId: catId,
           relatedSystemId: sysId,
         },
@@ -270,7 +305,10 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
       });
     });
 
-    return res.status(201).json(newTicket);
+    return res.status(201).json({
+      ...newTicket,
+      ticket: newTicket,
+    });
   } catch (error) {
     return res.status(500).json({
       error: {
@@ -285,6 +323,15 @@ ticketRouter.post("/", async (req: Request, res: Response) => {
 // GET /api/tickets/:id - Retrieve owned ticket detail with attachments
 // ---------------------------------------------------------------------------
 ticketRouter.get("/:id", async (req: Request, res: Response) => {
+  if (!isRequester(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role",
+      },
+    });
+  }
+
   const ticketId = parseInt(req.params.id, 10);
   if (isNaN(ticketId) || ticketId <= 0) {
     return res.status(404).json({
@@ -295,7 +342,7 @@ ticketRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const prisma = getPrisma();
     const ticket = await prisma.ticket.findFirst({
-      where: { id: ticketId, requesterId: req.devRequester!.id },
+      where: { id: ticketId, requesterId: req.user!.id },
       include: {
         requester: { select: { id: true, name: true, email: true } },
         category: { select: { id: true, name: true } },
@@ -310,14 +357,17 @@ ticketRouter.get("/:id", async (req: Request, res: Response) => {
       });
     }
 
-    return res.status(200).json({
+    const ticketResponse = {
       id: ticket.id,
       ticketNumber: ticket.ticketNumber,
       summary: ticket.summary,
       description: ticket.description,
       requestedPriority: ticket.requestedPriority,
+      itPriority: ticket.itPriority,
       status: ticket.status,
+      requesterIndicatedResolved: ticket.requesterIndicatedResolved,
       requesterId: ticket.requesterId,
+      ownerId: ticket.ownerId,
       categoryId: ticket.categoryId,
       relatedSystemId: ticket.relatedSystemId,
       createdAt: ticket.createdAt,
@@ -326,6 +376,11 @@ ticketRouter.get("/:id", async (req: Request, res: Response) => {
       category: ticket.category,
       relatedSystem: ticket.relatedSystem,
       attachments: ticket.attachments.map(toAttachmentResponse),
+    };
+
+    return res.status(200).json({
+      ...ticketResponse,
+      ticket: ticketResponse,
     });
   } catch (error) {
     return res.status(500).json({
@@ -335,7 +390,190 @@ ticketRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
-// Attachment Endpoints (Issue 4)
+// POST /api/tickets/:id/indicate-resolved - Indicate problem appears resolved
+// ---------------------------------------------------------------------------
+ticketRouter.post("/:id/indicate-resolved", async (req: Request, res: Response) => {
+  if (!isRequester(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role",
+      },
+    });
+  }
+
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findFirst({
+      where: { id: ticketId, requesterId: req.user!.id },
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    const updated = await prisma.ticket.update({
+      where: { id: ticketId },
+      data: { requesterIndicatedResolved: true },
+    });
+
+    return res.status(200).json({
+      message: "Indicated problem appears resolved",
+      ticket: {
+        id: updated.id,
+        requesterIndicatedResolved: updated.requesterIndicatedResolved,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to indicate problem resolved." },
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Public Comments Endpoints
+// ---------------------------------------------------------------------------
+
+// GET /api/tickets/:id/public-comments
+ticketRouter.get("/:id/public-comments", async (req: Request, res: Response) => {
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    if (req.user!.role === Role.REQUESTER && ticket.requesterId !== req.user!.id) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    const comments = await prisma.publicComment.findMany({
+      where: { ticketId },
+      orderBy: { createdAt: "asc" },
+      include: {
+        author: {
+          select: { id: true, name: true, role: true },
+        },
+      },
+    });
+
+    return res.status(200).json(
+      comments.map((c) => ({
+        id: c.id,
+        ticketId: c.ticketId,
+        content: c.content,
+        author: {
+          id: c.author.id,
+          name: c.author.name,
+          role: c.author.role,
+        },
+        createdAt: c.createdAt,
+      }))
+    );
+  } catch (error) {
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to fetch public comments." },
+    });
+  }
+});
+
+// POST /api/tickets/:id/public-comments
+ticketRouter.post("/:id/public-comments", async (req: Request, res: Response) => {
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    if (req.user!.role === Role.REQUESTER && ticket.requesterId !== req.user!.id) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    const { content } = req.body;
+    const trimmed = typeof content === "string" ? content.trim() : "";
+    if (!trimmed || trimmed.length > 2000) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Comment content is required and cannot exceed 2000 characters.",
+        },
+      });
+    }
+
+    const comment = await prisma.publicComment.create({
+      data: {
+        ticketId,
+        authorId: req.user!.id,
+        content: trimmed,
+      },
+      include: {
+        author: {
+          select: { id: true, name: true, role: true },
+        },
+      },
+    });
+
+    return res.status(201).json({
+      comment: {
+        id: comment.id,
+        ticketId: comment.ticketId,
+        content: comment.content,
+        author: {
+          id: comment.author.id,
+          name: comment.author.name,
+          role: comment.author.role,
+        },
+        createdAt: comment.createdAt,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to create public comment." },
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Attachment Endpoints
 // ---------------------------------------------------------------------------
 
 // POST /api/tickets/:id/attachments - Upload attachment
@@ -350,6 +588,15 @@ ticketRouter.post(
     });
   },
   async (req: Request, res: Response) => {
+    if (!isRequester(req)) {
+      return res.status(403).json({
+        error: {
+          code: "FORBIDDEN",
+          message: "Access denied: insufficient permissions for role",
+        },
+      });
+    }
+
     const ticketId = parseInt(req.params.id, 10);
     if (isNaN(ticketId) || ticketId <= 0) {
       if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
@@ -378,7 +625,7 @@ ticketRouter.post(
       const prisma = getPrisma();
       // Ownership check: Ticket must exist and belong to requester
       const ticket = await prisma.ticket.findFirst({
-        where: { id: ticketId, requesterId: req.devRequester!.id },
+        where: { id: ticketId, requesterId: req.user!.id },
       });
 
       if (!ticket) {
@@ -426,6 +673,15 @@ ticketRouter.post(
 
 // GET /api/tickets/:id/attachments - List attachment metadata
 ticketRouter.get("/:id/attachments", async (req: Request, res: Response) => {
+  if (!isRequester(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role",
+      },
+    });
+  }
+
   const ticketId = parseInt(req.params.id, 10);
   if (isNaN(ticketId) || ticketId <= 0) {
     return res.status(404).json({
@@ -436,7 +692,7 @@ ticketRouter.get("/:id/attachments", async (req: Request, res: Response) => {
   try {
     const prisma = getPrisma();
     const ticket = await prisma.ticket.findFirst({
-      where: { id: ticketId, requesterId: req.devRequester!.id },
+      where: { id: ticketId, requesterId: req.user!.id },
     });
 
     if (!ticket) {
@@ -471,9 +727,21 @@ ticketRouter.get("/:id/attachments/:attachmentId/download", async (req: Request,
 
   try {
     const prisma = getPrisma();
-    const ticket = await prisma.ticket.findFirst({
-      where: { id: ticketId, requesterId: req.devRequester!.id },
-    });
+    let ticket;
+
+    if (req.user!.role === Role.REQUESTER) {
+      ticket = await prisma.ticket.findFirst({
+        where: { id: ticketId, requesterId: req.user!.id },
+      });
+    } else if (isStaffOrAdmin(req)) {
+      ticket = await prisma.ticket.findUnique({
+        where: { id: ticketId },
+      });
+    } else {
+      return res.status(403).json({
+        error: { code: "FORBIDDEN", message: "Access denied: insufficient permissions for role" },
+      });
+    }
 
     if (!ticket) {
       return res.status(404).json({
@@ -507,6 +775,15 @@ ticketRouter.get("/:id/attachments/:attachmentId/download", async (req: Request,
 
 // DELETE /api/tickets/:id/attachments/:attachmentId - Soft remove attachment
 ticketRouter.delete("/:id/attachments/:attachmentId", async (req: Request, res: Response) => {
+  if (!isRequester(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role",
+      },
+    });
+  }
+
   const ticketId = parseInt(req.params.id, 10);
   const attachmentId = parseInt(req.params.attachmentId, 10);
 
@@ -532,7 +809,7 @@ ticketRouter.delete("/:id/attachments/:attachmentId", async (req: Request, res: 
   try {
     const prisma = getPrisma();
     const ticket = await prisma.ticket.findFirst({
-      where: { id: ticketId, requesterId: req.devRequester!.id },
+      where: { id: ticketId, requesterId: req.user!.id },
     });
 
     if (!ticket) {
