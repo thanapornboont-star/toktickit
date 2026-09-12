@@ -17,12 +17,12 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 
 | Test ID | Level | AC / BR | Scenario | Expected Result | Automated Test File | Final Status |
 |---|---|---|---|---|---|---|
-| **API-01** | API | AC-01, BR-01 | Valid user login | 200 OK; returns bearer session token and user profile | `server/tests/lab-03/auth.api.test.ts` | Planned |
-| **API-02** | API | AC-02, BR-02 | Login with incorrect password or unknown email | 401 Unauthorized; generic error message | `server/tests/lab-03/auth.api.test.ts` | Planned |
-| **API-03** | API | AC-03, BR-01 | Login with deactivated account (`isActive: false`) | 403 Forbidden; deactivated account message | `server/tests/lab-03/auth.api.test.ts` | Planned |
-| **API-04** | API | AC-04, BR-03 | Authenticated user with `mustChangePassword: true` | Protected routes return 403 until password changed | `server/tests/lab-03/auth.api.test.ts` | Planned |
-| **API-05** | API | AC-04, BR-04 | User changes password adhering to policy | 200 OK; `mustChangePassword` set to `false` | `server/tests/lab-03/auth.api.test.ts` | Planned |
-| **API-06** | API | AC-05, BR-06 | User calls logout endpoint | 200 OK; session token invalidated; future calls 401 | `server/tests/lab-03/auth.api.test.ts` | Planned |
+| **API-01** | API | AC-01, BR-01 | Valid user login | 200 OK; returns bearer session token and user profile | `server/tests/lab-03/auth.api.test.ts` | Pass |
+| **API-02** | API | AC-02, BR-02 | Login with incorrect password or unknown email | 401 Unauthorized; generic error message | `server/tests/lab-03/auth.api.test.ts` | Pass |
+| **API-03** | API | AC-03, BR-01 | Login with deactivated account (`isActive: false`) | 403 Forbidden; deactivated account message | `server/tests/lab-03/auth.api.test.ts` | Pass |
+| **API-04** | API | AC-04, BR-03 | Authenticated user with `mustChangePassword: true` | Protected routes return 403 until password changed | `server/tests/lab-03/auth.api.test.ts` | Pass |
+| **API-05** | API | AC-04, BR-04 | User changes password adhering to policy | 200 OK; `mustChangePassword` set to `false` | `server/tests/lab-03/auth.api.test.ts` | Pass |
+| **API-06** | API | AC-05, BR-06 | User calls logout endpoint | 200 OK; session token invalidated; future calls 401 | `server/tests/lab-03/auth.api.test.ts` | Pass |
 | **API-07** | API | AC-06, BR-07 | Requester creates ticket using authenticated identity | 201 Created; client-supplied requester ID ignored | `server/tests/lab-03/authorization.api.test.ts` | Planned |
 | **API-08** | API | AC-07, BR-09 | Requester accesses unowned ticket | 404 Not Found (safe ownership rejection) | `server/tests/lab-03/authorization.api.test.ts` | Planned |
 | **API-09** | API | AC-08, BR-17 | Requester / Staff posts valid Public Comment | 201 Created; author and timestamp set by server | `server/tests/lab-03/comments-notes.api.test.ts` | Planned |
@@ -42,8 +42,8 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **API-23** | API | AC-21, BR-22 | Admin attempts to deactivate last active admin | 400 Bad Request; last admin protected | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
 | **API-24** | API | AC-22, BR-24 | Admin resets initial password for user | 200 OK; user forced to change password on next login | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
 | **API-25** | API | AC-23, BR-10 | Non-Admin user calls Admin endpoints | 403 Forbidden | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **UI-01** | UI | AC-01, AC-02 | Login component render, validation, and safe error | Inline validation and safe error banner | `client/tests/lab-03/Login.test.tsx` | Planned |
-| **UI-02** | UI | AC-04 | Change Password form and password checklist | Real-time checklist validation and submission | `client/tests/lab-03/ChangePassword.test.tsx` | Planned |
+| **UI-01** | UI | AC-01, AC-02 | Login component render, validation, and safe error | Inline validation and safe error banner | `client/tests/lab-03/Login.test.tsx` | Pass |
+| **UI-02** | UI | AC-04 | Change Password form and password checklist | Real-time checklist validation and submission | `client/tests/lab-03/ChangePassword.test.tsx` | Pass |
 | **UI-03** | UI | AC-11 | Staff Ticket Queue table, filters, and pagination | Filter inputs and status/priority badges render | `client/tests/lab-03/StaffTicketQueue.test.tsx` | Planned |
 | **UI-04** | UI | AC-12..16 | Staff Ticket Detail controls and distinct notes | Claim button, status dropdown, distinct notes panel | `client/tests/lab-03/StaffTicketDetail.test.tsx` | Planned |
 | **UI-05** | UI | AC-17..22 | Admin User Management list and modals | User table, Create/Edit modals, deactivation guard | `client/tests/lab-03/UserManagement.test.tsx` | Planned |

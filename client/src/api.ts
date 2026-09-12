@@ -251,3 +251,115 @@ export function storeDevRequester(requester: DevRequester) {
 export function clearStoredDevRequester() {
   sessionStorage.removeItem(DEV_REQUESTER_STORAGE_KEY);
 }
+
+// ---------------------------------------------------------------------------
+// Lab 3 Authentication & RBAC
+// ---------------------------------------------------------------------------
+export type Role = "REQUESTER" | "IT_STAFF" | "ADMINISTRATOR";
+
+export interface AuthUser {
+  id: number;
+  email: string;
+  name: string;
+  role: Role;
+  isActive: boolean;
+  mustChangePassword: boolean;
+}
+
+export interface LoginResponse {
+  token: string;
+  user: AuthUser;
+}
+
+export const AUTH_TOKEN_KEY = "toktickit.token";
+export const AUTH_USER_KEY = "toktickit.user";
+
+export function getStoredAuth(): { token: string; user: AuthUser } | null {
+  const token = sessionStorage.getItem(AUTH_TOKEN_KEY);
+  const userJson = sessionStorage.getItem(AUTH_USER_KEY);
+  if (!token || !userJson) return null;
+  try {
+    const user = JSON.parse(userJson) as AuthUser;
+    return { token, user };
+  } catch {
+    clearStoredAuth();
+    return null;
+  }
+}
+
+export function storeAuth(token: string, user: AuthUser): void {
+  sessionStorage.setItem(AUTH_TOKEN_KEY, token);
+  sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+}
+
+export function clearStoredAuth(): void {
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
+  sessionStorage.removeItem(AUTH_USER_KEY);
+}
+
+export async function login(email: string, password: string): Promise<LoginResponse> {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error: any = new Error(data?.error?.message || "Invalid email or password. Please try again.");
+    error.code = data?.error?.code;
+    throw error;
+  }
+
+  return data;
+}
+
+export async function logout(token: string): Promise<void> {
+  try {
+    await fetch(`${API_URL}/api/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } finally {
+    clearStoredAuth();
+  }
+}
+
+export async function getMe(token: string): Promise<AuthUser> {
+  const response = await fetch(`${API_URL}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.error?.message || "Session expired. Please sign in again.");
+  }
+
+  return data.user;
+}
+
+export async function changePassword(
+  token: string,
+  payload: { currentPassword: string; newPassword: string; confirmPassword: string }
+): Promise<{ message: string; user: AuthUser }> {
+  const response = await fetch(`${API_URL}/api/auth/change-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const error: any = new Error(data?.error?.message || "Failed to change password.");
+    error.code = data?.error?.code;
+    throw error;
+  }
+
+  return data;
+}
