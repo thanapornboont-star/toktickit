@@ -114,6 +114,16 @@ export function ApplicationShell({
   const [activeView, setActiveView] = useState<View>("my-tickets");
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
 
+  const effectiveRequester = authUser
+    ? {
+        id: authUser.id,
+        name: authUser.name,
+        email: authUser.email,
+        department: "Requester",
+        isActive: authUser.isActive,
+      }
+    : requester;
+
   const displayName = authUser ? authUser.name : requester ? requester.name : "";
   const initials = displayName
     .split(" ")
@@ -279,20 +289,20 @@ export function ApplicationShell({
             <h2>Administrator User Management</h2>
             <p className="text-muted">User Management operational view will be built in Work Item 7.</p>
           </section>
-        ) : activeView === "create-ticket" && requester ? (
+        ) : activeView === "create-ticket" && effectiveRequester ? (
           <CreateTicket
-            requester={requester}
+            requester={effectiveRequester}
             onNavigateToMyTickets={() => setActiveView("my-tickets")}
           />
-        ) : activeView === "ticket-detail" && selectedTicketId !== null && requester ? (
+        ) : activeView === "ticket-detail" && selectedTicketId !== null && effectiveRequester ? (
           <TicketDetail
-            requester={requester}
+            requester={effectiveRequester}
             ticketId={selectedTicketId}
             onBack={() => setActiveView("my-tickets")}
           />
-        ) : requester ? (
+        ) : effectiveRequester ? (
           <MyTickets
-            requester={requester}
+            requester={effectiveRequester}
             onCreateTicket={() => setActiveView("create-ticket")}
             onViewTicketDetail={(ticketId) => {
               setSelectedTicketId(ticketId);

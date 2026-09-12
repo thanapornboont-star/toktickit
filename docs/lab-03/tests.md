@@ -23,10 +23,10 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **API-04** | API | AC-04, BR-03 | Authenticated user with `mustChangePassword: true` | Protected routes return 403 until password changed | `server/tests/lab-03/auth.api.test.ts` | Pass |
 | **API-05** | API | AC-04, BR-04 | User changes password adhering to policy | 200 OK; `mustChangePassword` set to `false` | `server/tests/lab-03/auth.api.test.ts` | Pass |
 | **API-06** | API | AC-05, BR-06 | User calls logout endpoint | 200 OK; session token invalidated; future calls 401 | `server/tests/lab-03/auth.api.test.ts` | Pass |
-| **API-07** | API | AC-06, BR-07 | Requester creates ticket using authenticated identity | 201 Created; client-supplied requester ID ignored | `server/tests/lab-03/authorization.api.test.ts` | Planned |
-| **API-08** | API | AC-07, BR-09 | Requester accesses unowned ticket | 404 Not Found (safe ownership rejection) | `server/tests/lab-03/authorization.api.test.ts` | Planned |
-| **API-09** | API | AC-08, BR-17 | Requester / Staff posts valid Public Comment | 201 Created; author and timestamp set by server | `server/tests/lab-03/comments-notes.api.test.ts` | Planned |
-| **API-10** | API | AC-09, BR-16 | Requester sets "Problem Appears Resolved" | 200 OK; flag set to true without closing ticket | `server/tests/lab-03/authorization.api.test.ts` | Planned |
+| **API-07** | API | AC-06, BR-07 | Requester creates ticket using authenticated identity | 201 Created; client-supplied requester ID ignored | `server/tests/lab-03/authorization.api.test.ts` | Pass |
+| **API-08** | API | AC-07, BR-09 | Requester accesses unowned ticket | 404 Not Found (safe ownership rejection) | `server/tests/lab-03/authorization.api.test.ts` | Pass |
+| **API-09** | API | AC-08, BR-17 | Requester / Staff posts valid Public Comment | 201 Created; author and timestamp set by server | `server/tests/lab-03/authorization.api.test.ts` | Pass |
+| **API-10** | API | AC-09, BR-16 | Requester sets "Problem Appears Resolved" | 200 OK; flag set to true without closing ticket | `server/tests/lab-03/authorization.api.test.ts` | Pass |
 | **API-11** | API | AC-10, BR-18 | Requester requests Internal Notes | 403 Forbidden; note content not exposed | `server/tests/lab-03/comments-notes.api.test.ts` | Planned |
 | **API-12** | API | AC-11, BR-19 | IT Staff queries ticket queue with search and filters | 200 OK; matching tickets and pagination metadata | `server/tests/lab-03/staff-queue.api.test.ts` | Planned |
 | **API-13** | API | AC-11, BR-10 | Requester queries IT Staff queue endpoint | 403 Forbidden (RBAC enforcement) | `server/tests/lab-03/staff-queue.api.test.ts` | Planned |

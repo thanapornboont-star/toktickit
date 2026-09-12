@@ -11,8 +11,8 @@
 |:---:|---|---|---|:---:|:---:|
 | #50 | `sprint3/contract-and-test-blueprint` | `lab3-staging` | Closes #40 | Approved | @jiraphat-j |
 | #51 | `sprint3/user-model-migration` | `lab3-staging` | Work Item 2 | Approved | @jiraphat-j |
-| Pending | `sprint3/auth-account-entry` | `lab3-staging` | Work Item 3 | Pending Review | |
-| | `sprint3/rbac-requester-continuity` | `lab3-staging` | Work Item 4 | | |
+| #52 | `sprint3/auth-account-entry` | `lab3-staging` | Work Item 3 | Approved | @jiraphat-j |
+| #53 | `sprint3/rbac-requester-continuity` | `lab3-staging` | Work Item 4 | Pending Review | |
 | | `sprint3/staff-queue` | `lab3-staging` | Work Item 5 | | |
 | | `sprint3/staff-ticket-operations` | `lab3-staging` | Work Item 6 | | |
 | | `sprint3/admin-users` | `lab3-staging` | Work Item 7 | | |
@@ -40,6 +40,22 @@
   > "ตรวจ PR #51 แล้วครับ โครงสร้าง User model และ Session ทำได้ครบถ้วน การ migration มีการ backup/copy ข้อมูลเดิมของ DevRequester ไปยัง User ได้โดยไม่มีข้อมูลตั๋วเดิมสูญหาย (251 ใบยังคงอยู่ครบ) seed รันซ้ำได้ปลอดภัยและครอบคลุมทุก role ครับ Approved"
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณค่ะ"
+
+### PR #52 (for Work Item 3: Authentication and account-entry flow)
+- **Feature Branch**: `sprint3/auth-account-entry`
+- **Target Branch**: `lab3-staging`
+- **Reviewer Comment (@jiraphat-j)**:
+  > "ตรวจ PR #52 เรียบร้อยครับ ตัวระบบ Auth ทั้ง login, logout, first password change ทำได้สมบูรณ์ตาม spec มีการป้องกัน user enumeration และ safe errors ชัดเจน Component tests และ API tests ผ่านครบถ้วน Approved ครับ"
+- **My Response (@thanapornboont-star)**:
+  > "ขอบคุณค่ะ"
+
+### PR #53 (for Work Item 4: Authorization boundary, RBAC enforcement, and requester continuity)
+- **Feature Branch**: `sprint3/rbac-requester-continuity`
+- **Target Branch**: `lab3-staging`
+- **Reviewer Comment (@jiraphat-j)**:
+  > *Pending review*
+- **My Response (@thanapornboont-star)**:
+  > *Pending*
 
 ---
 
