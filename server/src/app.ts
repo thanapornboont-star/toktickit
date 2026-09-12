@@ -3,11 +3,17 @@ import cors from "cors";
 import { getPrisma } from "./prisma.js";
 import { requireDevRequester } from "./middleware/devRequester.js";
 import { ticketRouter } from "./routes/tickets.js";
+import { authRouter } from "./routes/auth.js";
 
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// ---------------------------------------------------------------------------
+// Authentication Endpoints (Lab 3)
+// ---------------------------------------------------------------------------
+app.use("/api/auth", authRouter);
 
 // ---------------------------------------------------------------------------
 // Health Check (Lab 1)

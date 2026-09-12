@@ -207,6 +207,68 @@ textarea:focus-visible {
   width: 36px;
 }
 
+.shell-nav {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Role Badges & Shell Header additions for Lab 3 */
+.badge-role-requester {
+  background-color: #eaf6ef;
+  color: #006b3c;
+  border: 1px solid #b7dfc8;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.badge-role-staff {
+  background-color: #e6f4fa;
+  color: #0366d6;
+  border: 1px solid #b3d7ef;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.badge-role-admin {
+  background-color: #f3e8fd;
+  color: #6f42c1;
+  border: 1px solid #d8bdf2;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.user-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  color: #ffffff;
+}
+
+.btn-logout {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
 .shell-content {
   margin: 32px auto;
   max-width: 1200px;
