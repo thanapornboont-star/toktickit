@@ -33,7 +33,7 @@ model RelatedSystem {
 }
 
 // ---------------------------------------------------------------------------
-// Development Requester Testing Mechanism (Lab 2)
+// Development Requester Testing Mechanism (Lab 2 legacy support)
 // ---------------------------------------------------------------------------
 model DevRequester {
   id         Int      @id @default(autoincrement())
@@ -43,12 +43,53 @@ model DevRequester {
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  tickets    Ticket[]
 }
 
 // ---------------------------------------------------------------------------
-// Ticket & Attachment Models (Lab 2)
+// Identity and User Models (Lab 3)
+// ---------------------------------------------------------------------------
+enum Role {
+  REQUESTER
+  IT_STAFF
+  ADMINISTRATOR
+}
+
+model User {
+  id                 Int              @id @default(autoincrement())
+  email              String           @unique
+  name               String
+  passwordHash       String
+  role               Role             @default(REQUESTER)
+  isActive           Boolean          @default(true)
+  mustChangePassword Boolean          @default(false)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  submittedTickets   Ticket[]         @relation("RequesterTickets")
+  assignedTickets    Ticket[]         @relation("AssignedTickets")
+  publicComments     PublicComment[]
+  internalNotes      InternalNote[]
+  sessions           Session[]
+
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Ticket & Attachment Models (Lab 2 & Lab 3)
 // ---------------------------------------------------------------------------
 enum RequestedPriority {
   LOW
@@ -56,36 +97,58 @@ enum RequestedPriority {
   HIGH
 }
 
+enum ITPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 enum TicketStatus {
   NEW
+  OPEN
+  IN_PROGRESS
+  WAITING_FOR_REQUESTER
+  RESOLVED
+  CLOSED
+  REOPENED
+  CANCELLED
 }
 
 model Ticket {
-  id                Int               @id @default(autoincrement())
-  ticketNumber      String            @unique
-  summary           String
-  description       String
-  requestedPriority RequestedPriority @default(MEDIUM)
-  status            TicketStatus      @default(NEW)
+  id                         Int               @id @default(autoincrement())
+  ticketNumber               String            @unique
+  summary                    String
+  description                String
+  requestedPriority          RequestedPriority @default(MEDIUM)
+  itPriority                 ITPriority        @default(MEDIUM)
+  status                     TicketStatus      @default(NEW)
+  requesterIndicatedResolved Boolean           @default(false)
 
-  requesterId       Int
-  requester         DevRequester      @relation(fields: [requesterId], references: [id])
+  requesterId                Int
+  requester                  User              @relation("RequesterTickets", fields: [requesterId], references: [id])
 
-  categoryId        Int
-  category          Category          @relation(fields: [categoryId], references: [id])
+  ownerId                    Int?
+  owner                      User?             @relation("AssignedTickets", fields: [ownerId], references: [id])
 
-  relatedSystemId   Int
-  relatedSystem     RelatedSystem     @relation(fields: [relatedSystemId], references: [id])
+  categoryId                 Int
+  category                   Category          @relation(fields: [categoryId], references: [id])
 
-  attachments       Attachment[]
+  relatedSystemId            Int
+  relatedSystem              RelatedSystem     @relation(fields: [relatedSystemId], references: [id])
 
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  attachments                Attachment[]
+  publicComments             PublicComment[]
+  internalNotes              InternalNote[]
+
+  createdAt                  DateTime          @default(now())
+  updatedAt                  DateTime          @updatedAt
 
   @@index([requesterId])
+  @@index([ownerId])
   @@index([categoryId])
   @@index([requestedPriority])
   @@index([status])
+  @@index([itPriority])
   @@index([createdAt])
 }
 
@@ -109,6 +172,32 @@ model Attachment {
 
   @@index([ticketId])
   @@index([isRemoved])
+}
+
+model PublicComment {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+  @@index([authorId])
+}
+
+model InternalNote {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+  @@index([authorId])
 }
 
 model TicketSequence {
