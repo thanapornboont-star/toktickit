@@ -9,8 +9,8 @@
 
 | PR | Feature Branch | Target Branch | Linked Issue | Reviewer Verdict | Merged By |
 |:---:|---|---|---|:---:|:---:|
-| Pending | `sprint3/contract-and-test-blueprint` | `lab3-staging` | Closes #40 | Pending Review | |
-| | `sprint3/user-model-migration` | `lab3-staging` | Work Item 2 | | |
+| #50 | `sprint3/contract-and-test-blueprint` | `lab3-staging` | Closes #40 | Approved | @jiraphat-j |
+| Pending | `sprint3/user-model-migration` | `lab3-staging` | Work Item 2 | Pending Review | |
 | | `sprint3/auth-account-entry` | `lab3-staging` | Work Item 3 | | |
 | | `sprint3/rbac-requester-continuity` | `lab3-staging` | Work Item 4 | | |
 | | `sprint3/staff-queue` | `lab3-staging` | Work Item 5 | | |
@@ -25,13 +25,13 @@
 
 ## Detailed PR Review Comments & Responses
 
-### PR for Issue #40: Sprint 3 Contract, Acceptance Criteria, and Test Blueprint
+### PR #50 (for Issue #40: Sprint 3 Contract, Acceptance Criteria, and Test Blueprint)
 - **Feature Branch**: `sprint3/contract-and-test-blueprint`
 - **Target Branch**: `lab3-staging`
 - **Reviewer Comment (@jiraphat-j)**:
-  > *Pending peer review input from @jiraphat-j.*
+  > "ตรวจ PR #50 เรียบร้อยครับ เป็นการวางโครง Contract และ Test Blueprint ของ Lab 3 ที่ละเอียดและครอบคลุมมาก ทั้งการแยก Scope 3 บทบาท, Business Rules และ State Machine ของตั๋ว รวมถึง Schema และ Test Matrix ที่เตรียมไว้"
 - **My Response (@thanapornboont-star)**:
-  > *Pending response.*
+  > "ขอบคุณค่ะ"
 
 ---
 
