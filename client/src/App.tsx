@@ -17,6 +17,7 @@ import { CreateTicket } from "./components/CreateTicket.js";
 import { MyTickets } from "./components/MyTickets.js";
 import { TicketDetail } from "./components/TicketDetail.js";
 import { StaffTicketQueue } from "./components/StaffTicketQueue.js";
+import { StaffTicketDetail } from "./components/StaffTicketDetail.js";
 import "./App.css";
 
 type LoadState = "loading" | "ready" | "error";
@@ -290,16 +291,11 @@ export function ApplicationShell({
               }}
             />
           ) : activeView === "ticket-detail" && selectedTicketId !== null ? (
-            <section className="zen-card">
-              <p className="text-muted">Staff Ticket Detail will be built in Work Item 6.</p>
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-sm"
-                onClick={() => setActiveView("staff-queue")}
-              >
-                ← Back to Queue
-              </button>
-            </section>
+            <StaffTicketDetail
+              authUser={authUser!}
+              ticketId={selectedTicketId}
+              onBack={() => setActiveView("staff-queue")}
+            />
           ) : (
             <section className="zen-card">
               <h2>Administrator User Management</h2>

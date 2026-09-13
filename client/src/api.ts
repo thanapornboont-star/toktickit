@@ -535,3 +535,88 @@ export async function getStaffMembers(): Promise<StaffMember[]> {
   if (!response.ok) throw new Error(data?.error?.message || "Failed to load staff members.");
   return data;
 }
+
+export interface InternalNoteItem {
+  id: number;
+  ticketId: number;
+  content: string;
+  author: {
+    id: number;
+    name: string;
+    role: string;
+  };
+  createdAt: string;
+}
+
+export async function updateTicketOwner(
+  ticketId: number,
+  ownerId: number | null
+): Promise<{ id: number; ownerId: number | null; owner: { id: number; name: string } | null }> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/owner`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify({ ownerId }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to update ticket owner.");
+  return data.ticket;
+}
+
+export async function updateTicketPriority(
+  ticketId: number,
+  itPriority: "LOW" | "MEDIUM" | "HIGH"
+): Promise<{ id: number; itPriority: string }> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/priority`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify({ itPriority }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to update IT Priority.");
+  return data.ticket;
+}
+
+export async function updateTicketStatus(
+  ticketId: number,
+  status: string
+): Promise<{ id: number; status: string }> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/status`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify({ status }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to update ticket status.");
+  return data.ticket;
+}
+
+export async function getInternalNotes(ticketId: number): Promise<InternalNoteItem[]> {
+  const headers = getAuthHeaders();
+  const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/internal-notes`, { headers });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to load internal notes.");
+  return data;
+}
+
+export async function createInternalNote(
+  ticketId: number,
+  content: string
+): Promise<InternalNoteItem> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/internal-notes`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ content }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to post internal note.");
+  return data.internalNote;
+}
+
