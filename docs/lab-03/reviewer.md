@@ -12,8 +12,8 @@
 | #50 | `sprint3/contract-and-test-blueprint` | `lab3-staging` | Closes #40 | Approved | @jiraphat-j |
 | #51 | `sprint3/user-model-migration` | `lab3-staging` | Work Item 2 | Approved | @jiraphat-j |
 | #52 | `sprint3/auth-account-entry` | `lab3-staging` | Work Item 3 | Approved | @jiraphat-j |
-| #53 | `sprint3/rbac-requester-continuity` | `lab3-staging` | Work Item 4 | Pending Review | |
-| | `sprint3/staff-queue` | `lab3-staging` | Work Item 5 | | |
+| #53 | `sprint3/rbac-requester-continuity` | `lab3-staging` | Closes #43 | Approved | @jiraphat-j |
+| #54 | `sprint3/staff-queue` | `lab3-staging` | Closes #44 | Pending Review | |
 | | `sprint3/staff-ticket-operations` | `lab3-staging` | Work Item 6 | | |
 | | `sprint3/admin-users` | `lab3-staging` | Work Item 7 | | |
 | | `sprint3/responsive-visual-qa` | `lab3-staging` | Work Item 8 | | |
@@ -51,6 +51,14 @@
 
 ### PR #53 (for Work Item 4: Authorization boundary, RBAC enforcement, and requester continuity)
 - **Feature Branch**: `sprint3/rbac-requester-continuity`
+- **Target Branch**: `lab3-staging`
+- **Reviewer Comment (@jiraphat-j)**:
+  > "ตรวจ PR #53 เรียบร้อยครับ การบังคับ RBAC แบ่งสิทธิ์ 3 role ทำได้ถูกต้อง มีการป้องกัน cross-user access คืน 404 ปลอดภัย และยังมี fallback header สำหรับ Lab 2 compat ครบถ้วน Component tests และ API tests ผ่าน 100% Approved ครับ"
+- **My Response (@thanapornboont-star)**:
+  > "ขอบคุณค่ะ"
+
+### PR #54 (for Issue #44: Build role-protected IT Staff work queue)
+- **Feature Branch**: `sprint3/staff-queue`
 - **Target Branch**: `lab3-staging`
 - **Reviewer Comment (@jiraphat-j)**:
   > *Pending review*

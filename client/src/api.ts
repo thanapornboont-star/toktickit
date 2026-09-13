@@ -443,3 +443,95 @@ export async function changePassword(
 
   return data;
 }
+
+// ---------------------------------------------------------------------------
+// Staff Queue Types & API (Work Item 5)
+// ---------------------------------------------------------------------------
+
+export interface StaffTicketSummary {
+  id: number;
+  ticketNumber: string;
+  summary: string;
+  requestedPriority: "LOW" | "MEDIUM" | "HIGH";
+  itPriority: "LOW" | "MEDIUM" | "HIGH";
+  status: string;
+  requesterIndicatedResolved: boolean;
+  createdAt: string;
+  updatedAt: string;
+  category: { id: number; name: string } | null;
+  requester: { id: number; name: string } | null;
+  owner: { id: number; name: string } | null;
+}
+
+export interface StaffTicketDetail extends StaffTicketSummary {
+  description: string;
+  relatedSystem: { id: number; name: string } | null;
+  requester: { id: number; name: string; email: string } | null;
+  owner: { id: number; name: string; email: string } | null;
+  attachments: AttachmentItem[];
+}
+
+export interface StaffTicketPagination {
+  page: number;
+  pageSize: number;
+  totalTickets: number;
+  totalPages: number;
+}
+
+export interface GetStaffTicketsParams {
+  search?: string;
+  categoryId?: number | string;
+  status?: string;
+  requestedPriority?: string;
+  itPriority?: string;
+  ownerId?: number | "unassigned";
+  sortBy?: "createdAt" | "updatedAt" | "ticketNumber" | "itPriority";
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  pageSize?: number;
+}
+
+export interface StaffMember {
+  id: number;
+  name: string;
+  email: string;
+  role: "IT_STAFF" | "ADMINISTRATOR";
+}
+
+export async function getStaffTickets(
+  params: GetStaffTicketsParams
+): Promise<{ tickets: StaffTicketSummary[]; pagination: StaffTicketPagination }> {
+  const headers = getAuthHeaders();
+  const query = new URLSearchParams();
+  if (params.search) query.set("search", params.search);
+  if (params.categoryId) query.set("categoryId", String(params.categoryId));
+  if (params.status) query.set("status", params.status);
+  if (params.requestedPriority) query.set("requestedPriority", params.requestedPriority);
+  if (params.itPriority) query.set("itPriority", params.itPriority);
+  if (params.ownerId !== undefined) query.set("ownerId", String(params.ownerId));
+  if (params.sortBy) query.set("sortBy", params.sortBy);
+  if (params.sortOrder) query.set("sortOrder", params.sortOrder);
+  if (params.page) query.set("page", String(params.page));
+  if (params.pageSize) query.set("pageSize", String(params.pageSize));
+
+  const response = await fetch(`${API_URL}/api/staff/tickets?${query.toString()}`, { headers });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to load staff ticket queue.");
+  return data;
+}
+
+export async function getStaffTicketDetail(ticketId: number): Promise<StaffTicketDetail> {
+  const headers = getAuthHeaders();
+  const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}`, { headers });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to load ticket detail.");
+  return data.ticket;
+}
+
+export async function getStaffMembers(): Promise<StaffMember[]> {
+  const headers = getAuthHeaders();
+  const response = await fetch(`${API_URL}/api/staff/members`, { headers });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to load staff members.");
+  return data;
+}

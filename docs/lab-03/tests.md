@@ -44,7 +44,7 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **API-25** | API | AC-23, BR-10 | Non-Admin user calls Admin endpoints | 403 Forbidden | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
 | **UI-01** | UI | AC-01, AC-02 | Login component render, validation, and safe error | Inline validation and safe error banner | `client/tests/lab-03/Login.test.tsx` | Pass |
 | **UI-02** | UI | AC-04 | Change Password form and password checklist | Real-time checklist validation and submission | `client/tests/lab-03/ChangePassword.test.tsx` | Pass |
-| **UI-03** | UI | AC-11 | Staff Ticket Queue table, filters, and pagination | Filter inputs and status/priority badges render | `client/tests/lab-03/StaffTicketQueue.test.tsx` | Planned |
+| **UI-03** | UI | AC-11 | Staff Ticket Queue table, filters, and pagination | Filter inputs and status/priority badges render | `client/tests/lab-03/StaffTicketQueue.test.tsx` | Pass |
 | **UI-04** | UI | AC-12..16 | Staff Ticket Detail controls and distinct notes | Claim button, status dropdown, distinct notes panel | `client/tests/lab-03/StaffTicketDetail.test.tsx` | Planned |
 | **UI-05** | UI | AC-17..22 | Admin User Management list and modals | User table, Create/Edit modals, deactivation guard | `client/tests/lab-03/UserManagement.test.tsx` | Planned |
 | **E2E-01** | E2E | AC-01..05 | Login, first-login password change, and logout | End-to-end authentication lifecycle | `e2e/lab-03/authentication.spec.ts` | Planned |
