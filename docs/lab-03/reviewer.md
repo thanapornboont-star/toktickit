@@ -14,7 +14,7 @@
 | #52 | `sprint3/auth-account-entry` | `lab3-staging` | Work Item 3 | Approved | @jiraphat-j |
 | #53 | `sprint3/rbac-requester-continuity` | `lab3-staging` | Closes #43 | Approved | @jiraphat-j |
 | #54 | `sprint3/staff-queue` | `lab3-staging` | Closes #44 | Approved | @jiraphat-j |
-| | `sprint3/staff-ticket-operations` | `lab3-staging` | Work Item 6 | | |
+| #55 | `sprint3/staff-ticket-operations` | `lab3-staging` | Work Item 6 | Pending Review | |
 | | `sprint3/admin-users` | `lab3-staging` | Work Item 7 | | |
 | | `sprint3/responsive-visual-qa` | `lab3-staging` | Work Item 8 | | |
 | | `sprint3/e2e-traceability` | `lab3-staging` | Work Item 9 | | |
@@ -64,6 +64,14 @@
   > "ตรวจโค้ด PR #54 เรียบร้อยครับ ตัวฟังก์ชันคิวตั๋ว IT Staff ทำได้ดีมาก ทั้งการค้นหา กรองสถานะ/IT Priority/ผู้รับผิดชอบ, การแบ่งหน้า และการแสดงผล responsive สลับตารางกับ mobile card เทสต์ผ่านครบถ้วนทั้ง Server (71/71) และ Client (50/50)"
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณค่ะ"
+
+### PR #55 (for Work Item 6: Implement Staff Ticket Detail workflow and communications)
+- **Feature Branch**: `sprint3/staff-ticket-operations`
+- **Target Branch**: `lab3-staging`
+- **Reviewer Comment (@jiraphat-j)**:
+  > *Pending review*
+- **My Response (@thanapornboont-star)**:
+  > *Pending*
 
 ---
 

@@ -27,14 +27,14 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **API-08** | API | AC-07, BR-09 | Requester accesses unowned ticket | 404 Not Found (safe ownership rejection) | `server/tests/lab-03/authorization.api.test.ts` | Pass |
 | **API-09** | API | AC-08, BR-17 | Requester / Staff posts valid Public Comment | 201 Created; author and timestamp set by server | `server/tests/lab-03/authorization.api.test.ts` | Pass |
 | **API-10** | API | AC-09, BR-16 | Requester sets "Problem Appears Resolved" | 200 OK; flag set to true without closing ticket | `server/tests/lab-03/authorization.api.test.ts` | Pass |
-| **API-11** | API | AC-10, BR-18 | Requester requests Internal Notes | 403 Forbidden; note content not exposed | `server/tests/lab-03/comments-notes.api.test.ts` | Planned |
+| **API-11** | API | AC-10, BR-18 | Requester requests Internal Notes | 403 Forbidden; note content not exposed | `server/tests/lab-03/comments-notes.api.test.ts` | Pass |
 | **API-12** | API | AC-11, BR-19 | IT Staff queries ticket queue with search and filters | 200 OK; matching tickets and pagination metadata | `server/tests/lab-03/staff-queue.api.test.ts` | Pass |
 | **API-13** | API | AC-11, BR-10 | Requester queries IT Staff queue endpoint | 403 Forbidden (RBAC enforcement) | `server/tests/lab-03/staff-queue.api.test.ts` | Pass |
 | **API-14** | API | AC-12, BR-12 | IT Staff retrieves staff ticket detail | 200 OK; full operational data and attachments | `server/tests/lab-03/staff-queue.api.test.ts` | Pass |
-| **API-15** | API | AC-13, BR-12 | IT Staff claims unassigned ticket ownership | 200 OK; `ownerId` set to authenticated user | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
-| **API-16** | API | AC-14, BR-15 | IT Staff updates status along permitted transition | 200 OK; new status saved | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
-| **API-17** | API | AC-15, BR-15 | IT Staff attempts illegal transition (`NEW` -> `CLOSED`) | 400 Bad Request; transition rejected | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
-| **API-18** | API | AC-16, BR-18 | IT Staff / Admin posts and retrieves Internal Notes | 201 Created / 200 OK; notes returned | `server/tests/lab-03/comments-notes.api.test.ts` | Planned |
+| **API-15** | API | AC-13, BR-12 | IT Staff claims unassigned ticket ownership | 200 OK; `ownerId` set to authenticated user | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Pass |
+| **API-16** | API | AC-14, BR-15 | IT Staff updates status along permitted transition | 200 OK; new status saved | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Pass |
+| **API-17** | API | AC-15, BR-15 | IT Staff attempts illegal transition (`NEW` -> `CLOSED`) | 400 Bad Request; transition rejected | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Pass |
+| **API-18** | API | AC-16, BR-18 | IT Staff / Admin posts and retrieves Internal Notes | 201 Created / 200 OK; notes returned | `server/tests/lab-03/comments-notes.api.test.ts` | Pass |
 | **API-19** | API | AC-17, BR-10 | Admin lists users with search and role filter | 200 OK; list of user summaries | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
 | **API-20** | API | AC-18, BR-24 | Admin creates new user with one role | 201 Created; `mustChangePassword: true` | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
 | **API-21** | API | AC-19, BR-20 | Admin creates user with duplicate email | 409 Conflict | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
@@ -45,7 +45,7 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **UI-01** | UI | AC-01, AC-02 | Login component render, validation, and safe error | Inline validation and safe error banner | `client/tests/lab-03/Login.test.tsx` | Pass |
 | **UI-02** | UI | AC-04 | Change Password form and password checklist | Real-time checklist validation and submission | `client/tests/lab-03/ChangePassword.test.tsx` | Pass |
 | **UI-03** | UI | AC-11 | Staff Ticket Queue table, filters, and pagination | Filter inputs and status/priority badges render | `client/tests/lab-03/StaffTicketQueue.test.tsx` | Pass |
-| **UI-04** | UI | AC-12..16 | Staff Ticket Detail controls and distinct notes | Claim button, status dropdown, distinct notes panel | `client/tests/lab-03/StaffTicketDetail.test.tsx` | Planned |
+| **UI-04** | UI | AC-12..16 | Staff Ticket Detail controls and distinct notes | Claim button, status dropdown, distinct notes panel | `client/tests/lab-03/StaffTicketDetail.test.tsx` | Pass |
 | **UI-05** | UI | AC-17..22 | Admin User Management list and modals | User table, Create/Edit modals, deactivation guard | `client/tests/lab-03/UserManagement.test.tsx` | Planned |
 | **E2E-01** | E2E | AC-01..05 | Login, first-login password change, and logout | End-to-end authentication lifecycle | `e2e/lab-03/authentication.spec.ts` | Planned |
 | **E2E-02** | E2E | AC-11..16 | Staff queue search, claim, status, comments, notes | Complete IT Staff operational ticketing flow | `e2e/lab-03/staff-ticket-flow.spec.ts` | Planned |

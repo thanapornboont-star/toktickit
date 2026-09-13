@@ -850,3 +850,16 @@ ticketRouter.delete("/:id/attachments/:attachmentId", async (req: Request, res: 
     });
   }
 });
+
+// ---------------------------------------------------------------------------
+// Internal Notes Confidentiality Guard (BR-18, AC-10, API-11)
+// ---------------------------------------------------------------------------
+ticketRouter.all("/:id/internal-notes", (req: Request, res: Response) => {
+  return res.status(403).json({
+    error: {
+      code: "FORBIDDEN",
+      message: "Internal notes are confidential to IT Staff and Administrators.",
+    },
+  });
+});
+
