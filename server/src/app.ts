@@ -4,6 +4,10 @@ import { getPrisma } from "./prisma.js";
 import { requireDevRequester } from "./middleware/devRequester.js";
 import { ticketRouter } from "./routes/tickets.js";
 import { authRouter } from "./routes/auth.js";
+import { staffRouter } from "./routes/staff.js";
+import { Router } from "express";
+import { authenticateToken, requirePasswordChangeCompleted, requireRole } from "./middleware/auth.js";
+import { Role } from "@prisma/client";
 
 export const app = express();
 
@@ -83,20 +87,17 @@ app.get("/api/dev-requesters/me", requireDevRequester, (req: Request, res: Respo
 app.use("/api/tickets", ticketRouter);
 
 // ---------------------------------------------------------------------------
-// IT Staff Endpoints Guard (Work Item 4 RBAC boundary & Work Item 5)
+// IT Staff Endpoints (Work Item 5 & 6) — RBAC: IT_STAFF or ADMINISTRATOR
 // ---------------------------------------------------------------------------
-import { Router } from "express";
-import { authenticateToken, requirePasswordChangeCompleted, requireRole } from "./middleware/auth.js";
-import { Role } from "@prisma/client";
-
-const staffRouter = Router();
-staffRouter.use(authenticateToken);
-staffRouter.use(requirePasswordChangeCompleted);
-staffRouter.use(requireRole(Role.IT_STAFF, Role.ADMINISTRATOR));
-app.use("/api/staff", staffRouter);
+const staffGuardRouter = Router();
+staffGuardRouter.use(authenticateToken);
+staffGuardRouter.use(requirePasswordChangeCompleted);
+staffGuardRouter.use(requireRole(Role.IT_STAFF, Role.ADMINISTRATOR));
+staffGuardRouter.use("/", staffRouter);
+app.use("/api/staff", staffGuardRouter);
 
 // ---------------------------------------------------------------------------
-// Administrator Endpoints Guard (Work Item 4 RBAC boundary & Work Item 7)
+// Administrator Endpoints Guard (Work Item 7) — RBAC: ADMINISTRATOR only
 // ---------------------------------------------------------------------------
 const adminRouter = Router();
 adminRouter.use(authenticateToken);

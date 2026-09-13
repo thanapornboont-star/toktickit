@@ -28,9 +28,9 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **API-09** | API | AC-08, BR-17 | Requester / Staff posts valid Public Comment | 201 Created; author and timestamp set by server | `server/tests/lab-03/authorization.api.test.ts` | Pass |
 | **API-10** | API | AC-09, BR-16 | Requester sets "Problem Appears Resolved" | 200 OK; flag set to true without closing ticket | `server/tests/lab-03/authorization.api.test.ts` | Pass |
 | **API-11** | API | AC-10, BR-18 | Requester requests Internal Notes | 403 Forbidden; note content not exposed | `server/tests/lab-03/comments-notes.api.test.ts` | Planned |
-| **API-12** | API | AC-11, BR-19 | IT Staff queries ticket queue with search and filters | 200 OK; matching tickets and pagination metadata | `server/tests/lab-03/staff-queue.api.test.ts` | Planned |
-| **API-13** | API | AC-11, BR-10 | Requester queries IT Staff queue endpoint | 403 Forbidden (RBAC enforcement) | `server/tests/lab-03/staff-queue.api.test.ts` | Planned |
-| **API-14** | API | AC-12, BR-12 | IT Staff retrieves staff ticket detail | 200 OK; full operational data and attachments | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
+| **API-12** | API | AC-11, BR-19 | IT Staff queries ticket queue with search and filters | 200 OK; matching tickets and pagination metadata | `server/tests/lab-03/staff-queue.api.test.ts` | Pass |
+| **API-13** | API | AC-11, BR-10 | Requester queries IT Staff queue endpoint | 403 Forbidden (RBAC enforcement) | `server/tests/lab-03/staff-queue.api.test.ts` | Pass |
+| **API-14** | API | AC-12, BR-12 | IT Staff retrieves staff ticket detail | 200 OK; full operational data and attachments | `server/tests/lab-03/staff-queue.api.test.ts` | Pass |
 | **API-15** | API | AC-13, BR-12 | IT Staff claims unassigned ticket ownership | 200 OK; `ownerId` set to authenticated user | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
 | **API-16** | API | AC-14, BR-15 | IT Staff updates status along permitted transition | 200 OK; new status saved | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
 | **API-17** | API | AC-15, BR-15 | IT Staff attempts illegal transition (`NEW` -> `CLOSED`) | 400 Bad Request; transition rejected | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Planned |
