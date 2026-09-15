@@ -18,6 +18,7 @@ import { MyTickets } from "./components/MyTickets.js";
 import { TicketDetail } from "./components/TicketDetail.js";
 import { StaffTicketQueue } from "./components/StaffTicketQueue.js";
 import { StaffTicketDetail } from "./components/StaffTicketDetail.js";
+import { UserManagement } from "./components/UserManagement.js";
 import "./App.css";
 
 type LoadState = "loading" | "ready" | "error";
@@ -296,11 +297,16 @@ export function ApplicationShell({
               ticketId={selectedTicketId}
               onBack={() => setActiveView("staff-queue")}
             />
+          ) : activeView === "user-management" && isAdmin ? (
+            <UserManagement authUser={authUser!} />
           ) : (
-            <section className="zen-card">
-              <h2>Administrator User Management</h2>
-              <p className="text-muted">User Management operational view will be built in Work Item 7.</p>
-            </section>
+            <StaffTicketQueue
+              authUser={authUser!}
+              onViewTicket={(ticketId) => {
+                setSelectedTicketId(ticketId);
+                setActiveView("ticket-detail");
+              }}
+            />
           )
         ) : activeView === "create-ticket" && effectiveRequester ? (
           <CreateTicket

@@ -35,18 +35,18 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **API-16** | API | AC-14, BR-15 | IT Staff updates status along permitted transition | 200 OK; new status saved | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Pass |
 | **API-17** | API | AC-15, BR-15 | IT Staff attempts illegal transition (`NEW` -> `CLOSED`) | 400 Bad Request; transition rejected | `server/tests/lab-03/staff-ticket-detail.api.test.ts` | Pass |
 | **API-18** | API | AC-16, BR-18 | IT Staff / Admin posts and retrieves Internal Notes | 201 Created / 200 OK; notes returned | `server/tests/lab-03/comments-notes.api.test.ts` | Pass |
-| **API-19** | API | AC-17, BR-10 | Admin lists users with search and role filter | 200 OK; list of user summaries | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **API-20** | API | AC-18, BR-24 | Admin creates new user with one role | 201 Created; `mustChangePassword: true` | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **API-21** | API | AC-19, BR-20 | Admin creates user with duplicate email | 409 Conflict | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **API-22** | API | AC-20, BR-21 | Admin attempts self-deactivation | 400 Bad Request; self-deactivation blocked | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **API-23** | API | AC-21, BR-22 | Admin attempts to deactivate last active admin | 400 Bad Request; last admin protected | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **API-24** | API | AC-22, BR-24 | Admin resets initial password for user | 200 OK; user forced to change password on next login | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
-| **API-25** | API | AC-23, BR-10 | Non-Admin user calls Admin endpoints | 403 Forbidden | `server/tests/lab-03/users-admin.api.test.ts` | Planned |
+| **API-19** | API | AC-17, BR-10 | Admin lists users with search and role filter | 200 OK; list of user summaries | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
+| **API-20** | API | AC-18, BR-24 | Admin creates new user with one role | 201 Created; `mustChangePassword: true` | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
+| **API-21** | API | AC-19, BR-20 | Admin creates user with duplicate email | 409 Conflict | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
+| **API-22** | API | AC-20, BR-21 | Admin attempts self-deactivation | 400 Bad Request; self-deactivation blocked | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
+| **API-23** | API | AC-21, BR-22 | Admin attempts to deactivate last active admin | 400 Bad Request; last admin protected | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
+| **API-24** | API | AC-22, BR-24 | Admin resets initial password for user | 200 OK; user forced to change password on next login | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
+| **API-25** | API | AC-23, BR-10 | Non-Admin user calls Admin endpoints | 403 Forbidden | `server/tests/lab-03/users-admin.api.test.ts` | Pass |
 | **UI-01** | UI | AC-01, AC-02 | Login component render, validation, and safe error | Inline validation and safe error banner | `client/tests/lab-03/Login.test.tsx` | Pass |
 | **UI-02** | UI | AC-04 | Change Password form and password checklist | Real-time checklist validation and submission | `client/tests/lab-03/ChangePassword.test.tsx` | Pass |
 | **UI-03** | UI | AC-11 | Staff Ticket Queue table, filters, and pagination | Filter inputs and status/priority badges render | `client/tests/lab-03/StaffTicketQueue.test.tsx` | Pass |
 | **UI-04** | UI | AC-12..16 | Staff Ticket Detail controls and distinct notes | Claim button, status dropdown, distinct notes panel | `client/tests/lab-03/StaffTicketDetail.test.tsx` | Pass |
-| **UI-05** | UI | AC-17..22 | Admin User Management list and modals | User table, Create/Edit modals, deactivation guard | `client/tests/lab-03/UserManagement.test.tsx` | Planned |
+| **UI-05** | UI | AC-17..22 | Admin User Management list and modals | User table, Create/Edit modals, deactivation guard | `client/tests/lab-03/UserManagement.test.tsx` | Pass |
 | **E2E-01** | E2E | AC-01..05 | Login, first-login password change, and logout | End-to-end authentication lifecycle | `e2e/lab-03/authentication.spec.ts` | Planned |
 | **E2E-02** | E2E | AC-11..16 | Staff queue search, claim, status, comments, notes | Complete IT Staff operational ticketing flow | `e2e/lab-03/staff-ticket-flow.spec.ts` | Planned |
 | **E2E-03** | E2E | AC-17..23 | Admin user search, create, edit, deactivate guard | Full administrator user lifecycle | `e2e/lab-03/user-administration.spec.ts` | Planned |

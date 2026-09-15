@@ -87,11 +87,13 @@ describe("Work Item 6: StaffTicketDetail Component (UI-04)", () => {
     vi.spyOn(api, "updateTicketPriority").mockResolvedValue({ id: 10, itPriority: "HIGH" });
     vi.spyOn(api, "updateTicketStatus").mockResolvedValue({ id: 10, status: "IN_PROGRESS" });
     vi.spyOn(api, "createPublicComment").mockResolvedValue({
-      id: 2,
-      ticketId: 10,
-      content: "Public comment added",
-      author: { id: 5, name: "Staff Alex", role: "IT_STAFF" },
-      createdAt: "2026-09-12T12:00:00.000Z",
+      comment: {
+        id: 2,
+        ticketId: 10,
+        content: "Public comment added",
+        author: { id: 5, name: "Staff Alex", role: "IT_STAFF" },
+        createdAt: "2026-09-12T12:00:00.000Z",
+      },
     });
     vi.spyOn(api, "createInternalNote").mockResolvedValue({
       id: 2,
