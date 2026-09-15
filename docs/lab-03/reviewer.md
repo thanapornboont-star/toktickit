@@ -15,7 +15,7 @@
 | #53 | `sprint3/rbac-requester-continuity` | `lab3-staging` | Closes #43 | Approved | @jiraphat-j |
 | #54 | `sprint3/staff-queue` | `lab3-staging` | Closes #44 | Approved | @jiraphat-j |
 | #55 | `sprint3/staff-ticket-operations` | `lab3-staging` | Closes #45 | Approved | @jiraphat-j |
-| | `sprint3/admin-users` | `lab3-staging` | Work Item 7 | | |
+| #56 | `sprint3/admin-users` | `lab3-staging` | Closes #46 | Approved | @jiraphat-j |
 | | `sprint3/responsive-visual-qa` | `lab3-staging` | Work Item 8 | | |
 | | `sprint3/e2e-traceability` | `lab3-staging` | Work Item 9 | | |
 | | `sprint3/evidence-and-release-docs` | `lab3-staging` | Work Item 10 | | |
@@ -87,6 +87,19 @@
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณมากค่า"
 
+### PR #56 (for Issue #46: Implement Administrator User Management)
+- **Feature Branch**: `sprint3/admin-users`
+- **Target Branch**: `lab3-staging`
+- **Reviewer Comment (@jiraphat-j)**:
+  > "- Base branch เข้า lab3-staging ถูกต้อง
+  > - โค้ดตรงตามข้อกำหนด Work Item 7 (AC-17 ถึง AC-23, BR-10, BR-20, BR-21, BR-22, BR-24)
+  > - Backend: Endpoint /api/admin/* มี guard บังคับสิทธิ์ Admin ชัดเจน รองรับ search, role filter, จัดการบัญชีผู้ใช้, ป้องกัน self-deactivation, ป้องกัน deactivation ของ last admin, และบังคับ mustChangePassword ตอน reset password
+  > - Frontend: หน้า UserManagement ทำงานครบถ้วน มีตารางแสดงผล, modal สร้าง/แก้ไข, ป้องกันไม่ให้แอดมินปลดตัวเองในหน้า UI และมีฟอร์ม reset password
+  > - Test: ผ่านครบ 100% ทั้ง Server (124 tests) และ Client (64 tests)
+  > พร้อม merge ครับ"
+- **My Response (@thanapornboont-star)**:
+  > "ขอบคุณค่ะ mergeให้เลยค่ะ"
+
 ---
 
 ## Pull Requests I Reviewed for My Partner (@jiraphat-j)
@@ -97,6 +110,9 @@
 | #44 | `feature/33-test-plan` | `lab3-staging` | Closes #33 | Approved | @thanapornboont-star |
 | #45 | `feature/34-user-migration-seed` | `lab3-staging` | Closes #34 | Approved | @thanapornboont-star |
 | #46 | `feature/35-auth-session-screens` | `lab3-staging` | Closes #35 | Approved | @thanapornboont-star |
+| #47 | `feature/36-rbac-requester` (RBAC) | `lab3-staging` | Closes #36 | Approved | @thanapornboont-star |
+| #48 | `feature/37-staff-queue` | `lab3-staging` | Closes #37 | Approved | @thanapornboont-star |
+| #49 | `feature/38-staff-ticket-detail` | `lab3-staging` | Closes #38 | Approved | @thanapornboont-star |
 
 ### PR #43 (for Issue #32: Sprint 3 engineering contract and specification)
 - **Partner's PR Link**: [PR #43](https://github.com/jiraphat-j/toktickit/pull/43)
@@ -154,3 +170,35 @@
 - **My Follow-up & Approval (@thanapornboont-star)**:
   > "โอเคค่ะ approve ให้เรียบร้อยแล้วนะคะ"
 
+### PR #47 (for Issue #36: RBAC Authorization layer and Requester regression)
+- **Partner's PR Link**: [PR #47](https://github.com/jiraphat-j/toktickit/pull/47)
+- **Feature Branch**: `feature/36-rbac-requester`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "BAC middleware, requester ownership isolation, forged requesterId protection และ Problem Appears Resolved test ทำได้ดีค่ะ"
+- **Partner's Response (@jiraphat-j)**:
+  > "ขอบพระคุณครับ"
+
+### PR #48 (for Issue #37: IT Staff Ticket Queue, filtering, and responsive UI)
+- **Partner's PR Link**: [PR #48](https://github.com/jiraphat-j/toktickit/pull/48)
+- **Feature Branch**: `feature/37-staff-queue`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "โดยรวม Staff Ticket Queue ทำได้ดีมากค่ะ ในส่วน -Backend มี RBAC requireAuth + requireRole(\"IT_STAFF\", \"ADMINISTRATOR\") -Search ticket number / summary แบบ case-insensitive -Filter category / status / priority / owner พร้อม unassigned และ me -Sorting + pagination ทำครบและมี validation -Staff directory จำกัดเฉพาะ active IT Staff/Admin -Frontend มี responsive desktop table + mobile card และ filter/search controls -Test ครอบคลุม RBAC, filtering, sorting, pagination และ UI interaction"
+- **Partner's Response (@jiraphat-j)**:
+  > "ขอบคุณครับคนสวย กด merge ได้เลยครับ"
+
+### PR #49 (for Issue #38: IT Staff Ticket Detail operations and communication)
+- **Partner's PR Link**: [PR #49](https://github.com/jiraphat-j/toktickit/pull/49)
+- **Feature Branch**: `feature/38-staff-ticket-detail`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "Staff Ticket Detail, Claim/Reassign, IT Priority และ Status Transition ทำได้ดีมากค่ะ ตอนนี้ยังไม่มีอะไรให้แก้ แต่ช่วยตรวจสอบเรื่อง Public Comments และ Internal Notes ใน StaffTicketDetail และมี backend authorization สำหรับ Internal Notes แล้ว แต่ staff-ticket-detail.api.test.ts ตอนนี้ยังเน้น owner, priority และ status workflow เป็นหลัก ยังไม่มี automated API test ที่ยืนยัน communication permission boundary โดยเฉพาะ Requester ต้องถูกปฏิเสธการอ่าน/สร้าง Internal Note ด้วย 403
+  > รบกวนเพิ่ม tests อย่างน้อยตามนี้ได้ไไหมคะ:
+  > Requester สามารถสร้าง Public Comment ได้ Staff/Admin สามารถอ่าน/สร้าง Public Comment ได้ Requester ไม่สามารถอ่าน/สร้าง Internal Note (403) Staff/Admin สามารถสร้าง Internal Note ได้"
+- **Partner's Response (@jiraphat-j)**:
+  > "ได้ครับ เดี๋ยวผมทำการเช็คแล้วส่งให้อีกรอบนะครับ"
+- **Partner's Follow-up (@jiraphat-j)**:
+  > "apply ให้ตาม comment แล้วครับช่วยตรวจสอบอีกรอบให้หน่อยนะครับ"
+- **My Follow-up & Approval (@thanapornboont-star)**:
+  > "เรียบร้อบแล้วค่า Approved"

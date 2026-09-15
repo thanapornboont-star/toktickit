@@ -181,7 +181,7 @@ export function StaffTicketQueue({
       </div>
 
       {/* Toolbar */}
-      <div className="queue-toolbar mb-3" aria-label="Queue filters and search">
+      <div className="queue-toolbar queue-filter-toolbar mb-3" aria-label="Queue filters and search">
         <div className="row g-2">
           <div className="col-12 col-md-4">
             <label htmlFor="queue-search" className="visually-hidden">
