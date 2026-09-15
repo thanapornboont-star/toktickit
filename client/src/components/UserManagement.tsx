@@ -302,7 +302,7 @@ export function UserManagement({ authUser }: UserManagementProps) {
             <p className="mb-0">No users found matching your criteria.</p>
           </div>
         ) : (
-          <div className="table-responsive">
+          <div className="table-responsive user-table-responsive">
             <table className="table table-hover align-middle mb-0" aria-label="User directory">
               <thead className="table-light">
                 <tr>
