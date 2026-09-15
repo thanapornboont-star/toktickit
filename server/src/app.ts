@@ -5,6 +5,7 @@ import { requireDevRequester } from "./middleware/devRequester.js";
 import { ticketRouter } from "./routes/tickets.js";
 import { authRouter } from "./routes/auth.js";
 import { staffRouter } from "./routes/staff.js";
+import { adminRouter } from "./routes/admin.js";
 import { Router } from "express";
 import { authenticateToken, requirePasswordChangeCompleted, requireRole } from "./middleware/auth.js";
 import { Role } from "@prisma/client";
@@ -99,10 +100,11 @@ app.use("/api/staff", staffGuardRouter);
 // ---------------------------------------------------------------------------
 // Administrator Endpoints Guard (Work Item 7) — RBAC: ADMINISTRATOR only
 // ---------------------------------------------------------------------------
-const adminRouter = Router();
-adminRouter.use(authenticateToken);
-adminRouter.use(requirePasswordChangeCompleted);
-adminRouter.use(requireRole(Role.ADMINISTRATOR));
-app.use("/api/admin", adminRouter);
+const adminGuardRouter = Router();
+adminGuardRouter.use(authenticateToken);
+adminGuardRouter.use(requirePasswordChangeCompleted);
+adminGuardRouter.use(requireRole(Role.ADMINISTRATOR));
+adminGuardRouter.use("/", adminRouter);
+app.use("/api/admin", adminGuardRouter);
 
 export default app;

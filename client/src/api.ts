@@ -620,3 +620,93 @@ export async function createInternalNote(
   return data.internalNote;
 }
 
+// ---------------------------------------------------------------------------
+// Administrator User Management APIs (Work Item 7)
+// ---------------------------------------------------------------------------
+export interface AdminUserItem {
+  id: number;
+  name: string;
+  email: string;
+  role: "REQUESTER" | "IT_STAFF" | "ADMINISTRATOR";
+  isActive: boolean;
+  mustChangePassword: boolean;
+  createdAt?: string;
+}
+
+export interface CreateAdminUserPayload {
+  name: string;
+  email: string;
+  role: "REQUESTER" | "IT_STAFF" | "ADMINISTRATOR";
+  isActive?: boolean;
+  initialPassword: string;
+}
+
+export interface UpdateAdminUserPayload {
+  name?: string;
+  email?: string;
+  role?: "REQUESTER" | "IT_STAFF" | "ADMINISTRATOR";
+  isActive?: boolean;
+}
+
+export async function getAdminUsers(params?: {
+  search?: string;
+  role?: string;
+}): Promise<AdminUserItem[]> {
+  const headers = getAuthHeaders();
+  const query = new URLSearchParams();
+  if (params?.search) query.set("search", params.search);
+  if (params?.role) query.set("role", params.role);
+
+  const qs = query.toString() ? `?${query.toString()}` : "";
+  const response = await fetch(`${API_URL}/api/admin/users${qs}`, { headers });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to load users.");
+  return data;
+}
+
+export async function createAdminUser(payload: CreateAdminUserPayload): Promise<AdminUserItem> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/admin/users`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to create user.");
+  return data.user;
+}
+
+export async function updateAdminUser(
+  userId: number,
+  payload: UpdateAdminUserPayload
+): Promise<AdminUserItem> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/admin/users/${userId}`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to update user.");
+  return data.user;
+}
+
+export async function resetUserPassword(
+  userId: number,
+  newInitialPassword: string
+): Promise<{ id: number; mustChangePassword: boolean; message: string }> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/admin/users/${userId}/reset-password`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ newInitialPassword }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to reset password.");
+  return data;
+}
+
+

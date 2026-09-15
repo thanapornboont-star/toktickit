@@ -186,7 +186,7 @@ export function StaffTicketDetail({
     setIsSubmittingComment(true);
     try {
       const added = await createPublicComment(ticketId, trimmed);
-      setComments((prev) => [...prev, added]);
+      setComments((prev) => [...prev, added.comment]);
       setNewComment("");
     } catch (err: any) {
       setCommentError(err?.message || "Failed to submit comment.");

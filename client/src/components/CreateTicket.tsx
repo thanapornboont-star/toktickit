@@ -272,7 +272,7 @@ export function CreateTicket({ requester, onNavigateToMyTickets }: CreateTicketP
               id="requester-readonly"
               type="text"
               className="form-control zen-field-readonly"
-              value={`${requester.name} (${requester.department})`}
+              value={`${requester.name}${"department" in requester ? ` (${requester.department})` : ""}`}
               readOnly
               disabled
             />
