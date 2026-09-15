@@ -10,11 +10,11 @@
 | PR | Feature Branch | Target Branch | Linked Issue | Reviewer Verdict | Merged By |
 |:---:|---|---|---|:---:|:---:|
 | #50 | `sprint3/contract-and-test-blueprint` | `lab3-staging` | Closes #40 | Approved | @jiraphat-j |
-| #51 | `sprint3/user-model-migration` | `lab3-staging` | Work Item 2 | Approved | @jiraphat-j |
-| #52 | `sprint3/auth-account-entry` | `lab3-staging` | Work Item 3 | Approved | @jiraphat-j |
+| #51 | `sprint3/user-model-migration` | `lab3-staging` | Closes #41 | Approved | @jiraphat-j |
+| #52 | `sprint3/auth-account-entry` | `lab3-staging` | Closes #42 | Approved | @jiraphat-j |
 | #53 | `sprint3/rbac-requester-continuity` | `lab3-staging` | Closes #43 | Approved | @jiraphat-j |
 | #54 | `sprint3/staff-queue` | `lab3-staging` | Closes #44 | Approved | @jiraphat-j |
-| #55 | `sprint3/staff-ticket-operations` | `lab3-staging` | Work Item 6 | Pending Review | |
+| #55 | `sprint3/staff-ticket-operations` | `lab3-staging` | Closes #45 | Approved | @jiraphat-j |
 | | `sprint3/admin-users` | `lab3-staging` | Work Item 7 | | |
 | | `sprint3/responsive-visual-qa` | `lab3-staging` | Work Item 8 | | |
 | | `sprint3/e2e-traceability` | `lab3-staging` | Work Item 9 | | |
@@ -33,29 +33,38 @@
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณค่ะ"
 
-### PR #51 (for Work Item 2: Identity data migration and development seed)
+### PR #51 (for Issue #41: Convert development requesters into Lab 3 users and seed roles)
 - **Feature Branch**: `sprint3/user-model-migration`
 - **Target Branch**: `lab3-staging`
 - **Reviewer Comment (@jiraphat-j)**:
-  > "ตรวจ PR #51 แล้วครับ โครงสร้าง User model และ Session ทำได้ครบถ้วน การ migration มีการ backup/copy ข้อมูลเดิมของ DevRequester ไปยัง User ได้โดยไม่มีข้อมูลตั๋วเดิมสูญหาย (251 ใบยังคงอยู่ครบ) seed รันซ้ำได้ปลอดภัยและครอบคลุมทุก role ครับ Approved"
+  > "ตรวจ PR #51 เรียบร้อยครับ ตัว migration ทำได้ยอดเยี่ยมมาก มีการย้ายข้อมูลจาก DevRequester เข้า User table โดยคง id เดิมและ sync sequence ให้ครบถ้วน ทำให้ข้อมูลเดิมไม่สูญหายและไม่เกิด regression กับเทสต์เดิมของ Lab 1-2 เลยครับ ตัว seed ก็ครอบคลุมทั้ง 3 role และรันซ้ำได้ปลอดภัย"
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณค่ะ"
 
-### PR #52 (for Work Item 3: Authentication and account-entry flow)
+### PR #52 (for Issue #42: Add login, current user, first-login password change, and logout)
 - **Feature Branch**: `sprint3/auth-account-entry`
 - **Target Branch**: `lab3-staging`
 - **Reviewer Comment (@jiraphat-j)**:
-  > "ตรวจ PR #52 เรียบร้อยครับ ตัวระบบ Auth ทั้ง login, logout, first password change ทำได้สมบูรณ์ตาม spec มีการป้องกัน user enumeration และ safe errors ชัดเจน Component tests และ API tests ผ่านครบถ้วน Approved ครับ"
+  > "ตรวจ PR #52 เรียบร้อยครับ ระบบ Authentication และ First Password Change ทำได้รัดกุมมาก:  
+  > - มีการใช้ bcrypt และ session token ใน DB พร้อม expiration check  
+  > - การล็อกอินตอบ error แบบ generic (401) ป้องกัน user enumeration และแยกเคสบัญชีถูกปิดใช้งาน (403) ถูกต้องตาม BR-01, BR-02  
+  > - หน้า ChangePassword มี interactive checklist ตรวจสอบกฎรหัสผ่านแบบเรียลไทม์ และระบบใน App.tsx ดักไม่ให้เข้าหน้าอื่นก่อนเปลี่ยนรหัสผ่านได้สมบูรณ์  
+  > - เทสต์ทั้งฝั่ง Server และ Client ผ่านครบ 100% โดยไม่กระทบโค้ดเดิม"
 - **My Response (@thanapornboont-star)**:
-  > "ขอบคุณค่ะ"
+  > "ขอบคุณมากค่ะ โชคดีจังไม่ต้องแก้"
 
-### PR #53 (for Work Item 4: Authorization boundary, RBAC enforcement, and requester continuity)
+### PR #53 (for Issue #43: Apply RBAC and move Requester flows to authenticated identity)
 - **Feature Branch**: `sprint3/rbac-requester-continuity`
 - **Target Branch**: `lab3-staging`
 - **Reviewer Comment (@jiraphat-j)**:
-  > "ตรวจ PR #53 เรียบร้อยครับ การบังคับ RBAC แบ่งสิทธิ์ 3 role ทำได้ถูกต้อง มีการป้องกัน cross-user access คืน 404 ปลอดภัย และยังมี fallback header สำหรับ Lab 2 compat ครบถ้วน Component tests และ API tests ผ่าน 100% Approved ครับ"
+  > "ตรวจ PR #53 เรียบร้อยครับ การวาง Authorization Boundary และการเชื่อมต่อ Requester Continuity ทำได้สมบูรณ์มาก:  
+  > - การบังคับตัวตนผ่าน Bearer token และการตัดสิทธิ์ field ที่ client พยายาม spoof (requesterId, ownerId, status) เป็นไปตาม BR-07 และ BR-10 ครบถ้วน  
+  > - การตอบกลับด้วย 404 Not Found เมื่อ Requester เข้าถึงตั๋วคนอื่น ช่วยป้องกัน information disclosure ได้ถูกต้องตาม BR-09  
+  > - ฟังก์ชัน Public Comments และ Problem Appears Resolved ทำงานได้ตาม AC-08, AC-09  
+  > - Middleware authenticateSessionOrDev ช่วยให้โค้ดของเดิมใน Lab 2 ยังทำงานได้ครบถ้วนโดยไม่เกิด regression  
+  > - เทสต์ทั้ง Server (53/53) และ Client (39/39) ผ่านครบ 100% เอกสาร tests.md และ reviewer.md อัปเดตเรียบร้อยครับ Approved ครับ"
 - **My Response (@thanapornboont-star)**:
-  > "ขอบคุณค่ะ"
+  > "ขอบคุณอีกครั้งค่ะ"
 
 ### PR #54 (for Issue #44: Build role-protected IT Staff work queue)
 - **Feature Branch**: `sprint3/staff-queue`
@@ -65,13 +74,18 @@
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณค่ะ"
 
-### PR #55 (for Work Item 6: Implement Staff Ticket Detail workflow and communications)
+### PR #55 (for Issue #45: Implement Staff Ticket Detail workflow and communications)
 - **Feature Branch**: `sprint3/staff-ticket-operations`
 - **Target Branch**: `lab3-staging`
 - **Reviewer Comment (@jiraphat-j)**:
-  > *Pending review*
+  > "- Base branch เข้า lab3-staging ถูกต้อง  
+  > - โค้ดตรงตามข้อกำหนด Work Item 6 (AC-10, AC-13 ถึง AC-16, BR-12, BR-15, BR-18)  
+  > - Backend มี State Machine เช็คสถานะตั๋วอย่างเข้มงวด และบล็อก Requester จาก Internal Notes (403 Forbidden)  
+  > - Frontend นำ StaffTicketDetail มาแทน placeholder ใน App.tsx ครบถ้วน แยกโทนสี Amber สำหรับ Internal Notes ชัดเจน  
+  > - Test ผ่าน 100% ทั้ง Server (104 tests) และ Client (58 tests) เอกสารอัปเดตเรียบร้อย  
+  > พร้อม merge ครับ"
 - **My Response (@thanapornboont-star)**:
-  > *Pending*
+  > "ขอบคุณมากค่า"
 
 ---
 
