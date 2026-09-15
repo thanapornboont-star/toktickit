@@ -110,6 +110,8 @@
 | #44 | `feature/33-test-plan` | `lab3-staging` | Closes #33 | Approved | @thanapornboont-star |
 | #45 | `feature/34-user-migration-seed` | `lab3-staging` | Closes #34 | Approved | @thanapornboont-star |
 | #46 | `feature/35-auth-session-screens` | `lab3-staging` | Closes #35 | Approved | @thanapornboont-star |
+| #47 | `feature/36-rbac-requester` (RBAC) | `lab3-staging` | Closes #36 | Approved | @thanapornboont-star |
+| #48 | `feature/37-staff-queue` | `lab3-staging` | Closes #37 | Approved | @thanapornboont-star |
 | #49 | `feature/38-staff-ticket-detail` | `lab3-staging` | Closes #38 | Approved | @thanapornboont-star |
 
 ### PR #43 (for Issue #32: Sprint 3 engineering contract and specification)
@@ -167,6 +169,24 @@
   > เทสต์ทั้งหมดผ่านครบ 100% (104/104 tests) รบกวนช่วย Re-review และ Approve ให้อีกครั้งนะครับ ขอบคุณมากครับ!"
 - **My Follow-up & Approval (@thanapornboont-star)**:
   > "โอเคค่ะ approve ให้เรียบร้อยแล้วนะคะ"
+
+### PR #47 (for Issue #36: RBAC Authorization layer and Requester regression)
+- **Partner's PR Link**: [PR #47](https://github.com/jiraphat-j/toktickit/pull/47)
+- **Feature Branch**: `feature/36-rbac-requester`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "BAC middleware, requester ownership isolation, forged requesterId protection และ Problem Appears Resolved test ทำได้ดีค่ะ"
+- **Partner's Response (@jiraphat-j)**:
+  > "ขอบพระคุณครับ"
+
+### PR #48 (for Issue #37: IT Staff Ticket Queue, filtering, and responsive UI)
+- **Partner's PR Link**: [PR #48](https://github.com/jiraphat-j/toktickit/pull/48)
+- **Feature Branch**: `feature/37-staff-queue`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "โดยรวม Staff Ticket Queue ทำได้ดีมากค่ะ ในส่วน -Backend มี RBAC requireAuth + requireRole(\"IT_STAFF\", \"ADMINISTRATOR\") -Search ticket number / summary แบบ case-insensitive -Filter category / status / priority / owner พร้อม unassigned และ me -Sorting + pagination ทำครบและมี validation -Staff directory จำกัดเฉพาะ active IT Staff/Admin -Frontend มี responsive desktop table + mobile card และ filter/search controls -Test ครอบคลุม RBAC, filtering, sorting, pagination และ UI interaction"
+- **Partner's Response (@jiraphat-j)**:
+  > "ขอบคุณครับคนสวย กด merge ได้เลยครับ"
 
 ### PR #49 (for Issue #38: IT Staff Ticket Detail operations and communication)
 - **Partner's PR Link**: [PR #49](https://github.com/jiraphat-j/toktickit/pull/49)
