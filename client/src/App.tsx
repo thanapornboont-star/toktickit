@@ -114,7 +114,11 @@ export function ApplicationShell({
   onChangeRequester?: () => void;
   onLogout?: () => void;
 }) {
-  const [activeView, setActiveView] = useState<View>("my-tickets");
+  const [activeView, setActiveView] = useState<View>(() => {
+    if (authUser?.role === "IT_STAFF") return "staff-queue";
+    if (authUser?.role === "ADMINISTRATOR") return "user-management";
+    return "my-tickets";
+  });
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
 
   const effectiveRequester = authUser
