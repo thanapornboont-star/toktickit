@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import {
   Category,
   DevRequester,
+  AuthUser,
   getCategories,
   getMyTickets,
   PaginatedTicketsResponse,
@@ -9,7 +10,7 @@ import {
 } from "../api.js";
 
 interface MyTicketsProps {
-  requester: DevRequester;
+  requester: DevRequester | AuthUser;
   onCreateTicket: () => void;
   onViewTicketDetail?: (ticketId: number) => void;
 }
@@ -326,6 +327,11 @@ export function MyTickets({ requester, onCreateTicket, onViewTicketDetail }: MyT
                     <td>{renderPriorityBadge(ticket.requestedPriority)}</td>
                     <td>
                       <span className="badge bg-success">{ticket.status}</span>
+                      {ticket.requesterIndicatedResolved && (
+                        <span className="badge bg-info text-dark d-block mt-1 small" title="Problem indicated as resolved">
+                          Resolved Indicated
+                        </span>
+                      )}
                     </td>
                     <td className="text-center">
                       {ticket.activeAttachmentCount && ticket.activeAttachmentCount > 0 ? (
@@ -356,7 +362,14 @@ export function MyTickets({ requester, onCreateTicket, onViewTicketDetail }: MyT
             {ticketData.data.map((ticket: Ticket) => (
               <div key={ticket.id} className="card p-3 border rounded">
                 <div className="d-flex justify-content-between align-items-start mb-2">
-                  <strong className="text-primary-green">{ticket.ticketNumber}</strong>
+                  <div>
+                    <strong className="text-primary-green">{ticket.ticketNumber}</strong>
+                    {ticket.requesterIndicatedResolved && (
+                      <span className="badge bg-info text-dark ms-2 small">
+                        Resolved Indicated
+                      </span>
+                    )}
+                  </div>
                   {renderPriorityBadge(ticket.requestedPriority)}
                 </div>
                 <h6 className="fw-bold mb-1">{ticket.summary}</h6>

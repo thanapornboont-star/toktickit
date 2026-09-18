@@ -5,21 +5,33 @@ import {
   getDevRequesters,
   getStoredDevRequester,
   storeDevRequester,
+  AuthUser,
+  getStoredAuth,
+  storeAuth,
+  clearStoredAuth,
+  logout,
 } from "./api.js";
+import { Login } from "./components/Login.js";
+import { ChangePassword } from "./components/ChangePassword.js";
 import { CreateTicket } from "./components/CreateTicket.js";
 import { MyTickets } from "./components/MyTickets.js";
 import { TicketDetail } from "./components/TicketDetail.js";
+import { StaffTicketQueue } from "./components/StaffTicketQueue.js";
+import { StaffTicketDetail } from "./components/StaffTicketDetail.js";
+import { UserManagement } from "./components/UserManagement.js";
 import "./App.css";
 
 type LoadState = "loading" | "ready" | "error";
-type View = "my-tickets" | "create-ticket" | "ticket-detail";
+type View = "my-tickets" | "create-ticket" | "ticket-detail" | "staff-queue" | "user-management";
 
 function RequesterSelector({
   requesters,
   onContinue,
+  onGoToLogin,
 }: {
   requesters: DevRequester[];
   onContinue: (requester: DevRequester) => void;
+  onGoToLogin?: () => void;
 }) {
   const [selectedId, setSelectedId] = useState("");
   const selectedRequester = requesters.find(
@@ -29,7 +41,18 @@ function RequesterSelector({
   return (
     <main className="selector-page">
       <section className="selector-card" aria-labelledby="selector-title">
-        <p className="eyebrow">TokTickIT · Lab 2</p>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <p className="eyebrow mb-0">TokTickIT · Lab 2</p>
+          {onGoToLogin && (
+            <button
+              type="button"
+              className="btn btn-outline-success btn-sm"
+              onClick={onGoToLogin}
+            >
+              Sign In (Lab 3)
+            </button>
+          )}
+        </div>
         <h1 id="selector-title">Development Requester Selection</h1>
         <p className="testing-notice" role="note">
           Choose a development requester to simulate the current requester context. This is for testing only and is not a login screen.
@@ -67,21 +90,68 @@ function RequesterSelector({
   );
 }
 
-function ApplicationShell({
+function RoleBadge({ role }: { role: AuthUser["role"] }) {
+  switch (role) {
+    case "REQUESTER":
+      return <span className="badge badge-role-requester">Requester</span>;
+    case "IT_STAFF":
+      return <span className="badge badge-role-staff">IT Staff</span>;
+    case "ADMINISTRATOR":
+      return <span className="badge badge-role-admin">Administrator</span>;
+    default:
+      return <span className="badge bg-secondary">{role}</span>;
+  }
+}
+
+export function ApplicationShell({
   requester,
+  authUser,
   onChangeRequester,
+  onLogout,
 }: {
-  requester: DevRequester;
-  onChangeRequester: () => void;
+  requester?: DevRequester;
+  authUser?: AuthUser;
+  onChangeRequester?: () => void;
+  onLogout?: () => void;
 }) {
-  const [activeView, setActiveView] = useState<View>("my-tickets");
+  const [activeView, setActiveView] = useState<View>(() => {
+    if (authUser?.role === "IT_STAFF") return "staff-queue";
+    if (authUser?.role === "ADMINISTRATOR") return "user-management";
+    return "my-tickets";
+  });
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
-  const initials = requester.name
+
+  const effectiveRequester = authUser
+    ? {
+        id: authUser.id,
+        name: authUser.name,
+        email: authUser.email,
+        department: "Requester",
+        isActive: authUser.isActive,
+      }
+    : requester;
+
+  const displayName = authUser ? authUser.name : requester ? requester.name : "";
+  const initials = displayName
     .split(" ")
     .map((part) => part[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
+  const isStaff = authUser?.role === "IT_STAFF";
+  const isAdmin = authUser?.role === "ADMINISTRATOR";
+
+  // Auto-set view for staff or admin
+  useEffect(() => {
+    if (isStaff) {
+      setActiveView("staff-queue");
+    } else if (isAdmin) {
+      setActiveView("user-management");
+    } else {
+      setActiveView("my-tickets");
+    }
+  }, [isStaff, isAdmin]);
 
   return (
     <div className="app-page">
@@ -89,10 +159,12 @@ function ApplicationShell({
         <div className="app-header-content">
           <a
             className="brand"
-            href="#my-tickets"
+            href="#home"
             onClick={(e) => {
               e.preventDefault();
-              setActiveView("my-tickets");
+              if (isStaff) setActiveView("staff-queue");
+              else if (isAdmin) setActiveView("user-management");
+              else setActiveView("my-tickets");
             }}
           >
             <span className="brand-mark" aria-hidden="true">
@@ -100,75 +172,168 @@ function ApplicationShell({
             </span>
             TokTickIT
           </a>
+
           <nav aria-label="Main navigation" className="main-nav">
-            <a
-              href="#my-tickets"
-              className={activeView === "my-tickets" ? "active" : ""}
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveView("my-tickets");
-              }}
-            >
-              My Tickets
-            </a>
-            <a
-              href="#create-ticket"
-              className={activeView === "create-ticket" ? "active" : ""}
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveView("create-ticket");
-              }}
-            >
-              Create Ticket
-            </a>
+            {!isStaff && !isAdmin && (
+              <>
+                <a
+                  href="#my-tickets"
+                  className={activeView === "my-tickets" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("my-tickets");
+                  }}
+                >
+                  My Tickets
+                </a>
+                <a
+                  href="#create-ticket"
+                  className={activeView === "create-ticket" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("create-ticket");
+                  }}
+                >
+                  Create Ticket
+                </a>
+              </>
+            )}
+
+            {isStaff && (
+              <a
+                href="#staff-queue"
+                className={activeView === "staff-queue" ? "active" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveView("staff-queue");
+                }}
+              >
+                Ticket Queue
+              </a>
+            )}
+
+            {isAdmin && (
+              <a
+                href="#user-management"
+                className={activeView === "user-management" ? "active" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveView("user-management");
+                }}
+              >
+                User Management
+              </a>
+            )}
           </nav>
+
           <div className="requester-controls">
-            <div
-              className="requester-badge"
-              aria-label={`Current requester: ${requester.name}`}
-            >
-              <span className="avatar" aria-hidden="true">
-                {initials}
-              </span>
-              <span>
-                <strong>{requester.name}</strong>
-                <small>{requester.department}</small>
-              </span>
-            </div>
-            <button
-              type="button"
-              className="btn btn-outline-light btn-sm"
-              onClick={onChangeRequester}
-            >
-              Change Requester
-            </button>
+            {authUser ? (
+              <div className="d-flex align-items-center gap-2">
+                <div
+                  className="user-profile-pill"
+                  aria-label={`Current user: ${authUser.name} (${authUser.role})`}
+                >
+                  <span className="avatar" aria-hidden="true">
+                    {initials}
+                  </span>
+                  <span className="fw-semibold me-1">{authUser.name}</span>
+                  <RoleBadge role={authUser.role} />
+                </div>
+                {onLogout && (
+                  <button
+                    type="button"
+                    className="btn btn-logout ms-2"
+                    onClick={onLogout}
+                    aria-label="Sign out"
+                  >
+                    Sign Out
+                  </button>
+                )}
+              </div>
+            ) : requester ? (
+              <>
+                <div
+                  className="requester-badge"
+                  aria-label={`Current requester: ${requester.name}`}
+                >
+                  <span className="avatar" aria-hidden="true">
+                    {initials}
+                  </span>
+                  <span>
+                    <strong>{requester.name}</strong>
+                    <small>{requester.department}</small>
+                  </span>
+                </div>
+                {onChangeRequester && (
+                  <button
+                    type="button"
+                    className="btn btn-outline-light btn-sm ms-2"
+                    onClick={onChangeRequester}
+                  >
+                    Change Requester
+                  </button>
+                )}
+              </>
+            ) : null}
           </div>
         </div>
       </header>
-      <aside className="shell-disclaimer" role="note">
-        Development requester mode is a Lab 2 testing mechanism, not authentication.
-      </aside>
+
+      {!authUser && (
+        <aside className="shell-disclaimer" role="note">
+          Development requester mode is a Lab 2 testing mechanism, not authentication.
+        </aside>
+      )}
+
       <main className="shell-content">
-        {activeView === "create-ticket" ? (
+        {isStaff || isAdmin ? (
+          activeView === "staff-queue" ? (
+            <StaffTicketQueue
+              authUser={authUser!}
+              onViewTicket={(ticketId) => {
+                setSelectedTicketId(ticketId);
+                setActiveView("ticket-detail");
+              }}
+            />
+          ) : activeView === "ticket-detail" && selectedTicketId !== null ? (
+            <StaffTicketDetail
+              authUser={authUser!}
+              ticketId={selectedTicketId}
+              onBack={() => setActiveView("staff-queue")}
+            />
+          ) : activeView === "user-management" && isAdmin ? (
+            <UserManagement authUser={authUser!} />
+          ) : (
+            <StaffTicketQueue
+              authUser={authUser!}
+              onViewTicket={(ticketId) => {
+                setSelectedTicketId(ticketId);
+                setActiveView("ticket-detail");
+              }}
+            />
+          )
+        ) : activeView === "create-ticket" && effectiveRequester ? (
           <CreateTicket
-            requester={requester}
+            requester={effectiveRequester}
             onNavigateToMyTickets={() => setActiveView("my-tickets")}
           />
-        ) : activeView === "ticket-detail" && selectedTicketId !== null ? (
+        ) : activeView === "ticket-detail" && selectedTicketId !== null && effectiveRequester ? (
           <TicketDetail
-            requester={requester}
+            requester={effectiveRequester}
             ticketId={selectedTicketId}
             onBack={() => setActiveView("my-tickets")}
           />
-        ) : (
+        ) : effectiveRequester ? (
           <MyTickets
-            requester={requester}
+            requester={effectiveRequester}
             onCreateTicket={() => setActiveView("create-ticket")}
             onViewTicketDetail={(ticketId) => {
               setSelectedTicketId(ticketId);
               setActiveView("ticket-detail");
             }}
           />
+        ) : (
+          <div className="alert alert-info">Welcome to TokTickIT.</div>
         )}
       </main>
     </div>
@@ -176,11 +341,14 @@ function ApplicationShell({
 }
 
 export default function App() {
+  const [auth, setAuth] = useState<{ token: string; user: AuthUser } | null>(getStoredAuth);
+  const [showLogin, setShowLogin] = useState<boolean>(() => {
+    return window.location.hash === "#login";
+  });
+
   const [loadState, setLoadState] = useState<LoadState>("loading");
   const [requesters, setRequesters] = useState<DevRequester[]>([]);
-  const [currentRequester, setCurrentRequester] = useState<DevRequester | null>(
-    null
-  );
+  const [currentRequester, setCurrentRequester] = useState<DevRequester | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const loadRequesters = useCallback(async () => {
@@ -210,8 +378,33 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    void loadRequesters();
-  }, [loadRequesters]);
+    // Only load dev requesters if not authenticated
+    if (!auth) {
+      void loadRequesters();
+    }
+  }, [auth, loadRequesters]);
+
+  const handleLoginSuccess = (token: string, user: AuthUser) => {
+    storeAuth(token, user);
+    setAuth({ token, user });
+    setShowLogin(false);
+  };
+
+  const handleLogout = async () => {
+    if (auth) {
+      await logout(auth.token);
+    }
+    clearStoredAuth();
+    setAuth(null);
+    setShowLogin(true);
+  };
+
+  const handlePasswordChanged = (updatedUser: AuthUser) => {
+    if (auth) {
+      storeAuth(auth.token, updatedUser);
+      setAuth({ token: auth.token, user: updatedUser });
+    }
+  };
 
   function selectRequester(requester: DevRequester) {
     storeDevRequester(requester);
@@ -223,6 +416,39 @@ export default function App() {
     setCurrentRequester(null);
   }
 
+  // 1. Authenticated Mode
+  if (auth) {
+    // Mandatory first password change guard (BR-03)
+    if (auth.user.mustChangePassword) {
+      return (
+        <ChangePassword
+          token={auth.token}
+          user={auth.user}
+          onSuccess={handlePasswordChanged}
+          onLogout={handleLogout}
+        />
+      );
+    }
+
+    return (
+      <ApplicationShell
+        authUser={auth.user}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  // 2. Explicit Login Screen
+  if (showLogin) {
+    return (
+      <Login
+        onSuccess={handleLoginSuccess}
+        onSelectDevRequester={() => setShowLogin(false)}
+      />
+    );
+  }
+
+  // 3. Dev Requester Loading / Fallback (Lab 2 compatibility until Work Item 4)
   if (loadState === "loading") {
     return (
       <main className="selector-page" aria-busy="true">
@@ -286,6 +512,7 @@ export default function App() {
     <RequesterSelector
       requesters={requesters}
       onContinue={selectRequester}
+      onGoToLogin={() => setShowLogin(true)}
     />
   );
 }

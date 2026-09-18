@@ -4,6 +4,7 @@ import {
   CreateTicketPayload,
   createTicket,
   DevRequester,
+  AuthUser,
   getCategories,
   getRelatedSystems,
   RelatedSystem,
@@ -12,7 +13,7 @@ import {
 } from "../api.js";
 
 interface CreateTicketProps {
-  requester: DevRequester;
+  requester: DevRequester | AuthUser;
   onNavigateToMyTickets: () => void;
 }
 
@@ -271,7 +272,7 @@ export function CreateTicket({ requester, onNavigateToMyTickets }: CreateTicketP
               id="requester-readonly"
               type="text"
               className="form-control zen-field-readonly"
-              value={`${requester.name} (${requester.department})`}
+              value={`${requester.name}${"department" in requester ? ` (${requester.department})` : ""}`}
               readOnly
               disabled
             />

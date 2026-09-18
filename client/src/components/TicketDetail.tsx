@@ -2,15 +2,20 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   AttachmentItem,
   DevRequester,
+  AuthUser,
   Ticket,
   downloadAttachment,
   getTicketById,
   removeAttachment,
   uploadAttachment,
+  PublicCommentItem,
+  getPublicComments,
+  createPublicComment,
+  indicateProblemResolved,
 } from "../api.js";
 
 interface TicketDetailProps {
-  requester: DevRequester;
+  requester: DevRequester | AuthUser;
   ticketId: number;
   onBack: () => void;
 }
@@ -50,10 +55,31 @@ function renderPriorityBadge(priority: string) {
   }
 }
 
+function CommentRoleBadge({ role }: { role: string }) {
+  switch (role) {
+    case "REQUESTER":
+      return <span className="badge badge-role-requester">Requester</span>;
+    case "IT_STAFF":
+      return <span className="badge badge-role-staff">IT Staff</span>;
+    case "ADMINISTRATOR":
+      return <span className="badge badge-role-admin">Administrator</span>;
+    default:
+      return <span className="badge bg-secondary">{role}</span>;
+  }
+}
+
 export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps) {
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+
+  const [comments, setComments] = useState<PublicCommentItem[]>([]);
+  const [commentText, setCommentText] = useState("");
+  const [isPostingComment, setIsPostingComment] = useState(false);
+  const [commentError, setCommentError] = useState("");
+
+  const [isIndicatingResolved, setIsIndicatingResolved] = useState(false);
+  const [resolvedNotice, setResolvedNotice] = useState("");
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [attachmentError, setAttachmentError] = useState("");
@@ -71,8 +97,12 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
     try {
       setIsLoading(true);
       setLoadError("");
-      const data = await getTicketById(ticketId, requester.id);
-      setTicket(data);
+      const [ticketData, commentsData] = await Promise.all([
+        getTicketById(ticketId, requester.id),
+        getPublicComments(ticketId, requester.id).catch(() => []),
+      ]);
+      setTicket(ticketData);
+      setComments(commentsData);
     } catch (err: any) {
       setLoadError(
         err.status === 404
@@ -189,6 +219,38 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
     }
   }
 
+  async function handleIndicateResolved() {
+    setIsIndicatingResolved(true);
+    setResolvedNotice("");
+    try {
+      await indicateProblemResolved(ticketId, requester.id);
+      setTicket((prev) => (prev ? { ...prev, requesterIndicatedResolved: true } : prev));
+      setResolvedNotice("Problem indicated as resolved successfully.");
+    } catch (err: any) {
+      setResolvedNotice("Failed to indicate problem as resolved.");
+    } finally {
+      setIsIndicatingResolved(false);
+    }
+  }
+
+  async function handlePostComment(event: React.FormEvent) {
+    event.preventDefault();
+    const trimmed = commentText.trim();
+    if (!trimmed) return;
+
+    setIsPostingComment(true);
+    setCommentError("");
+    try {
+      const res = await createPublicComment(ticketId, trimmed, requester.id);
+      setComments((prev) => [...prev, res.comment]);
+      setCommentText("");
+    } catch (err: any) {
+      setCommentError(err.message || "Failed to post comment.");
+    } finally {
+      setIsPostingComment(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <section className="zen-card" aria-labelledby="ticket-detail-heading">
@@ -226,8 +288,35 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
             {ticket.ticketNumber}
           </h2>
         </div>
-        {renderPriorityBadge(ticket.requestedPriority)}
+        <div className="d-flex align-items-center gap-2">
+          {renderPriorityBadge(ticket.requestedPriority)}
+          {!ticket.requesterIndicatedResolved && ticket.status !== "RESOLVED" && ticket.status !== "CLOSED" && (
+            <button
+              type="button"
+              className="btn btn-outline-success btn-sm"
+              onClick={handleIndicateResolved}
+              disabled={isIndicatingResolved}
+            >
+              {isIndicatingResolved ? "Submitting…" : "Problem Appears Resolved"}
+            </button>
+          )}
+        </div>
       </div>
+
+      {ticket.requesterIndicatedResolved && (
+        <div className="alert alert-success d-flex align-items-center gap-2 mb-4" role="status">
+          <span aria-hidden="true">✓</span>
+          <div>
+            <strong>Problem indicated as resolved.</strong> You reported that the issue appears resolved. IT Staff will verify and complete formal closure.
+          </div>
+        </div>
+      )}
+
+      {resolvedNotice && (
+        <div className="alert alert-info mb-4" role="status">
+          {resolvedNotice}
+        </div>
+      )}
 
       {/* Read-only ticket header fields */}
       <div className="row g-3 mb-4">
@@ -539,6 +628,72 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
             Maximum of {MAX_ACTIVE_ATTACHMENTS} active attachments reached. Remove one to upload another.
           </p>
         )}
+      </div>
+
+      {/* Public Comments Section */}
+      <div className="pt-4 border-top mt-4">
+        <h3 className="h5 mb-2">Public Comments</h3>
+        <p className="text-muted small mb-3">
+          Public comments are visible to you and the IT Staff assigned to this ticket.
+        </p>
+
+        {comments.length === 0 ? (
+          <p className="text-muted small mb-3">No public comments yet.</p>
+        ) : (
+          <div className="d-flex flex-column gap-3 mb-4">
+            {comments.map((comment) => (
+              <div key={comment.id} className="card p-3 border rounded">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <div className="d-flex align-items-center gap-2">
+                    <span className="fw-semibold">{comment.author.name}</span>
+                    <CommentRoleBadge role={comment.author.role} />
+                  </div>
+                  <span className="text-muted small">{formatDateTime(comment.createdAt)}</span>
+                </div>
+                <div className="text-dark" style={{ whiteSpace: "pre-wrap" }}>
+                  {comment.content}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Add Comment Form */}
+        <form onSubmit={handlePostComment} className="p-3 bg-light rounded border">
+          <label htmlFor="public-comment-input" className="form-label fw-semibold">
+            Add a Public Comment
+          </label>
+          <textarea
+            id="public-comment-input"
+            className="form-control mb-2"
+            rows={3}
+            placeholder="Type your message or update for IT Staff..."
+            maxLength={2000}
+            value={commentText}
+            onChange={(e) => {
+              setCommentText(e.target.value);
+              if (commentError) setCommentError("");
+            }}
+            disabled={isPostingComment}
+          />
+          <div className="d-flex justify-content-between align-items-center">
+            <span className="small text-muted">
+              {commentText.length} / 2000 characters
+            </span>
+            <button
+              type="submit"
+              className="btn zen-primary-button btn-sm"
+              disabled={!commentText.trim() || isPostingComment}
+            >
+              {isPostingComment ? "Posting…" : "Post Comment"}
+            </button>
+          </div>
+          {commentError && (
+            <div className="text-danger small mt-2" role="alert">
+              {commentError}
+            </div>
+          )}
+        </form>
       </div>
 
       {/* Soft Removal Confirmation Modal */}

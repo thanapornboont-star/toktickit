@@ -3,11 +3,22 @@ import cors from "cors";
 import { getPrisma } from "./prisma.js";
 import { requireDevRequester } from "./middleware/devRequester.js";
 import { ticketRouter } from "./routes/tickets.js";
+import { authRouter } from "./routes/auth.js";
+import { staffRouter } from "./routes/staff.js";
+import { adminRouter } from "./routes/admin.js";
+import { Router } from "express";
+import { authenticateToken, requirePasswordChangeCompleted, requireRole } from "./middleware/auth.js";
+import { Role } from "@prisma/client";
 
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// ---------------------------------------------------------------------------
+// Authentication Endpoints (Lab 3)
+// ---------------------------------------------------------------------------
+app.use("/api/auth", authRouter);
 
 // ---------------------------------------------------------------------------
 // Health Check (Lab 1)
@@ -72,8 +83,28 @@ app.get("/api/dev-requesters/me", requireDevRequester, (req: Request, res: Respo
 });
 
 // ---------------------------------------------------------------------------
-// Ticket Endpoints (Lab 2)
+// Ticket Endpoints (Lab 2 & Lab 3 Requester)
 // ---------------------------------------------------------------------------
 app.use("/api/tickets", ticketRouter);
+
+// ---------------------------------------------------------------------------
+// IT Staff Endpoints (Work Item 5 & 6) — RBAC: IT_STAFF or ADMINISTRATOR
+// ---------------------------------------------------------------------------
+const staffGuardRouter = Router();
+staffGuardRouter.use(authenticateToken);
+staffGuardRouter.use(requirePasswordChangeCompleted);
+staffGuardRouter.use(requireRole(Role.IT_STAFF, Role.ADMINISTRATOR));
+staffGuardRouter.use("/", staffRouter);
+app.use("/api/staff", staffGuardRouter);
+
+// ---------------------------------------------------------------------------
+// Administrator Endpoints Guard (Work Item 7) — RBAC: ADMINISTRATOR only
+// ---------------------------------------------------------------------------
+const adminGuardRouter = Router();
+adminGuardRouter.use(authenticateToken);
+adminGuardRouter.use(requirePasswordChangeCompleted);
+adminGuardRouter.use(requireRole(Role.ADMINISTRATOR));
+adminGuardRouter.use("/", adminRouter);
+app.use("/api/admin", adminGuardRouter);
 
 export default app;
