@@ -48,9 +48,9 @@ The Sprint 3 test plan applies Test-Driven Development (TDD) and multi-level ver
 | **UI-04** | UI | AC-12..16 | Staff Ticket Detail controls and distinct notes | Claim button, status dropdown, distinct notes panel | `client/tests/lab-03/StaffTicketDetail.test.tsx` | Pass |
 | **UI-05** | UI | AC-17..22 | Admin User Management list and modals | User table, Create/Edit modals, deactivation guard | `client/tests/lab-03/UserManagement.test.tsx` | Pass |
 | **UI-06** | UI | AC-24 | Shell role navigation and Zen Green Visual QA | Only role-appropriate nav links render; Sign Out present; app-header and brand render; Zen Green tokens applied | `client/tests/lab-03/AppShell.test.tsx` | Pass |
-| **E2E-01** | E2E | AC-01..05 | Login, first-login password change, and logout | End-to-end authentication lifecycle | `e2e/lab-03/authentication.spec.ts` | Planned |
-| **E2E-02** | E2E | AC-11..16 | Staff queue search, claim, status, comments, notes | Complete IT Staff operational ticketing flow | `e2e/lab-03/staff-ticket-flow.spec.ts` | Planned |
-| **E2E-03** | E2E | AC-17..23 | Admin user search, create, edit, deactivate guard | Full administrator user lifecycle | `e2e/lab-03/user-administration.spec.ts` | Planned |
+| **E2E-01** | E2E | AC-01..05 | Login, first-login password change, and logout | End-to-end authentication lifecycle | `e2e/lab-03/authentication.spec.ts` | Pass |
+| **E2E-02** | E2E | AC-11..16 | Staff queue search, claim, status, comments, notes | Complete IT Staff operational ticketing flow | `e2e/lab-03/staff-ticket-flow.spec.ts` | Pass |
+| **E2E-03** | E2E | AC-17..23 | Admin user search, create, edit, deactivate guard | Full administrator user lifecycle | `e2e/lab-03/user-administration.spec.ts` | Pass |
 
 ---
 
