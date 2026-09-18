@@ -17,8 +17,8 @@
 | #55 | `sprint3/staff-ticket-operations` | `lab3-staging` | Closes #45 | Approved | @jiraphat-j |
 | #56 | `sprint3/admin-users` | `lab3-staging` | Closes #46 | Approved | @jiraphat-j |
 | #57 | `sprint3/responsive-visual-qa` | `lab3-staging` | Closes #47 | Approved | @jiraphat-j |
-| | `sprint3/e2e-traceability` | `lab3-staging` | Work Item 9 | | |
-| | `sprint3/evidence-and-release-docs` | `lab3-staging` | Work Item 10 | | |
+| #58 | `sprint3/e2e-traceability` | `lab3-staging` | Closes #48 | Approved | @jiraphat-j |
+| | `sprint3/finalize-lab3-evidence` | `lab3-staging` | Work Item 10 | | |
 | | `lab3-staging` | `main` | Release Lab 3 | | |
 
 ---
@@ -115,6 +115,14 @@
 - **My Response (@thanapornboont-star)**:
   > "ขอบคุณค่ะ"
 
+### PR #58 (for Issue #48: Complete Sprint 3 E2E flows and final test traceability)
+- **Feature Branch**: `sprint3/e2e-traceability`
+- **Target Branch**: `lab3-staging`
+- **Reviewer Comment (@jiraphat-j)**:
+  > "ตรวจ PR #58 เรียบร้อยครับ ชุดทดสอบ E2E ครอบคลุมครบทุก role (Requester, IT Staff, Admin) รวม 21 tests ผ่านครบ 100% ทั้ง Desktop, Tablet และ Mobile viewport โครงสร้าง screenshot แบบ semantic numbered folder (`01-auth`, `02-requester`, `03-staff`, `04-admin`) ชัดเจนและสอดคล้องกับมาตรฐาน traceability ที่กำหนด เอกสาร `tests.md` อัปเดตครบถ้วน พร้อม merge ครับ"
+- **My Response (@thanapornboont-star)**:
+  > "ขอบคุณค่ะ"
+
 ---
 
 ## Pull Requests I Reviewed for My Partner (@jiraphat-j)
@@ -129,6 +137,8 @@
 | #48 | `feature/37-staff-queue` | `lab3-staging` | Closes #37 | Approved | @thanapornboont-star |
 | #49 | `feature/38-staff-ticket-detail` | `lab3-staging` | Closes #38 | Approved | @thanapornboont-star |
 | #50 | `feature/39-admin-user-management` | `lab3-staging` | Closes #39 | Approved | @thanapornboont-star |
+| #52 | `sprint3/e2e-traceability` | `lab3-staging` | Closes #48 (partner) | Approved | @thanapornboont-star |
+| #53 | `sprint3/finalize-lab3-evidence` | `lab3-staging` | Closes #49 (partner) | Approved | @thanapornboont-star |
 
 ### PR #43 (for Issue #32: Sprint 3 engineering contract and specification)
 - **Partner's PR Link**: [PR #43](https://github.com/jiraphat-j/toktickit/pull/43)
@@ -235,4 +245,22 @@
   > -Frontend มี User Table, Search/Filter, Create/Edit และ Reset Password UI พร้อม self-deactivation safeguard"
 - **Partner's Response (@jiraphat-j)**:
   > "ขอบคุณครับ รบกวน merge ให้หน่อยครับ"
+
+### PR #52 (for Issue #48 partner: Complete Sprint 3 E2E flows and final test traceability)
+- **Partner's PR Link**: [PR #52](https://github.com/jiraphat-j/toktickit/pull/52)
+- **Feature Branch**: `sprint3/e2e-traceability`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "ตรวจ PR #52 เรียบร้อยค่ะ ชุดทดสอบ E2E ครอบคลุมครบทุก role (Requester, IT Staff, Admin) ผ่านครบ 100% ทั้ง Desktop, Tablet และ Mobile viewport โครงสร้าง screenshot แบบ semantic numbered folder (`01-auth`, `02-requester`, `03-staff`, `04-admin`, `05-responsive`) ชัดเจนและครอบคลุม เอกสาร `tests.md` อัปเดตครบถ้วน ไม่มีอะไรต้องแก้ไขค่ะ"
+- **Partner's Response (@jiraphat-j)**:
+  > "ขอบคุณครับ"
+
+### PR #53 (for Issue #49 partner: Finalize Lab 3 evidence and release integration)
+- **Partner's PR Link**: [PR #53](https://github.com/jiraphat-j/toktickit/pull/53)
+- **Feature Branch**: `sprint3/finalize-lab3-evidence`
+- **Target Branch**: `lab3-staging`
+- **My Review Comment (@thanapornboont-star)**:
+  > "ตรวจ PR #53 เรียบร้อยค่ะ เอกสาร evidence และ peer review records ใน reviewer.md รวมถึง ai-use.md ครบถ้วนสมบูรณ์ทุก PR และทุกหัวข้อตามข้อกำหนดของ Lab 3 สรุปผลการทดสอบและการเตรียม release integration เข้า main ถูกต้องพร้อมปิด Sprint 3 ค่ะ"
+- **Partner's Response (@jiraphat-j)**:
+  > "ขอบคุณครับ รบกวนกด Approve และ Merge ให้ด้วยครับ"
 
