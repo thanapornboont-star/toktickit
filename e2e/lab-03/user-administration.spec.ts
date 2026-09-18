@@ -17,7 +17,7 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
     await page.locator("#login-password").fill("AdminPass123!");
     await page.getByRole("button", { name: "Sign In" }).click();
 
-    // 2. Verify Admin navigation and User Management screen
+    // 2. Verify Admin navigation and User Management screen — 01-user-directory-desktop
     await expect(page.getByRole("heading", { name: "User Account Maintenance" })).toBeVisible();
     await expect(page.getByText("Administrator", { exact: true }).first()).toBeVisible();
 
@@ -27,13 +27,13 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
     await expect(page.getByRole("link", { name: "Create Ticket" })).toBeHidden();
     await expect(page.getByRole("link", { name: "Ticket Queue" })).toBeHidden();
 
-    await captureScreenshot(page, viewport, "admin", "user-directory-initial");
+    await captureScreenshot(page, "04-admin", "01-user-directory-desktop");
 
-    // 3. Search and filter users (AC-17)
+    // 3. Search and filter users (AC-17) — 02-user-directory-search-filter
     await page.locator("#user-search-input").fill("Jennifer");
     await expect(page.getByText("Jennifer Anderson")).toBeVisible();
     await expect(page.getByText("Michael Brown")).toBeHidden();
-    await captureScreenshot(page, viewport, "admin", "search-filtered");
+    await captureScreenshot(page, "04-admin", "02-user-directory-search-filter");
 
     // Clear search and filter by role
     await page.locator("#user-search-input").fill("");
@@ -44,7 +44,7 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
     // Reset filter
     await page.locator("#role-filter-select").selectOption("");
 
-    // 4. Create New User with One Role (AC-18)
+    // 4. Create New User (AC-18) — 03-create-user-modal
     await page.getByRole("button", { name: "Add new user" }).click();
     await expect(page.getByRole("heading", { name: "Add New User Account" })).toBeVisible();
 
@@ -53,13 +53,12 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
     await page.locator("#create-email").fill(uniqueEmail);
     await page.locator("#create-role").selectOption("IT_STAFF");
     await page.locator("#create-password").fill("InitialPass123!");
-    await captureScreenshot(page, viewport, "admin", "create-user-form");
+    await captureScreenshot(page, "04-admin", "03-create-user-modal");
 
     await page.getByRole("button", { name: "Create User" }).click();
     await expect(page.locator(".alert-success")).toContainText("Alice Test Staff");
     const aliceRow = page.locator("tr", { hasText: uniqueEmail });
     await expect(aliceRow).toBeVisible();
-    await captureScreenshot(page, viewport, "admin", "user-created");
 
     // 5. Duplicate Email Rejection (AC-19, BR-20)
     await page.getByRole("button", { name: "Add new user" }).click();
@@ -71,13 +70,11 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
 
     await expect(page.locator(".modal .alert-danger")).toBeVisible();
     await expect(page.locator(".modal .alert-danger")).toContainText(/already in use|exists|duplicate/i);
-    await captureScreenshot(page, viewport, "admin", "duplicate-email-error");
 
     // Close modal
     await page.locator('.modal button:has-text("Cancel")').click();
 
-    // 6. Admin Self-Deactivation Prevention Guard (AC-20, BR-21)
-    // Find the logged-in admin row and click Edit
+    // 6. Admin Self-Deactivation Prevention Guard (AC-20, BR-21) — 04-edit-user-modal-self-lock
     const adminRow = page.locator("tr", { hasText: "admin.boss@toktickit.local" });
     await adminRow.getByRole("button", { name: "Edit" }).click();
     await expect(page.getByRole("heading", { name: /Edit User: Admin Boss/i })).toBeVisible();
@@ -88,12 +85,12 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
     await expect(page.getByTestId("self-deactivation-warning")).toContainText(
       "Cannot deactivate your own administrator account (BR-21)"
     );
-    await captureScreenshot(page, viewport, "admin", "self-deactivation-guard");
+    await captureScreenshot(page, "04-admin", "04-edit-user-modal-self-lock");
 
     // Close Edit modal
     await page.locator('.modal button:has-text("Cancel")').click();
 
-    // 7. Edit User and Reset Initial Password (AC-22, BR-24)
+    // 7. Edit User and Reset Initial Password (AC-22, BR-24) — 05-reset-password-modal
     await aliceRow.getByRole("button", { name: "Edit" }).click();
     await expect(page.getByRole("heading", { name: /Edit User: Alice Test Staff/i })).toBeVisible();
 
@@ -105,7 +102,7 @@ test.describe("E2E-03: Administrator User Management and Safeguards", () => {
     await expect(page.locator(".modal .alert-success")).toContainText(
       "Initial password set"
     );
-    await captureScreenshot(page, viewport, "admin", "password-reset-success");
+    await captureScreenshot(page, "04-admin", "05-reset-password-modal");
 
     // Close edit modal
     await page.locator('.modal button:has-text("Cancel")').click();

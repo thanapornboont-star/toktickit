@@ -11,10 +11,10 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
   }, testInfo) => {
     const viewport = testInfo.project.name;
 
-    // 1. Navigate to login
+    // 1. Navigate to login — 01-login-screen
     await page.goto("/#login");
     await expect(page.getByRole("heading", { name: "Sign in to your account" })).toBeVisible();
-    await captureScreenshot(page, viewport, "auth", "login-page");
+    await captureScreenshot(page, "01-auth", "01-login-screen");
 
     // 2. Fill valid requester credentials
     await page.locator("#login-email").fill("jennifer.anderson@toktickit.local");
@@ -32,12 +32,9 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
     await expect(page.getByRole("link", { name: "Ticket Queue" })).toBeHidden();
     await expect(page.getByRole("link", { name: "User Management" })).toBeHidden();
 
-    await captureScreenshot(page, viewport, "auth", "requester-shell");
-
     // 4. Logout (AC-05)
     await page.getByRole("button", { name: "Sign Out" }).click();
     await expect(page.getByRole("heading", { name: "Sign in to your account" })).toBeVisible();
-    await captureScreenshot(page, viewport, "auth", "logged-out");
 
     // 5. Verify session invalidation and back-navigation protection
     await page.goBack();
@@ -52,6 +49,12 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
     const viewport = testInfo.project.name;
 
     await page.goto("/#login");
+
+    // Leave fields empty and attempt submit — 02-login-validation-empty
+    await page.getByRole("button", { name: "Sign In" }).click();
+    await captureScreenshot(page, "01-auth", "02-login-validation-empty");
+
+    // Now enter invalid credentials — 03-login-invalid-credentials
     await page.locator("#login-email").fill("nonexistent.user@toktickit.local");
     await page.locator("#login-password").fill("WrongPassword123!");
     await page.getByRole("button", { name: "Sign In" }).click();
@@ -59,7 +62,7 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
     // Generic error message matching BR-02
     await expect(page.locator(".alert-danger")).toBeVisible();
     await expect(page.locator(".alert-danger")).toContainText("Invalid email or password");
-    await captureScreenshot(page, viewport, "auth", "invalid-credentials");
+    await captureScreenshot(page, "01-auth", "03-login-invalid-credentials");
   });
 
   test("AC-03: Deactivated account is rejected with forbidden notification", async ({
@@ -74,7 +77,6 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
 
     await expect(page.locator(".alert-danger")).toBeVisible();
     await expect(page.locator(".alert-danger")).toContainText(/deactivated|disabled/i);
-    await captureScreenshot(page, viewport, "auth", "deactivated-account");
   });
 
   test("AC-04: Mandatory first password change, checklist validation, and re-login with new password", async ({
@@ -88,24 +90,23 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
     await page.locator("#login-password").fill("Initial123!");
     await page.getByRole("button", { name: "Sign In" }).click();
 
-    // 2. Land on mandatory Change Password screen
+    // 2. Land on mandatory Change Password screen — 04-change-password-screen
     await expect(page.getByRole("heading", { name: "Change Your Password" })).toBeVisible();
     await expect(
       page.getByText("You must change your initial password before accessing TokTickIT.")
     ).toBeVisible();
-    await captureScreenshot(page, viewport, "auth", "change-password-screen");
+    await captureScreenshot(page, "01-auth", "04-change-password-screen");
 
     // 3. Test checklist interaction: fill new password and confirm
     await page.locator("#current-password").fill("Initial123!");
     await page.locator("#new-password").fill("BrandNewPass123!");
     await page.locator("#confirm-password").fill("BrandNewPass123!");
 
-    // Verify all checklist items show checked
+    // Verify all checklist items show checked — 05-password-complexity-feedback
     await expect(page.locator("li", { hasText: "Be at least 8 characters" })).toContainText("✓");
     await expect(page.locator("li", { hasText: "Include uppercase and lowercase letters" })).toContainText("✓");
     await expect(page.locator("li", { hasText: "Include a number and a special character" })).toContainText("✓");
-
-    await captureScreenshot(page, viewport, "auth", "checklist-verified");
+    await captureScreenshot(page, "01-auth", "05-password-complexity-feedback");
 
     // 4. Submit change password
     await page.getByRole("button", { name: "Continue" }).click();
@@ -113,7 +114,6 @@ test.describe("E2E-01: Authentication, Password Lifecycle, and Session Managemen
     // 5. Land directly in Authenticated Shell
     await expect(page.getByRole("heading", { name: "My IT Support Tickets" })).toBeVisible();
     await expect(page.getByText("New Requester")).toBeVisible();
-    await captureScreenshot(page, viewport, "auth", "password-changed-shell");
 
     // 6. Logout and verify login with new password
     await page.getByRole("button", { name: "Sign Out" }).click();
