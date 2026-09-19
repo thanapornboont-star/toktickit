@@ -79,8 +79,28 @@ test.describe("Additional evidence: Part 6 Create Ticket error states", () => {
 test.describe("Additional evidence: Part 7 My Tickets empty/no-results", () => {
   test("empty state for a requester with zero tickets", async ({ page }, testInfo) => {
     const viewport = testInfo.project.name;
-    // index 3 = Sarah Johnson, confirmed 0 tickets via GET /api/tickets before this run
-    await selectRequester(page, 3);
+    // Intercept /api/tickets to ensure zero tickets are returned for empty state check
+    await page.route("**/api/tickets*", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            data: [],
+            tickets: [],
+            pagination: {
+              page: 1,
+              pageSize: 8,
+              totalItems: 0,
+              totalTickets: 0,
+              totalPages: 0,
+            },
+          }),
+        });
+      }
+      return route.continue();
+    });
+    await selectRequester(page, 1);
     await expect(page.getByText("No Tickets Created Yet")).toBeVisible();
     await shot(page, viewport, "my-tickets", "empty-state");
   });
