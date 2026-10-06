@@ -13,6 +13,7 @@ import {
   createPublicComment,
   indicateProblemResolved,
 } from "../api.js";
+import { ActionsTakenSection } from "./ActionsTakenSection.js";
 
 interface TicketDetailProps {
   requester: DevRequester | AuthUser;
@@ -629,6 +630,13 @@ export function TicketDetail({ requester, ticketId, onBack }: TicketDetailProps)
           </p>
         )}
       </div>
+
+      {/* Actions Taken Section (Lab 4: Work Item 5) */}
+      <ActionsTakenSection
+        ticketId={ticket.id}
+        currentUser={requester}
+        isReadOnly={true}
+      />
 
       {/* Public Comments Section */}
       <div className="pt-4 border-top mt-4">

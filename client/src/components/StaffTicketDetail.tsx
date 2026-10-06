@@ -15,6 +15,7 @@ import {
   getInternalNotes,
   createInternalNote,
 } from "../api.js";
+import { ActionsTakenSection } from "./ActionsTakenSection.js";
 
 const PERMITTED_STATUS_TRANSITIONS: Record<string, string[]> = {
   NEW: ["OPEN", "IN_PROGRESS", "CANCELLED"],
@@ -442,6 +443,13 @@ export function StaffTicketDetail({
           </div>
         </div>
       </section>
+ 
+      {/* Actions Taken Section (Lab 4: Work Item 5) */}
+      <ActionsTakenSection
+        ticketId={ticket.id}
+        currentUser={authUser}
+        isReadOnly={false}
+      />
 
       {/* Communications: Public Comments vs Internal Notes */}
       <div className="row g-4 mb-4">

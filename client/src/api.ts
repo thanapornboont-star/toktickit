@@ -709,4 +709,87 @@ export async function resetUserPassword(
   return data;
 }
 
+// ---------------------------------------------------------------------------
+// Actions Taken API (Lab 4: Work Item 5)
+// ---------------------------------------------------------------------------
+export interface ActionTakenItem {
+  id: number;
+  ticketId: number;
+  actionDateTime: string;
+  description: string;
+  result: string;
+  performedById: number;
+  performedBy: {
+    id: number;
+    name: string;
+    email?: string;
+    role?: string;
+  };
+  isFollowUpRequired: boolean;
+  followUpNote?: string | null;
+  attachmentNotes?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateActionTakenPayload {
+  description: string;
+  result: string;
+  isFollowUpRequired?: boolean;
+  followUpNote?: string | null;
+  attachmentNotes?: string | null;
+  actionDateTime?: string;
+}
+
+export interface UpdateActionTakenPayload {
+  description?: string;
+  result?: string;
+  isFollowUpRequired?: boolean;
+  followUpNote?: string | null;
+  attachmentNotes?: string | null;
+  actionDateTime?: string;
+}
+
+export async function getActionsTaken(ticketId: number): Promise<{ actions: ActionTakenItem[]; totalCount: number }> {
+  const headers = getAuthHeaders();
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/actions-taken`, { headers });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to fetch actions taken.");
+  return data;
+}
+
+export async function createActionTaken(
+  ticketId: number,
+  payload: CreateActionTakenPayload
+): Promise<ActionTakenItem> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/actions-taken`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to record action taken.");
+  return data.action;
+}
+
+export async function updateActionTaken(
+  ticketId: number,
+  actionId: number,
+  payload: UpdateActionTakenPayload
+): Promise<ActionTakenItem> {
+  const headers = getAuthHeaders();
+  headers["Content-Type"] = "application/json";
+  const response = await fetch(`${API_URL}/api/tickets/${ticketId}/actions-taken/${actionId}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data?.error?.message || "Failed to update action taken.");
+  return data.action;
+}
+
+
 
