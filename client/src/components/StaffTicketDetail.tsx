@@ -112,7 +112,16 @@ export function StaffTicketDetail({
     setActionErrorMsg("");
     try {
       const updated = await updateTicketOwner(ticketId, authUser.id);
-      setTicket((prev) => (prev ? { ...prev, ownerId: updated.ownerId, owner: updated.owner as any } : null));
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              ownerId: updated.ownerId,
+              owner: updated.owner as any,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
       setSelectedOwnerId(String(authUser.id));
       setActionSuccessMsg(`Ticket assigned to you (${authUser.name}).`);
     } catch (err: any) {
@@ -126,7 +135,16 @@ export function StaffTicketDetail({
     try {
       const ownerId = newOwnerIdStr === "" ? null : Number(newOwnerIdStr);
       const updated = await updateTicketOwner(ticketId, ownerId);
-      setTicket((prev) => (prev ? { ...prev, ownerId: updated.ownerId, owner: updated.owner as any } : null));
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              ownerId: updated.ownerId,
+              owner: updated.owner as any,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
       setSelectedOwnerId(newOwnerIdStr);
       setActionSuccessMsg(
         ownerId === null
@@ -145,7 +163,15 @@ export function StaffTicketDetail({
     setActionErrorMsg("");
     try {
       const updated = await updateTicketPriority(ticketId, newPriority as "LOW" | "MEDIUM" | "HIGH");
-      setTicket((prev) => (prev ? { ...prev, itPriority: updated.itPriority as any } : null));
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              itPriority: updated.itPriority as any,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
       setSelectedPriority(updated.itPriority);
       setActionSuccessMsg(`IT Priority updated to ${updated.itPriority}.`);
     } catch (err: any) {

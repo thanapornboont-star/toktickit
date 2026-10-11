@@ -284,6 +284,7 @@ staffRouter.patch("/tickets/:id/owner", async (req: Request, res: Response) => {
           id: updated.id,
           ownerId: null,
           owner: null,
+          updatedAt: updated.updatedAt.toISOString(),
         },
       });
     }
@@ -319,6 +320,7 @@ staffRouter.patch("/tickets/:id/owner", async (req: Request, res: Response) => {
         id: updated.id,
         ownerId: updated.ownerId,
         owner: updated.owner,
+        updatedAt: updated.updatedAt.toISOString(),
       },
     });
   } catch (err) {
@@ -372,6 +374,7 @@ staffRouter.patch("/tickets/:id/priority", async (req: Request, res: Response) =
       ticket: {
         id: updated.id,
         itPriority: updated.itPriority,
+        updatedAt: updated.updatedAt.toISOString(),
       },
     });
   } catch (err) {
@@ -457,6 +460,7 @@ staffRouter.patch("/tickets/:id/status", async (req: Request, res: Response) => 
       ticket: {
         id: updated.id,
         status: updated.status,
+        updatedAt: updated.updatedAt.toISOString(),
       },
     });
   } catch (err) {
