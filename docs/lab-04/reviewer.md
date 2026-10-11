@@ -13,7 +13,7 @@
 | [#72](https://github.com/thanapornboont-star/toktickit/pull/72) | `sprint4/actions-taken-foundation` | `lab4-staging` | Closes #62 | Approved | @jiraphat-j |
 | [#73](https://github.com/thanapornboont-star/toktickit/pull/73) | `sprint4/actions-taken-api` | `lab4-staging` | Closes #63 | Approved | @jiraphat-j |
 | [#74](https://github.com/thanapornboont-star/toktickit/pull/74) | `sprint4/dashboard-api` | `lab4-staging` | Closes #64 | Approved | @jiraphat-j |
-| TBD | `sprint4/actions-taken-ui` | `lab4-staging` | Issue #65 | Planned | @jiraphat-j |
+| [#75](https://github.com/thanapornboont-star/toktickit/pull/75) | `sprint4/actions-taken-ui` | `lab4-staging` | Closes #65 | Approved | @jiraphat-j |
 | TBD | `sprint4/ticket-workflow-ui` | `lab4-staging` | Issue #66 | Planned | @jiraphat-j |
 | TBD | `sprint4/role-dashboards-ui` | `lab4-staging` | Issue #67 | Planned | @jiraphat-j |
 | TBD | `sprint4/responsive-visual-qa` | `lab4-staging` | Issue #68 | Planned | @jiraphat-j |
@@ -31,7 +31,7 @@
 | **Work Item 2** | Test DD and Acceptance Traceability Plan | [PR #67](https://github.com/jiraphat-j/toktickit/pull/67) | "ตรวจ PR #67 เรียบร้อยค่ะ โดยรวม Test DD / Traceability วางโครงสร้างมาดีครับ มีการ map AC-01 ถึง AC-14 และแยก test ID ตาม Migration, Actions Taken, Security/RBAC, Workflow, Dashboard, UI และ E2E ไว้ชัดเจน<br><br>แต่มีจุดที่อยากให้แก้ดังนี้:<br>1. `docs/lab-04/ai-use.md` ตรง `## My Reflection` ตอนนี้ยังเป็น placeholder ว่าจะเขียนหลังพัฒนาทุกขั้นตอนเสร็จ รบกวนเติม reflection ที่สะท้อนการใช้ specification/test agent และสิ่งที่ผู้ทำ review หรือแก้ไขเองให้เรียบร้อย<br>2. ใน AI-use ระบุว่า Test DD มี 35 test cases และ traceability AC-01 ถึง AC-14 ครบ 100% แล้ว แต่ PR นี้ยังเป็น Test Plan ก่อน implementation ดังนั้นรบกวนตรวจ `tests.md` ให้ coverage ตรงกับ requirement ของ Lab 4 จริง ๆ โดยเฉพาะ migration/regression, performance-smoke, responsive/UI style และ security/authorization และอย่าให้คำว่า 100% สื่อว่าเป็นผล execution ที่ผ่านแล้วค่ะ<br><br>ช่วยตรวจสอบอีกทีด้วยนะคะ"<br>*(หลังแก้ไข)* -> "ตรวจสอบแล้วค่ะ ขอบคุณที่แก้นะคะ" | "> ตรวจ PR #67 เรียบร้อยค่ะ...<br><br>แก้ไขตามคำแนะนำทั้ง 2 ข้อเรียบร้อยแล้วครับ:<br>1. **เติม `## My Reflection` ใน `docs/lab-04/ai-use.md`:** สะท้อนบทบาทการกำกับ AI, การปรับโครงสร้างเป็น 11 Issues, คุณค่าของการแยก Spec DD/Test DD และการปรับแก้ตาม Peer Review<br>2. **ปรับปรุง `docs/lab-04/tests.md` ให้ครอบคลุม 10 Test Types:** ตาม Section 10 ของเอกสารแล็บ โดยเพิ่ม Performance-Smoke tests (`SMOKE-01`, `SMOKE-02`), แยก UI Style (`STYLE-01`) และ Responsive tests (`RESP-01`) ชัดเจน<br>3. **ปรับถ้อยคำระบุชัดเจน:** ระบุว่าเป็น **100% Planned Requirements Coverage** ก่อน implementation จริง เพื่อไม่ให้สับสนกับผล execution<br><br>รบกวนตรวจทานอีกครั้งนะครับ ขอบคุณครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 3** | Database Migration, ActionTaken Model & Seed | [PR #68](https://github.com/jiraphat-j/toktickit/pull/68) | "ตรวจ PR #68 เรียบร้อยค่ะ โครงสร้าง Database Layer, Migration และ Seed Data ของ Issue #57 จัดการได้ถูกต้องและรัดกุมมากค่ะ:<br><br>1. **Prisma Schema & Relations**:<br>   - โมเดล `ActionTaken` มีฟิลด์ครบถ้วนตามสเปก และผูก Relation กับ `Ticket` (Cascade) และ `User` (Restrict) ได้ถูกต้องตามหลัก Data Integrity<br>   - มีการทำ Indexes บน `ticketId`, `performedById`, และ `actionDateTime` รองรับการ Query คิวและ Dashboard ในรอบถัดไป<br>2. **Migration & Backward Compatibility**:<br>   - Custom SQL Migration เป็นแบบ Non-destructive ไม่กระทบข้อมูลเดิมของ Lab 1–3 (Zero Data Loss)<br>3. **Idempotent Seed Data & Automated Tests**:<br>   - ตัว Seed จำลองข้อมูลได้สมจริง ครอบคลุมทั้งเคสที่ตั๋วมีหลาย Actions โดยเจ้าหน้าที่ต่างคนกัน (สอดคล้องกับ BR-02), มี Action เดียว, และไม่มี Action (รองรับ Resolution Gate)<br>   - มีเทสต์ครอบคลุม `MIG-01`, `MIG-02` และ `SEED-01` ครบถ้วน รันผ่าน 100%<br><br>โดยรวมเรียบร้อยสมบูรณ์ **Approved & พร้อม Merge** ได้เลยค่ะ!" | "> ตรวจ PR #68 เรียบร้อยค่ะ โครงสร้าง Database Layer, Migration และ Seed Data ของ Issue #57 จัดการได้ถูกต้องและรัดกุมมากค่ะ:...<br><br>ขอบคุณครับ mege ให้หน่อยครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 4** | Actions Taken REST APIs & Authorization | [PR #69](https://github.com/jiraphat-j/toktickit/pull/69) | "ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม<br><br>1. **Actions Taken REST APIs & Validation**:<br>   - มีการตรวจสอบ Validation ครบถ้วนทั้ง description, result, การบังคับ `followUpNote` เมื่อมี follow-up และการตรวจจับวันที่ในอนาคต<br>   - ล็อก `performedById` จาก Authenticated Session อัตโนมัติ ป้องกันการ Spoofing ข้อมูล<br>2. **Security & Zero Leakage**:<br>   - กักกันสิทธิ์ Requester ด้วย HTTP 404 เมื่อพยายามดูตั๋วที่ไม่ใช่ของตนเอง (Zero Leakage) และบล็อกคำขอเขียนด้วย HTTP 403 อย่างเคร่งครัด<br>3. **Optimistic Concurrency Control**:<br>   - จัดการ State เมื่อมีการแก้ไขชนกันด้วย HTTP 409 Conflict และแนบ `currentUpdatedAt` กลับมาตรงตามสเปก<br>4. **Integration Tests**:<br>   - ครอบคลุมทั้ง Happy Path, Field Validations, RBAC, Concurrency และ Performance-Smoke (SMOKE-02 < 150ms) รันผ่านครบ 100%" | "> ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม...<br><br>merge ให้ได้เลยครับ" | **Approved & Merged** by @thanapornboont-star |
-| **Work Item 5** | Actions Taken UI on Ticket Detail | `[Link Partner PR]` | — | — | Planned |
+| **Work Item 5** | Actions Taken UI on Ticket Detail | [PR #70](https://github.com/jiraphat-j/toktickit/pull/70) | *(รอบแรก)* "ตรวจ PR #70 เรียบร้อยค่ะ มีจุดให้ตรวจอีนิดหน่อย: 1. PR Description... 2. Requester Ticket Detail... 3. Reviewer Record... ฝากแก้ Description แล้วพร้อม Approve ให้ได้เลยค่ะ!"<br><br>*(รอบสอง)* "ตรวจ PR #70 รอบสองเรียบร้อยค่ะ 1. Actions Taken UI & Layout (UI-ACT-01, AC-01)... 2. Form Validation & Performer Attribution (UI-ACT-02, UI-ACT-03, BR-04, BR-07)... 3. Concurrency Conflict Handling (409 Conflict)... 4. Automated Component Verification (Vitest 7 tests ผ่าน 100%)... โดยรวมงานเรียบร้อยสมบูรณ์ทุกจุด Approved & พร้อม Merge" | "> ตรวจ PR #70 เรียบร้อยค่ะ...<br>ช่วยตรวจสอบใหม่หน่อยครับพอดีผมเพิ่งแก้ description<br><br>> ตรวจ PR #70 รอบสองเรียบร้อยค่ะ...<br>ขอบคุณครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 6** | Ticket Workflow & Resolution Gate | `[Link Partner PR]` | — | — | Planned |
 | **Work Item 7** | IT Staff Operational Dashboard | `[Link Partner PR]` | — | — | Planned |
 | **Work Item 8** | Requester Role Dashboard | `[Link Partner PR]` | — | — | Planned |
@@ -152,6 +152,39 @@
 
 ---
 
+### PR #75 (for Issue #65: feat(ui): implement Actions Taken UI on Ticket Detail)
+- **PR:** [PR #75](https://github.com/thanapornboont-star/toktickit/pull/75)
+- **Feature Branch**: `sprint4/actions-taken-ui`
+- **Target Branch**: `lab4-staging`
+- **Author**: @thanapornboont-star
+- **Reviewer**: @jiraphat-j
+- **Review Decision**: `APPROVED` (Submitted at 2026-10-06T08:40:17Z)
+- **Reviewer Comment (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"ตรวจ PR #75 เรียบร้อยครับ การพัฒนา Work Item 5 (Actions Taken UI Component & Integration) ทำได้ประณีตและครอบคลุมทุก Use Case มากครับ:*  
+  >  
+  > *1. **Component Architecture & Reusability**:*  
+  > *   - `ActionsTakenSection` ออกแบบ Props ให้รองรับ `isReadOnly` ได้ยืดหยุ่น ทำให้ reuse ข้ามระหว่าง `TicketDetail` (Requester) และ `StaffTicketDetail` (Staff/Admin) ได้อย่างสะอาดตา*  
+  > *   - มีการแยก State การเปิด Modal ทั้งกรณี Create ใหม่ และ Edit ข้อมูลเดิมที่ populate ค่าเดิมกลับเข้าฟอร์มอย่างครบถ้วน*  
+  >  
+  > *2. **Form Validation & Business Rules Enforcement (BR-01 ถึง BR-06, AC-01 ถึง AC-04)**:*  
+  > *   - บังคับ Validation ตัวอักษร 3–2000 ตัวทั้ง Description และ Result*  
+  > *   - กฎ Follow-up Note ทำงานถูกต้อง: บังคับกรอกทันทีที่เลือกเช็กบอกซ์ `isFollowUpRequired` และเคลียร์ค่าออกเมื่อไม่ต้องการ*  
+  > *   - ดักจับการเลือกเวลาในอนาคตเกิน 5 นาที ป้องกันความผิดพลาดของข้อมูลก่อนส่งไปยังเซิร์ฟเวอร์*  
+  > *   - ฝั่ง Requester ถูกจำกัดเป็น Read-only ไม่มีปุ่มเพิ่มหรือแก้ไขปรากฏขึ้น ตามข้อกำหนด BR-06*  
+  >  
+  > *3. **User Experience & Styling**:*  
+  > *   - ตารางจัด Layout และ Badge สถานะอ่านง่าย (แยกสี Follow-up, Staff/Admin role badge)*  
+  > *   - จัดการ State ระหว่างโหลด (`isLoading`) และ Empty State เมื่อไม่มีข้อมูลได้เรียบร้อย พร้อมแจ้งเตือน Feedback การบันทึก*  
+  >  
+  > *4. **Client Unit Tests (UI-01, UI-02)**:*  
+  > *   - ครอบคลุมการจำลองทั้ง Staff Persona (การเปิด Modal, Validation, บันทึก) และ Requester Persona (Read-only Verification) ผ่าน React Testing Library อย่างครบถ้วน*  
+  >  
+  > *โดยรวมโค้ดเรียบร้อยและทำงานสอดคล้องกับ API ก่อนหน้าอย่างสมบูรณ์ **Approved & พร้อม Merge** ครับ"*
+- **My Response (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *"ขอบใจจ้าาาา"*
+
+---
+
 ### Partner PR #66 (for Issue #55: docs: Sprint 4 engineering contract and specification)
 - **PR:** [PR #66](https://github.com/jiraphat-j/toktickit/pull/66)
 - **Repository:** https://github.com/jiraphat-j/toktickit
@@ -249,3 +282,44 @@
   > *"> ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม...*  
   >  
   > *merge ให้ได้เลยครับ"*
+
+---
+
+### Partner PR #70 (for Issue #59: feat(ui): implement Actions Taken section and modal on Ticket Detail)
+- **PR:** [PR #70](https://github.com/jiraphat-j/toktickit/pull/70)
+- **Repository:** https://github.com/jiraphat-j/toktickit
+- **Feature Branch**: `feature/59-actions-taken-ui`
+- **Target Branch**: `lab4-staging`
+- **Author**: @jiraphat-j
+- **Reviewer**: @thanapornboont-star
+- **Review Decision**: Initial Review `CHANGES_REQUESTED` (2026-10-06T08:29:43Z), Final Review `APPROVED` (2026-10-06T08:41:35Z)
+- **Reviewer Comment Given by Me (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *(Initial Review)*  
+  > *"ตรวจ PR #70 เรียบร้อยค่ะ*  
+  > *มีจุดให้ตรวจอีนิดหน่อย:*  
+  > *1. **PR Description**: ในช่องรายละเอียดของ PR #70 เหมือนจะเผลอวางข้อความรีวิวของ Partner PR #75 มาใส่แทน Summary of Changes ฝากแก้ไขข้อความใน PR Description ให้ตรงกับงานของ Issue #59 ด้วยนะคะ*  
+  > *2. **Requester Ticket Detail**: ตอนนี้คอมโพเนนต์ `ActionsTaken` ถูกนำไปผูกเข้ากับ `StaffTicketDetail` เรียบร้อยแล้ว สำหรับฝั่ง Requester (`RequesterTicketDetail.tsx`) เพื่อให้ตรงตาม AC-04 ที่ Requester สามารถดูประวัติการดำเนินงานแบบ Read-only ได้ด้วย สามารถนำไปแปะเพิ่มแบบ `isReadOnly={true}` ใน PR นี้หรือวางแผนเชื่อมต่อใน Issue #62 ก็ได้ค่ะ*  
+  > *3. **Reviewer Record**: ในไฟล์ `docs/lab-04/reviewer.md` ตาราง Section 1 ของ **Issue #59** สามารถอัปเดตเป็นลิงก์ `[PR #70]` ได้เลยค่ะ*  
+  >  
+  > *โดยรวมโครงสร้างคอมโพเนนต์และการทดสอบยอดเยี่ยมมากค่ะ ฝากแก้ Description แล้วพร้อม Approve ให้ได้เลยค่ะ!"*  
+  >  
+  > *(Final Review)*  
+  > *"ตรวจ PR #70 รอบสองเรียบร้อยค่ะ*  
+  > *1. **Actions Taken UI & Layout (UI-ACT-01, AC-01)**:*  
+  > *   - แสดงผลแบบ Dual Layout รองรับทั้ง Desktop Table (≥992px) และ Mobile Card Stack (<768px) ป้องกันปัญหาหน้าจอล้นแนวนอนได้อย่างดี*  
+  > *   - ใช้โทนสีและดีไซน์ตรงตามเอกลักษณ์ของ Zen Green Design System สวยงามและกลมกลืนกับระบบเดิม*  
+  > *2. **Form Validation & Performer Attribution (UI-ACT-02, UI-ACT-03, BR-04, BR-07)**:*  
+  > *   - Modal Form มีคุณสมบัติตามมาตรฐาน ARIA Accessibility*  
+  > *   - มี Client-Side Validation ตรวจสอบความยาว Description (5–2000 chars), Result (2–2000 chars) และบังคับกรอก `followUpNote` เมื่อติ๊กเลือก Follow-up ได้ถูกต้อง*  
+  > *   - ล็อกชื่อและบทบาทของผู้ปฏิบัติงาน (`performedBy`) จาก Session ในแบบ Read-only ป้องกันการแก้ไขตัวตน*  
+  > *3. **Concurrency Conflict Handling (409 Conflict)**:*  
+  > *   - จัดการ State เมื่อมีการแก้ไขชนกันด้วยการแสดง Alert แจ้งเตือน และรีเฟรชข้อมูลล่าสุดให้อัตโนมัติ*  
+  > *4. **Automated Component Verification**:*  
+  > *   - ชุดทดสอบ Vitest ใน `ActionsTaken.test.tsx` (7 tests) ครอบคลุม UI-ACT-01 ถึง UI-ACT-04, Concurrency และ Safe Failure Retry ครบถ้วน รันผ่าน 100% ปราศจาก Regression*  
+  >  
+  > *โดยรวมงานเรียบร้อยสมบูรณ์ทุกจุด **Approved & พร้อม Merge**"*
+- **Partner Response (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"> ตรวจ PR #70 เรียบร้อยค่ะ มีจุดให้ตรวจอีนิดหน่อย:...*  
+  > *ช่วยตรวจสอบใหม่หน่อยครับพอดีผมเพิ่งแก้ description*  
+  >  
+  > *ขอบคุณครับ"*
