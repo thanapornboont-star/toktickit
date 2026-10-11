@@ -14,7 +14,7 @@
 | [#73](https://github.com/thanapornboont-star/toktickit/pull/73) | `sprint4/actions-taken-api` | `lab4-staging` | Closes #63 | Approved | @jiraphat-j |
 | [#74](https://github.com/thanapornboont-star/toktickit/pull/74) | `sprint4/dashboard-api` | `lab4-staging` | Closes #64 | Approved | @jiraphat-j |
 | [#75](https://github.com/thanapornboont-star/toktickit/pull/75) | `sprint4/actions-taken-ui` | `lab4-staging` | Closes #65 | Approved | @jiraphat-j |
-| TBD | `sprint4/ticket-workflow-ui` | `lab4-staging` | Issue #66 | Planned | @jiraphat-j |
+| [#76](https://github.com/thanapornboont-star/toktickit/pull/76) | `sprint4/ticket-workflow-ui` | `lab4-staging` | Closes #66 | Approved | @jiraphat-j |
 | TBD | `sprint4/role-dashboards-ui` | `lab4-staging` | Issue #67 | Planned | @jiraphat-j |
 | TBD | `sprint4/responsive-visual-qa` | `lab4-staging` | Issue #68 | Planned | @jiraphat-j |
 | TBD | `sprint4/e2e-traceability` | `lab4-staging` | Issue #69 | Planned | @jiraphat-j |
@@ -182,6 +182,48 @@
   > *โดยรวมโค้ดเรียบร้อยและทำงานสอดคล้องกับ API ก่อนหน้าอย่างสมบูรณ์ **Approved & พร้อม Merge** ครับ"*
 - **My Response (@thanapornboont-star) (Verbatim 100% from GitHub)**:
   > *"ขอบใจจ้าาาา"*
+
+---
+
+### PR #76 (for Issue #66: feat(ui): implement Ticket Status Workflow & Resolution UI Controls)
+- **PR:** [PR #76](https://github.com/thanapornboont-star/toktickit/pull/76)
+- **Feature Branch**: `sprint4/ticket-workflow-ui`
+- **Target Branch**: `lab4-staging`
+- **Author**: @thanapornboont-star
+- **Reviewer**: @jiraphat-j
+- **Review Decision**: `APPROVED` (Submitted at 2026-10-11T04:16:23Z)
+- **Reviewer Comment (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"ตรวจ PR #76 เรียบร้อยครับ  Vitest บน branch จริงผ่าน 14/14 test files (79 tests passed) ครบถ้วนครับ:*  
+  >  
+  > *1. **State Machine UI Enforcement (BR-09, AC-05, AC-06)**:*  
+  > *   - ตรวจสอบ `PERMITTED_STATUS_TRANSITIONS` ในตัวเลือก Dropdown ได้ถูกต้อง ไม่อนุญาตให้ผู้ใช้เลือกข้ามสถานะที่ไม่ได้รับอนุญาต เช่น จาก `NEW` จะมีให้เลือกเฉพาะ `OPEN`, `IN_PROGRESS` และ `CANCELLED` เท่านั้น*  
+  >  
+  > *2. **Advisory Resolution Banner & Formal Resolution (BR-10, BR-11, AC-07)**:*  
+  > *   - แบนเนอร์ `requesterIndicatedResolved` ปรับปรุง UI ให้เห็นชัดเจน และมีปุ่ม "Formally Resolve Ticket" อิงตามสถานะที่อนุญาตให้เปลี่ยนเป็น `RESOLVED` ได้จริง*  
+  > *   - เมื่อกด Resolve ระบบจะเรียกฟังก์ชันอัปเดตไปยังสถานะ `RESOLVED` โดยตรงพร้อมดึง timestamp ปัจจุบันไปตรวจสอบ*  
+  >  
+  > *3. **Optimistic Concurrency Control (BR-12, AC-08)**:*  
+  > *   - ใน `client/src/api.ts` ฟังก์ชัน `updateTicketStatus` รองรับการส่ง `clientUpdatedAt` และกระจาย `error.status = 409` ออกมาให้ UI ใช้งานได้*  
+  > *   - ใน `server/src/routes/staff.ts` มีการดักจับ timestamp diff > 1000ms แล้วคืนค่า HTTP `409 CONFLICT` อย่างรัดกุม*  
+  > *   - `StaffTicketDetail.tsx` จัดการแจ้งเตือนผู้ใช้งานเมื่อเกิด Conflict 409 ได้ชัดเจน เพื่อป้องกันการเขียนทับข้อมูลโดยไม่ตั้งใจ*  
+  >  
+  > *4. **Component Unit Tests (UI-03a, UI-03b, UI-03c)**:*  
+  > *   - ครอบคลุมทั้งกฎ State Machine, พฤติกรรม Advisory Banner + Resolution Button และการจัดการ Concurrency Error 409*  
+  >  
+  > * **Approved & พร้อม Merge** ครับ"*
+- **My Response (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *"> ตรวจ PR #76 เรียบร้อยครับ Vitest บน branch จริงผ่าน 14/14 test files (79 tests passed) ครบถ้วนครับ:*  
+  > *> 1. **State Machine UI Enforcement (BR-09, AC-05, AC-06)**:*  
+  > *>    - ตรวจสอบ `PERMITTED_STATUS_TRANSITIONS` ในตัวเลือก Dropdown ได้ถูกต้อง...*  
+  > *> 2. **Advisory Resolution Banner & Formal Resolution (BR-10, BR-11, AC-07)**:*  
+  > *>    - แบนเนอร์ `requesterIndicatedResolved` ปรับปรุง UI ให้เห็นชัดเจน...*  
+  > *> 3. **Optimistic Concurrency Control (BR-12, AC-08)**:*  
+  > *>    - ใน `client/src/api.ts` ฟังก์ชัน `updateTicketStatus`...*  
+  > *> 4. **Component Unit Tests (UI-03a, UI-03b, UI-03c)**:*  
+  > *>    - ครอบคลุมทั้งกฎ State Machine...*  
+  > *> **Approved & พร้อม Merge** ครับ*  
+  >  
+  > *ขอบคุณค่ะ หวังว่าไม่มีอะไรผิดพลาดต่อไปนะคะ"*
 
 ---
 
