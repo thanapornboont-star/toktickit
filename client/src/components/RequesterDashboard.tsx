@@ -147,6 +147,7 @@ export function RequesterDashboard({
                 data-testid="metric-card-total-open"
                 role="button"
                 tabIndex={0}
+                aria-label={`My open tickets: ${metrics?.totalOpen ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -170,6 +171,7 @@ export function RequesterDashboard({
                 data-testid="metric-card-in-progress"
                 role="button"
                 tabIndex={0}
+                aria-label={`In progress tickets: ${metrics?.inProgress ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -193,6 +195,7 @@ export function RequesterDashboard({
                 data-testid="metric-card-waiting"
                 role="button"
                 tabIndex={0}
+                aria-label={`Waiting on me tickets: ${metrics?.waitingForRequester ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -216,6 +219,7 @@ export function RequesterDashboard({
                 data-testid="metric-card-resolved"
                 role="button"
                 tabIndex={0}
+                aria-label={`Recently resolved tickets: ${metrics?.recentlyResolved ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">

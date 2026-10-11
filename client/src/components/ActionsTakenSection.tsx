@@ -310,13 +310,15 @@ export function ActionsTakenSection({
           className="modal show d-block"
           tabIndex={-1}
           role="dialog"
+          aria-modal="true"
+          aria-labelledby="action-taken-modal-title"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
           data-testid="action-taken-modal"
         >
           <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div className="modal-content shadow">
               <div className="modal-header">
-                <h5 className="modal-title">
+                <h5 className="modal-title" id="action-taken-modal-title">
                   {editingActionId ? "Edit Action Taken" : "Record Action Taken"}
                 </h5>
                 <button
