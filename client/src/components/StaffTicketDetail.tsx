@@ -159,14 +159,54 @@ export function StaffTicketDetail({
     setActionSuccessMsg("");
     setActionErrorMsg("");
     try {
-      const updated = await updateTicketStatus(ticketId, selectedNextStatus);
-      setTicket((prev) => (prev ? { ...prev, status: updated.status } : null));
+      const updated = await updateTicketStatus(ticketId, selectedNextStatus, ticket?.updatedAt);
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: updated.status,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
 
       const nextTransitions = PERMITTED_STATUS_TRANSITIONS[updated.status] ?? [];
       setSelectedNextStatus(nextTransitions[0] ?? "");
       setActionSuccessMsg(`Ticket status updated to ${STATUS_LABELS[updated.status] ?? updated.status}.`);
     } catch (err: any) {
-      setActionErrorMsg(err?.message || "Failed to update status.");
+      if (err.status === 409 || err.code === "CONFLICT") {
+        setActionErrorMsg("Ticket has been updated by another user. Please refresh and retry.");
+      } else {
+        setActionErrorMsg(err?.message || "Failed to update status.");
+      }
+    }
+  };
+
+  // Handle Formal Resolution via Advisory Banner
+  const handleFormallyResolve = async () => {
+    setActionSuccessMsg("");
+    setActionErrorMsg("");
+    try {
+      const updated = await updateTicketStatus(ticketId, "RESOLVED", ticket?.updatedAt);
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: updated.status,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
+
+      const nextTransitions = PERMITTED_STATUS_TRANSITIONS[updated.status] ?? [];
+      setSelectedNextStatus(nextTransitions[0] ?? "");
+      setActionSuccessMsg("Ticket formally resolved successfully.");
+    } catch (err: any) {
+      if (err.status === 409 || err.code === "CONFLICT") {
+        setActionErrorMsg("Ticket has been updated by another user. Please refresh and retry.");
+      } else {
+        setActionErrorMsg(err?.message || "Failed to resolve ticket.");
+      }
     }
   };
 
@@ -295,9 +335,29 @@ export function StaffTicketDetail({
         </div>
 
         {ticket.requesterIndicatedResolved && (
-          <div className="alert alert-info py-2 mb-3 d-flex align-items-center gap-2" role="status">
-            <span>✓</span>
-            <strong>Requester has indicated that this problem appears resolved.</strong>
+          <div
+            className="alert alert-warning py-3 mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2"
+            role="status"
+            data-testid="advisory-resolution-banner"
+          >
+            <div>
+              <strong className="d-block mb-1">
+                ⚠️ Requester Feedback: The requester has indicated that this problem appears resolved.
+              </strong>
+              <small className="text-muted">
+                Please review the Actions Taken and formally resolve this ticket.
+              </small>
+            </div>
+            {permittedTransitions.includes("RESOLVED") && (
+              <button
+                type="button"
+                className="btn btn-success btn-sm text-nowrap"
+                onClick={() => void handleFormallyResolve()}
+                data-testid="formally-resolve-btn"
+              >
+                Formally Resolve Ticket
+              </button>
+            )}
           </div>
         )}
 

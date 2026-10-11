@@ -431,6 +431,22 @@ staffRouter.patch("/tickets/:id/status", async (req: Request, res: Response) => 
       }
     }
 
+    // Optimistic concurrency control (BR-12, AC-08)
+    const { clientUpdatedAt } = req.body;
+    if (clientUpdatedAt) {
+      const clientTime = new Date(clientUpdatedAt).getTime();
+      const serverTime = new Date(ticket.updatedAt).getTime();
+      if (Math.abs(clientTime - serverTime) > 1000) {
+        return res.status(409).json({
+          error: {
+            code: "CONFLICT",
+            message: "Ticket has been updated by another user. Please refresh and retry.",
+            currentUpdatedAt: ticket.updatedAt.toISOString(),
+          },
+        });
+      }
+    }
+
     const updated = await prisma.ticket.update({
       where: { id },
       data: { status: nextStatus },
