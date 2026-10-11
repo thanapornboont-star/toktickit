@@ -582,17 +582,24 @@ export async function updateTicketPriority(
 
 export async function updateTicketStatus(
   ticketId: number,
-  status: string
-): Promise<{ id: number; status: string }> {
+  status: string,
+  clientUpdatedAt?: string
+): Promise<{ id: number; status: string; updatedAt?: string }> {
   const headers = getAuthHeaders();
   headers["Content-Type"] = "application/json";
   const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/status`, {
     method: "PATCH",
     headers,
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status, clientUpdatedAt }),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data?.error?.message || "Failed to update ticket status.");
+  if (!response.ok) {
+    const error = new Error(data?.error?.message || "Failed to update ticket status.") as any;
+    error.status = response.status;
+    error.code = data?.error?.code;
+    error.currentUpdatedAt = data?.error?.currentUpdatedAt;
+    throw error;
+  }
   return data.ticket;
 }
 
