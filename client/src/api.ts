@@ -551,7 +551,7 @@ export interface InternalNoteItem {
 export async function updateTicketOwner(
   ticketId: number,
   ownerId: number | null
-): Promise<{ id: number; ownerId: number | null; owner: { id: number; name: string } | null }> {
+): Promise<{ id: number; ownerId: number | null; owner: { id: number; name: string } | null; updatedAt?: string }> {
   const headers = getAuthHeaders();
   headers["Content-Type"] = "application/json";
   const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/owner`, {
@@ -567,7 +567,7 @@ export async function updateTicketOwner(
 export async function updateTicketPriority(
   ticketId: number,
   itPriority: "LOW" | "MEDIUM" | "HIGH"
-): Promise<{ id: number; itPriority: string }> {
+): Promise<{ id: number; itPriority: string; updatedAt?: string }> {
   const headers = getAuthHeaders();
   headers["Content-Type"] = "application/json";
   const response = await fetch(`${API_URL}/api/staff/tickets/${ticketId}/priority`, {
