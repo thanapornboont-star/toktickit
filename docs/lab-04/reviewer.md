@@ -32,7 +32,7 @@
 | **Work Item 3** | Database Migration, ActionTaken Model & Seed | [PR #68](https://github.com/jiraphat-j/toktickit/pull/68) | "ตรวจ PR #68 เรียบร้อยค่ะ โครงสร้าง Database Layer, Migration และ Seed Data ของ Issue #57 จัดการได้ถูกต้องและรัดกุมมากค่ะ:<br><br>1. **Prisma Schema & Relations**:<br>   - โมเดล `ActionTaken` มีฟิลด์ครบถ้วนตามสเปก และผูก Relation กับ `Ticket` (Cascade) และ `User` (Restrict) ได้ถูกต้องตามหลัก Data Integrity<br>   - มีการทำ Indexes บน `ticketId`, `performedById`, และ `actionDateTime` รองรับการ Query คิวและ Dashboard ในรอบถัดไป<br>2. **Migration & Backward Compatibility**:<br>   - Custom SQL Migration เป็นแบบ Non-destructive ไม่กระทบข้อมูลเดิมของ Lab 1–3 (Zero Data Loss)<br>3. **Idempotent Seed Data & Automated Tests**:<br>   - ตัว Seed จำลองข้อมูลได้สมจริง ครอบคลุมทั้งเคสที่ตั๋วมีหลาย Actions โดยเจ้าหน้าที่ต่างคนกัน (สอดคล้องกับ BR-02), มี Action เดียว, และไม่มี Action (รองรับ Resolution Gate)<br>   - มีเทสต์ครอบคลุม `MIG-01`, `MIG-02` และ `SEED-01` ครบถ้วน รันผ่าน 100%<br><br>โดยรวมเรียบร้อยสมบูรณ์ **Approved & พร้อม Merge** ได้เลยค่ะ!" | "> ตรวจ PR #68 เรียบร้อยค่ะ โครงสร้าง Database Layer, Migration และ Seed Data ของ Issue #57 จัดการได้ถูกต้องและรัดกุมมากค่ะ:...<br><br>ขอบคุณครับ mege ให้หน่อยครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 4** | Actions Taken REST APIs & Authorization | [PR #69](https://github.com/jiraphat-j/toktickit/pull/69) | "ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม<br><br>1. **Actions Taken REST APIs & Validation**:<br>   - มีการตรวจสอบ Validation ครบถ้วนทั้ง description, result, การบังคับ `followUpNote` เมื่อมี follow-up และการตรวจจับวันที่ในอนาคต<br>   - ล็อก `performedById` จาก Authenticated Session อัตโนมัติ ป้องกันการ Spoofing ข้อมูล<br>2. **Security & Zero Leakage**:<br>   - กักกันสิทธิ์ Requester ด้วย HTTP 404 เมื่อพยายามดูตั๋วที่ไม่ใช่ของตนเอง (Zero Leakage) และบล็อกคำขอเขียนด้วย HTTP 403 อย่างเคร่งครัด<br>3. **Optimistic Concurrency Control**:<br>   - จัดการ State เมื่อมีการแก้ไขชนกันด้วย HTTP 409 Conflict และแนบ `currentUpdatedAt` กลับมาตรงตามสเปก<br>4. **Integration Tests**:<br>   - ครอบคลุมทั้ง Happy Path, Field Validations, RBAC, Concurrency และ Performance-Smoke (SMOKE-02 < 150ms) รันผ่านครบ 100%" | "> ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม...<br><br>merge ให้ได้เลยครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 5** | Actions Taken UI on Ticket Detail | [PR #70](https://github.com/jiraphat-j/toktickit/pull/70) | *(รอบแรก)* "ตรวจ PR #70 เรียบร้อยค่ะ มีจุดให้ตรวจอีนิดหน่อย: 1. PR Description... 2. Requester Ticket Detail... 3. Reviewer Record... ฝากแก้ Description แล้วพร้อม Approve ให้ได้เลยค่ะ!"<br><br>*(รอบสอง)* "ตรวจ PR #70 รอบสองเรียบร้อยค่ะ 1. Actions Taken UI & Layout (UI-ACT-01, AC-01)... 2. Form Validation & Performer Attribution (UI-ACT-02, UI-ACT-03, BR-04, BR-07)... 3. Concurrency Conflict Handling (409 Conflict)... 4. Automated Component Verification (Vitest 7 tests ผ่าน 100%)... โดยรวมงานเรียบร้อยสมบูรณ์ทุกจุด Approved & พร้อม Merge" | "> ตรวจ PR #70 เรียบร้อยค่ะ...<br>ช่วยตรวจสอบใหม่หน่อยครับพอดีผมเพิ่งแก้ description<br><br>> ตรวจ PR #70 รอบสองเรียบร้อยค่ะ...<br>ขอบคุณครับ" | **Approved & Merged** by @thanapornboont-star |
-| **Work Item 6** | Ticket Workflow & Resolution Gate | `[Link Partner PR]` | — | — | Planned |
+| **Work Item 6** | Ticket Workflow & Resolution Gate | [PR #71](https://github.com/jiraphat-j/toktickit/pull/71) | "ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:<br><br>1. **State Machine & Status Transitions**:<br>   - บังคับใช้ Matrix การเปลี่ยนสถานะตาม Engineering Contract อย่างเคร่งครัด พร้อมส่ง `400 ILLEGAL_STATUS_TRANSITION` เมื่อมีการข้ามขั้นตอน<br>2. **Resolution Gate (Zero Actions Guard)**:<br>   - มีการป้องกันทั้งระดับ Backend (คืน `400 RESOLUTION_GATE_FAILED`) และระดับ Frontend UI (Disable ปุ่ม Resolve + แสดง Warning Banner สีเหลืองอำพัน)<br>3. **Advisory Resolution & Concurrency**:<br>   - การกดแจ้งปัญหาเสร็จสิ้นของ Requester เป็นเพียง Advisory Flag ไม่เปลี่ยนสถานะจริง และมี Concurrency Control คืน `409 Conflict` ป้องกันการเขียนทับ<br>4. **Integration Tests & Zero Regression**:<br>   - เทสต์ครอบคลุมทุก AC ทั้ง API (13 tests) และ UI (6 tests) รันผ่านครบ 100%<br><br>โดยรวมยอดเยี่ยมมากค่ะ **Approved & พร้อม Merge**" | "> ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:...<br><br>ขอบคุณครับกด merge ได้เลยครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 7** | IT Staff Operational Dashboard | `[Link Partner PR]` | — | — | Planned |
 | **Work Item 8** | Requester Role Dashboard | `[Link Partner PR]` | — | — | Planned |
 | **Work Item 9** | Zen Green UI & Responsive Audits | `[Link Partner PR]` | — | — | Planned |
@@ -365,3 +365,32 @@
   > *ช่วยตรวจสอบใหม่หน่อยครับพอดีผมเพิ่งแก้ description*  
   >  
   > *ขอบคุณครับ"*
+
+---
+
+### Partner PR #71 (for Issue #60: feat: Ticket workflow, resolution gate, and status transitions)
+- **PR:** [PR #71](https://github.com/jiraphat-j/toktickit/pull/71)
+- **Repository:** https://github.com/jiraphat-j/toktickit
+- **Feature Branch**: `feature/60-ticket-workflow`
+- **Target Branch**: `lab4-staging`
+- **Author**: @jiraphat-j
+- **Reviewer**: @thanapornboont-star
+- **Review Decision**: `APPROVED` (Submitted at 2026-10-11T04:31:21Z)
+- **Reviewer Comment Given by Me (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *"ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:*  
+  >  
+  > *1. **State Machine & Status Transitions**:*  
+  > *   - บังคับใช้ Matrix การเปลี่ยนสถานะตาม Engineering Contract อย่างเคร่งครัด พร้อมส่ง `400 ILLEGAL_STATUS_TRANSITION` เมื่อมีการข้ามขั้นตอน*  
+  > *2. **Resolution Gate (Zero Actions Guard)**:*  
+  > *   - มีการป้องกันทั้งระดับ Backend (คืน `400 RESOLUTION_GATE_FAILED`) และระดับ Frontend UI (Disable ปุ่ม Resolve + แสดง Warning Banner สีเหลืองอำพัน)*  
+  > *3. **Advisory Resolution & Concurrency**:*  
+  > *   - การกดแจ้งปัญหาเสร็จสิ้นของ Requester เป็นเพียง Advisory Flag ไม่เปลี่ยนสถานะจริง และมี Concurrency Control คืน `409 Conflict` ป้องกันการเขียนทับ*  
+  > *4. **Integration Tests & Zero Regression**:*  
+  > *   - เทสต์ครอบคลุมทุก AC ทั้ง API (13 tests) และ UI (6 tests) รันผ่านครบ 100%*  
+  >  
+  > *โดยรวมยอดเยี่ยมมากค่ะ **Approved & พร้อม Merge**"*
+- **Partner Response (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"> ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:...*  
+  >  
+  > *ขอบคุณครับกด merge ได้เลยครับ"*
+
