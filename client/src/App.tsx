@@ -19,10 +19,12 @@ import { TicketDetail } from "./components/TicketDetail.js";
 import { StaffTicketQueue } from "./components/StaffTicketQueue.js";
 import { StaffTicketDetail } from "./components/StaffTicketDetail.js";
 import { UserManagement } from "./components/UserManagement.js";
+import { StaffDashboard } from "./components/StaffDashboard.js";
+import { RequesterDashboard } from "./components/RequesterDashboard.js";
 import "./App.css";
 
 type LoadState = "loading" | "ready" | "error";
-type View = "my-tickets" | "create-ticket" | "ticket-detail" | "staff-queue" | "user-management";
+type View = "dashboard" | "my-tickets" | "create-ticket" | "ticket-detail" | "staff-queue" | "user-management";
 
 function RequesterSelector({
   requesters,
@@ -108,13 +110,16 @@ export function ApplicationShell({
   authUser,
   onChangeRequester,
   onLogout,
+  initialView,
 }: {
   requester?: DevRequester;
   authUser?: AuthUser;
   onChangeRequester?: () => void;
   onLogout?: () => void;
+  initialView?: View;
 }) {
   const [activeView, setActiveView] = useState<View>(() => {
+    if (initialView) return initialView;
     if (authUser?.role === "IT_STAFF") return "staff-queue";
     if (authUser?.role === "ADMINISTRATOR") return "user-management";
     return "my-tickets";
@@ -142,8 +147,9 @@ export function ApplicationShell({
   const isStaff = authUser?.role === "IT_STAFF";
   const isAdmin = authUser?.role === "ADMINISTRATOR";
 
-  // Auto-set view for staff or admin
+  // Auto-set view for staff or admin if not manually set
   useEffect(() => {
+    if (initialView) return;
     if (isStaff) {
       setActiveView("staff-queue");
     } else if (isAdmin) {
@@ -151,7 +157,7 @@ export function ApplicationShell({
     } else {
       setActiveView("my-tickets");
     }
-  }, [isStaff, isAdmin]);
+  }, [isStaff, isAdmin, initialView]);
 
   return (
     <div className="app-page">
@@ -177,6 +183,16 @@ export function ApplicationShell({
             {!isStaff && !isAdmin && (
               <>
                 <a
+                  href="#dashboard"
+                  className={activeView === "dashboard" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("dashboard");
+                  }}
+                >
+                  Dashboard
+                </a>
+                <a
                   href="#my-tickets"
                   className={activeView === "my-tickets" ? "active" : ""}
                   onClick={(e) => {
@@ -200,29 +216,53 @@ export function ApplicationShell({
             )}
 
             {isStaff && (
-              <a
-                href="#staff-queue"
-                className={activeView === "staff-queue" ? "active" : ""}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveView("staff-queue");
-                }}
-              >
-                Ticket Queue
-              </a>
+              <>
+                <a
+                  href="#dashboard"
+                  className={activeView === "dashboard" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("dashboard");
+                  }}
+                >
+                  Dashboard
+                </a>
+                <a
+                  href="#staff-queue"
+                  className={activeView === "staff-queue" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("staff-queue");
+                  }}
+                >
+                  Ticket Queue
+                </a>
+              </>
             )}
 
             {isAdmin && (
-              <a
-                href="#user-management"
-                className={activeView === "user-management" ? "active" : ""}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveView("user-management");
-                }}
-              >
-                User Management
-              </a>
+              <>
+                <a
+                  href="#dashboard"
+                  className={activeView === "dashboard" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("dashboard");
+                  }}
+                >
+                  Dashboard
+                </a>
+                <a
+                  href="#user-management"
+                  className={activeView === "user-management" ? "active" : ""}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveView("user-management");
+                  }}
+                >
+                  User Management
+                </a>
+              </>
             )}
           </nav>
 
@@ -287,7 +327,16 @@ export function ApplicationShell({
 
       <main className="shell-content">
         {isStaff || isAdmin ? (
-          activeView === "staff-queue" ? (
+          activeView === "dashboard" ? (
+            <StaffDashboard
+              authUser={authUser!}
+              onViewTicket={(ticketId) => {
+                setSelectedTicketId(ticketId);
+                setActiveView("ticket-detail");
+              }}
+              onNavigateQueue={() => setActiveView("staff-queue")}
+            />
+          ) : activeView === "staff-queue" ? (
             <StaffTicketQueue
               authUser={authUser!}
               onViewTicket={(ticketId) => {
@@ -312,6 +361,17 @@ export function ApplicationShell({
               }}
             />
           )
+        ) : activeView === "dashboard" ? (
+          <RequesterDashboard
+            requester={effectiveRequester}
+            authUser={authUser}
+            onViewTicket={(ticketId) => {
+              setSelectedTicketId(ticketId);
+              setActiveView("ticket-detail");
+            }}
+            onCreateTicket={() => setActiveView("create-ticket")}
+            onNavigateMyTickets={() => setActiveView("my-tickets")}
+          />
         ) : activeView === "create-ticket" && effectiveRequester ? (
           <CreateTicket
             requester={effectiveRequester}
