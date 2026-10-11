@@ -15,7 +15,7 @@
 | [#74](https://github.com/thanapornboont-star/toktickit/pull/74) | `sprint4/dashboard-api` | `lab4-staging` | Closes #64 | Approved | @jiraphat-j |
 | [#75](https://github.com/thanapornboont-star/toktickit/pull/75) | `sprint4/actions-taken-ui` | `lab4-staging` | Closes #65 | Approved | @jiraphat-j |
 | [#76](https://github.com/thanapornboont-star/toktickit/pull/76) | `sprint4/ticket-workflow-ui` | `lab4-staging` | Closes #66 | Approved | @jiraphat-j |
-| TBD | `sprint4/role-dashboards-ui` | `lab4-staging` | Issue #67 | Planned | @jiraphat-j |
+| [#77](https://github.com/thanapornboont-star/toktickit/pull/77) | `sprint4/role-dashboards-ui` | `lab4-staging` | Closes #67 | Approved | @jiraphat-j |
 | TBD | `sprint4/responsive-visual-qa` | `lab4-staging` | Issue #68 | Planned | @jiraphat-j |
 | TBD | `sprint4/e2e-traceability` | `lab4-staging` | Issue #69 | Planned | @jiraphat-j |
 | TBD | `sprint4/release-integration` | `lab4-staging` | Issue #70 | Planned | @jiraphat-j |
@@ -33,7 +33,7 @@
 | **Work Item 4** | Actions Taken REST APIs & Authorization | [PR #69](https://github.com/jiraphat-j/toktickit/pull/69) | "ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม<br><br>1. **Actions Taken REST APIs & Validation**:<br>   - มีการตรวจสอบ Validation ครบถ้วนทั้ง description, result, การบังคับ `followUpNote` เมื่อมี follow-up และการตรวจจับวันที่ในอนาคต<br>   - ล็อก `performedById` จาก Authenticated Session อัตโนมัติ ป้องกันการ Spoofing ข้อมูล<br>2. **Security & Zero Leakage**:<br>   - กักกันสิทธิ์ Requester ด้วย HTTP 404 เมื่อพยายามดูตั๋วที่ไม่ใช่ของตนเอง (Zero Leakage) และบล็อกคำขอเขียนด้วย HTTP 403 อย่างเคร่งครัด<br>3. **Optimistic Concurrency Control**:<br>   - จัดการ State เมื่อมีการแก้ไขชนกันด้วย HTTP 409 Conflict และแนบ `currentUpdatedAt` กลับมาตรงตามสเปก<br>4. **Integration Tests**:<br>   - ครอบคลุมทั้ง Happy Path, Field Validations, RBAC, Concurrency และ Performance-Smoke (SMOKE-02 < 150ms) รันผ่านครบ 100%" | "> ตรวจ PR #69 เรียบร้อยค่ะ การพัฒนา REST APIs, Security RBAC, และ Concurrency Control ของ Issue #58 จัดการได้ถูกต้อง รัดกุม...<br><br>merge ให้ได้เลยครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 5** | Actions Taken UI on Ticket Detail | [PR #70](https://github.com/jiraphat-j/toktickit/pull/70) | *(รอบแรก)* "ตรวจ PR #70 เรียบร้อยค่ะ มีจุดให้ตรวจอีนิดหน่อย: 1. PR Description... 2. Requester Ticket Detail... 3. Reviewer Record... ฝากแก้ Description แล้วพร้อม Approve ให้ได้เลยค่ะ!"<br><br>*(รอบสอง)* "ตรวจ PR #70 รอบสองเรียบร้อยค่ะ 1. Actions Taken UI & Layout (UI-ACT-01, AC-01)... 2. Form Validation & Performer Attribution (UI-ACT-02, UI-ACT-03, BR-04, BR-07)... 3. Concurrency Conflict Handling (409 Conflict)... 4. Automated Component Verification (Vitest 7 tests ผ่าน 100%)... โดยรวมงานเรียบร้อยสมบูรณ์ทุกจุด Approved & พร้อม Merge" | "> ตรวจ PR #70 เรียบร้อยค่ะ...<br>ช่วยตรวจสอบใหม่หน่อยครับพอดีผมเพิ่งแก้ description<br><br>> ตรวจ PR #70 รอบสองเรียบร้อยค่ะ...<br>ขอบคุณครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 6** | Ticket Workflow & Resolution Gate | [PR #71](https://github.com/jiraphat-j/toktickit/pull/71) | "ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:<br><br>1. **State Machine & Status Transitions**:<br>   - บังคับใช้ Matrix การเปลี่ยนสถานะตาม Engineering Contract อย่างเคร่งครัด พร้อมส่ง `400 ILLEGAL_STATUS_TRANSITION` เมื่อมีการข้ามขั้นตอน<br>2. **Resolution Gate (Zero Actions Guard)**:<br>   - มีการป้องกันทั้งระดับ Backend (คืน `400 RESOLUTION_GATE_FAILED`) และระดับ Frontend UI (Disable ปุ่ม Resolve + แสดง Warning Banner สีเหลืองอำพัน)<br>3. **Advisory Resolution & Concurrency**:<br>   - การกดแจ้งปัญหาเสร็จสิ้นของ Requester เป็นเพียง Advisory Flag ไม่เปลี่ยนสถานะจริง และมี Concurrency Control คืน `409 Conflict` ป้องกันการเขียนทับ<br>4. **Integration Tests & Zero Regression**:<br>   - เทสต์ครอบคลุมทุก AC ทั้ง API (13 tests) และ UI (6 tests) รันผ่านครบ 100%<br><br>โดยรวมยอดเยี่ยมมากค่ะ **Approved & พร้อม Merge**" | "> ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:...<br><br>ขอบคุณครับกด merge ได้เลยครับ" | **Approved & Merged** by @thanapornboont-star |
-| **Work Item 7** | IT Staff Operational Dashboard | `[Link Partner PR]` | — | — | Planned |
+| **Work Item 7** | IT Staff Operational Dashboard | [PR #72](https://github.com/jiraphat-j/toktickit/pull/72) | "ตรวจ PR #72 เรียบร้อยค่ะ ระบบ IT Staff Operational Dashboard ของ Issue #61 จัดการได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:<br><br>1. **Dashboard APIs & Metrics**:<br>   - การคำนวณตัวชี้วัด (Unassigned, My Assigned, High/Critical, My Actions) ถูกต้องตามสเปก และมี Data Isolation กั้นสิทธิ์ Requester ด้วย 403 Forbidden ชัดเจน<br>2. **Operational UI & Drill-downs**:<br>   - หน้ารวมแดชบอร์ดมีทั้ง Metric Cards, Status/Priority Breakdown และตาราง Recent Tickets พร้อมปุ่ม Drill-down ไปยัง Queue ได้สะดวก<br>   - ใช้โทนสี Zen Green สวยงาม และรองรับ State ข้อผิดพลาดพร้อมปุ่ม Retry<br>3. **Automated Test Suite**:<br>   - ชุดทดสอบครอบคลุมทั้ง API และ Component ผ่าน 100% (319/319 tests) ปราศจาก regression<br><br>โดยรวมยอดเยี่ยมมากค่ะ **Approved & พร้อม Merge** ให้ได้เลยค่ะ" | "> ตรวจ PR #72 เรียบร้อยค่ะ ระบบ IT Staff Operational Dashboard ของ Issue #61 จัดการได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:...<br><br>ขอบคุณครับ merge ได้เลยครับ" | **Approved & Merged** by @thanapornboont-star |
 | **Work Item 8** | Requester Role Dashboard | `[Link Partner PR]` | — | — | Planned |
 | **Work Item 9** | Zen Green UI & Responsive Audits | `[Link Partner PR]` | — | — | Planned |
 | **Work Item 10**| Playwright E2E & Full Regression | `[Link Partner PR]` | — | — | Planned |
@@ -227,6 +227,48 @@
 
 ---
 
+### PR #77 (for Issue #67: feat(ui): implement IT Staff & Requester Dashboards UI)
+- **PR:** [PR #77](https://github.com/thanapornboont-star/toktickit/pull/77)
+- **Feature Branch**: `sprint4/role-dashboards-ui`
+- **Target Branch**: `lab4-staging`
+- **Author**: @thanapornboont-star
+- **Reviewer**: @jiraphat-j
+- **Review Decision**: `APPROVED` (Submitted at 2026-10-11T04:39:20Z)
+- **Reviewer Comment (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"ตรวจ PR #77 เรียบร้อยครับ มีการตรวจสอบโค้ดอย่างละเอียดและทดสอบรัน Vitest บน branch จริงผ่าน 16/16 test files (89 tests passed) ครบถ้วนครับ:*  
+  >  
+  > *1. **Dashboard Architecture & Shell Navigation (`App.tsx`, `App.css`)**:*  
+  > *   - เพิ่ม View `dashboard` รองรับทุก Role พร้อมการนำทางที่ราบรื่น (Smooth Navigation)*  
+  > *   - การผูก Callback นำทาง (`onViewTicket`, `onCreateTicket`, `onNavigateQueue`) ทำงานเชื่อมต่อไปยังหน้ารายละเอียดและคิวงานได้อย่างไร้รอยต่อ*  
+  >  
+  > *2. **Requester Dashboard UI (FR-06, BR-13, BR-14, AC-09)**:*  
+  > *   - Metric Cards จัดวางอ่านง่าย ครอบคลุมทั้ง Total Open, In Progress, Waiting และ Recently Resolved*  
+  > *   - ตารางตั๋วล่าสุดแสดงสถานะชัดเจน พร้อม Empty State และปุ่ม Action ที่นำทางไปยัง Create Ticket หรือ My Tickets ได้ทันที*  
+  >  
+  > *3. **IT Staff & Admin Dashboard UI (FR-07, FR-08, BR-15, AC-10)**:*  
+  > *   - Operational Counters ชัดเจน แยกหมวดหมู่ตั๋วตามสถานะ, ตั๋วที่ยังไม่มีผู้รับผิดชอบ (Unassigned), ตั๋วที่ตนเองดูแล (My Assigned), และการจำแนกตามระดับความสำคัญ (Priority Breakdown)*  
+  > *   - ฝั่ง Administrator แสดง User Account Statistics เสริมตาม Role ได้ถูกต้องสมบูรณ์*  
+  >  
+  > *4. **Integration & Component Unit Tests (UI-04)**:*  
+  > *   - ชุดทดสอบทั้ง `RequesterDashboard.test.tsx` (5 tests) และ `StaffDashboard.test.tsx` (5 tests) ครอบคลุมการจำลอง API Metrics, การกด Action ปุ่มนำทาง และการแยกแสดงผลตาม Role*  
+  >  
+  > *โค้ดออกแบบเป็นระเบียบ ทำงานร่วมกับ API ใน PR ก่อนหน้าได้สมบูรณ์แบบ และผ่านการทดสอบจริงทั้งหมด พร้อม **Approved & พร้อม Merge**ครับ"*
+- **My Response (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *"> ตรวจ PR #77 เรียบร้อยครับ มีการตรวจสอบโค้ดอย่างละเอียดและทดสอบรัน Vitest บน branch จริงผ่าน 16/16 test files (89 tests passed) ครบถ้วนครับ:*  
+  > *> 1. **Dashboard Architecture & Shell Navigation (`App.tsx`, `App.css`)**:*  
+  > *>    - เพิ่ม View `dashboard` รองรับทุก Role...*  
+  > *> 2. **Requester Dashboard UI (FR-06, BR-13, BR-14, AC-09)**:*  
+  > *>    - Metric Cards จัดวางอ่านง่าย...*  
+  > *> 3. **IT Staff & Admin Dashboard UI (FR-07, FR-08, BR-15, AC-10)**:*  
+  > *>    - Operational Counters ชัดเจน...*  
+  > *> 4. **Integration & Component Unit Tests (UI-04)**:*  
+  > *>    - ชุดทดสอบทั้ง `RequesterDashboard.test.tsx`...*  
+  > *> โค้ดออกแบบเป็นระเบียบ... พร้อม **Approved & พร้อม Merge**ครับ*  
+  >  
+  > *ขอบพระคุณที่กรุณาค่ะ"*
+
+---
+
 ### Partner PR #66 (for Issue #55: docs: Sprint 4 engineering contract and specification)
 - **PR:** [PR #66](https://github.com/jiraphat-j/toktickit/pull/66)
 - **Repository:** https://github.com/jiraphat-j/toktickit
@@ -393,4 +435,32 @@
   > *"> ตรวจ PR #71 เรียบร้อยค่ะ โครงสร้างระบบ Ticket Workflow, Resolution Gate และ State Transitions ของ Issue #60 ทำได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:...*  
   >  
   > *ขอบคุณครับกด merge ได้เลยครับ"*
+
+---
+
+### Partner PR #72 (for Issue #61: feat: IT Staff operational dashboard API and UI)
+- **PR:** [PR #72](https://github.com/jiraphat-j/toktickit/pull/72)
+- **Repository:** https://github.com/jiraphat-j/toktickit
+- **Feature Branch**: `feature/61-staff-dashboard`
+- **Target Branch**: `lab4-staging`
+- **Author**: @jiraphat-j
+- **Reviewer**: @thanapornboont-star
+- **Review Decision**: `APPROVED` (Submitted at 2026-10-11T04:53:05Z)
+- **Reviewer Comment Given by Me (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *"ตรวจ PR #72 เรียบร้อยค่ะ ระบบ IT Staff Operational Dashboard ของ Issue #61 จัดการได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:*  
+  >  
+  > *1. **Dashboard APIs & Metrics**:*  
+  > *   - การคำนวณตัวชี้วัด (Unassigned, My Assigned, High/Critical, My Actions) ถูกต้องตามสเปก และมี Data Isolation กั้นสิทธิ์ Requester ด้วย 403 Forbidden ชัดเจน*  
+  > *2. **Operational UI & Drill-downs**:*  
+  > *   - หน้ารวมแดชบอร์ดมีทั้ง Metric Cards, Status/Priority Breakdown และตาราง Recent Tickets พร้อมปุ่ม Drill-down ไปยัง Queue ได้สะดวก*  
+  > *   - ใช้โทนสี Zen Green สวยงาม และรองรับ State ข้อผิดพลาดพร้อมปุ่ม Retry*  
+  > *3. **Automated Test Suite**:*  
+  > *   - ชุดทดสอบครอบคลุมทั้ง API และ Component ผ่าน 100% (319/319 tests) ปราศจาก regression*  
+  >  
+  > *โดยรวมยอดเยี่ยมมากค่ะ **Approved & พร้อม Merge** ให้ได้เลยค่ะ"*
+- **Partner Response (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"> ตรวจ PR #72 เรียบร้อยค่ะ ระบบ IT Staff Operational Dashboard ของ Issue #61 จัดการได้ถูกต้อง รัดกุม และสมบูรณ์มากค่ะ:...*  
+  >  
+  > *ขอบคุณครับ merge ได้เลยครับ"*
+
 
