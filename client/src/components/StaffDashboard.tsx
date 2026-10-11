@@ -149,6 +149,7 @@ export function StaffDashboard({
                 data-testid="metric-card-new"
                 role="button"
                 tabIndex={0}
+                aria-label={`New tickets: ${metrics?.new ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -172,6 +173,7 @@ export function StaffDashboard({
                 data-testid="metric-card-open"
                 role="button"
                 tabIndex={0}
+                aria-label={`Open tickets: ${metrics?.open ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -195,6 +197,7 @@ export function StaffDashboard({
                 data-testid="metric-card-inprogress"
                 role="button"
                 tabIndex={0}
+                aria-label={`In progress tickets: ${metrics?.inProgress ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -218,6 +221,7 @@ export function StaffDashboard({
                 data-testid="metric-card-waiting"
                 role="button"
                 tabIndex={0}
+                aria-label={`Waiting for requester tickets: ${metrics?.waitingForRequester ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-muted small fw-semibold text-uppercase d-block mb-1">
@@ -241,6 +245,7 @@ export function StaffDashboard({
                 data-testid="metric-card-myassigned"
                 role="button"
                 tabIndex={0}
+                aria-label={`My assigned tickets: ${metrics?.myAssigned ?? 0}`}
               >
                 <div className="card-body p-3">
                   <span className="text-success small fw-semibold text-uppercase d-block mb-1">
