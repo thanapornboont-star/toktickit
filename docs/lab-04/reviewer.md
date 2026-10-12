@@ -18,7 +18,7 @@
 | [#77](https://github.com/thanapornboont-star/toktickit/pull/77) | `sprint4/role-dashboards-ui` | `lab4-staging` | Closes #67 | Approved | @jiraphat-j |
 | [#78](https://github.com/thanapornboont-star/toktickit/pull/78) | `sprint4/responsive-visual-qa` | `lab4-staging` | Closes #68 | Approved | @jiraphat-j |
 | [#79](https://github.com/thanapornboont-star/toktickit/pull/79) | `sprint4/e2e-traceability` | `lab4-staging` | Closes #69 | Approved | @jiraphat-j |
-| [#81](https://github.com/thanapornboont-star/toktickit/pull/81) | `sprint4/release-integration` | `lab4-staging` | Closes #70 | Under Review | @jiraphat-j |
+| [#81](https://github.com/thanapornboont-star/toktickit/pull/81) | `sprint4/release-integration` | `lab4-staging` | Closes #70 | Approved | @jiraphat-j |
 | TBD | `lab4-staging` | `main` | Release Lab 4 | Planned | @thanapornboont-star |
 
 ---
@@ -605,6 +605,41 @@
   > *"> ตรวจ PR #75 เรียบร้อยค่ะ ชุดทดสอบ Playwright E2E และการทดสอบ Full Regression Suite ของ Issue #64 จัดการได้ถูกต้อง รัดกุม และสมบูรณ์ค่ะ:...*  
   >  
   > *merge ให้ได้เลยครับ ขอบคุณครับ"*
+
+---
+
+### PR #81 (for Issue #70: feat(release): finalize visual evidence, test traceability, and submission pack)
+- **PR:** [PR #81](https://github.com/thanapornboont-star/toktickit/pull/81)
+- **Repository:** https://github.com/thanapornboont-star/toktickit
+- **Feature Branch**: `sprint4/release-integration`
+- **Target Branch**: `lab4-staging`
+- **Author**: @thanapornboont-star
+- **Reviewer**: @jiraphat-j
+- **Review Decision**: `APPROVED` (Submitted at 2026-10-12T07:25:30Z)
+- **Merged By**: @jiraphat-j (Commit `1633d7a`)
+- **Reviewer Comment (@jiraphat-j) (Verbatim 100% from GitHub)**:
+  > *"ตรวจ PR #81 เรียบร้อยครับ การรวบรวมหลักฐานและแพ็กเกจส่งมอบงานรอบ Release Integration (Issue #70) ทำได้อย่างสมบูรณ์แบบและเป็นมืออาชีพมากครับ:*  
+  >  
+  > *1. **Visual Evidence & Screenshots Coverage**:*  
+  > *   - บันทึกภาพ Screenshot หลักฐานการทำงานครบทั้ง 32 ภาพ แบ่งหมวดหมู่อย่างเป็นระเบียบตาม Acceptance Gates (Staff Dashboard 10 ภาพ, Actions Taken 16 ภาพ, Requester Dashboard 3 ภาพ, และ Multi-viewport Responsive 3 ภาพ)*  
+  > *   - ครอบคลุมทั้งกรณีใช้งานปกติ (Happy Path), กรณีเกิดข้อผิดพลาด (Validation/Error states) และการจำกัดสิทธิ์ (Role Authorization Boundaries)*  
+  >  
+  > *2. **Automated Capture & Type Safety Configuration**:*  
+  > *   - การปรับสคริปต์จับภาพมาเป็น Playwright Test Spec (`capture-screenshots.spec.ts`) ช่วยให้กระบวนการทำซ้ำมีความเสถียรและทำงานร่วมกับ CI ได้ราบรื่น*  
+  > *   - การเพิ่ม `e2e/tsconfig.json` จัดการ Type Definitions ของ Node และ Playwright ได้อย่างถูกต้อง หมดปัญหา TypeScript diagnostics ใน IDE*  
+  >  
+  > *3. **Test Traceability Closure (`tests.md`)**:*  
+  > *   - มีการสรุปตัวเลขสถิติการทดสอบแบบ Full Regression ครบทุกระดับอย่างโปร่งใส รวมทั้งสิ้น 258/258 Tests (Server 143, Client 94, Playwright E2E 21) ผ่าน 100% โดยไม่มีข้อผิดพลาด*  
+  >  
+  > *4. **Submission Pack Documentation (`lab-04-submission-template.md`)**:*  
+  > *   - โครงสร้างเอกสารมี Mermaid Roadmap และตารางสรุป Work Items #61–#70 ครบถ้วน พร้อมสำหรับการจัดทำเล่มรายงานขั้นสุดท้าย*  
+  >  
+  > *งานทุกส่วนเสร็จสิ้นตามเกณฑ์ของ Lab 4 ครบถ้วน 100% **Approved & พร้อม Merge** เข้าแล้วครับ"*
+- **Author Response (@thanapornboont-star) (Verbatim 100% from GitHub)**:
+  > *"> ตรวจ PR #81 เรียบร้อยครับ การรวบรวมหลักฐานและแพ็กเกจส่งมอบงานรอบ Release Integration (Issue #70) ทำได้อย่างสมบูรณ์แบบและเป็นมืออาชีพมากครับ:...*  
+  >  
+  > *แต้งกิ้วค่ะ"*
+
 
 
 
