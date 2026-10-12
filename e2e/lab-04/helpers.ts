@@ -30,20 +30,26 @@ export function reseedDatabase() {
 }
 
 export async function ensureOnLoginScreen(page: Page) {
-  // If user is currently logged in, click Sign Out to reset auth and land on Login screen
-  const signOutBtn = page.getByRole("button", { name: /sign out|logout/i });
-  if (await signOutBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await signOutBtn.click();
-    await page.waitForTimeout(400);
-  }
+  try {
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+  } catch (e) {}
 
-  if (await page.locator("#login-email").isVisible({ timeout: 1000 }).catch(() => false)) {
+  await page.goto("/#login");
+  await page.waitForTimeout(300);
+
+  if (await page.locator("#login-email").isVisible({ timeout: 1500 }).catch(() => false)) {
     return;
   }
 
-  // Navigate to /#login
-  await page.goto("/#login");
-  await page.waitForTimeout(300);
+  // If user is currently logged in, click Sign Out to reset auth and land on Login screen
+  const signOutBtn = page.getByRole("button", { name: /sign out|logout/i });
+  if (await signOutBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+    await signOutBtn.click({ timeout: 2000 }).catch(() => {});
+    await page.waitForTimeout(400);
+  }
 
   if (await page.locator("#login-email").isVisible({ timeout: 1000 }).catch(() => false)) {
     return;
@@ -52,7 +58,7 @@ export async function ensureOnLoginScreen(page: Page) {
   // If on Dev Requester selection screen, click "Sign In (Lab 3)"
   const devSignInBtn = page.getByRole("button", { name: /Sign In \(Lab 3\)/i });
   if (await devSignInBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await devSignInBtn.click();
+    await devSignInBtn.click().catch(() => {});
     await page.waitForTimeout(300);
   }
 }

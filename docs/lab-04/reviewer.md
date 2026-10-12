@@ -15,9 +15,10 @@
 | [#74](https://github.com/thanapornboont-star/toktickit/pull/74) | `sprint4/dashboard-api` | `lab4-staging` | Closes #64 | Approved | @jiraphat-j |
 | [#75](https://github.com/thanapornboont-star/toktickit/pull/75) | `sprint4/actions-taken-ui` | `lab4-staging` | Closes #65 | Approved | @jiraphat-j |
 | [#76](https://github.com/thanapornboont-star/toktickit/pull/76) | `sprint4/ticket-workflow-ui` | `lab4-staging` | Closes #66 | Approved | @jiraphat-j |
+| [#77](https://github.com/thanapornboont-star/toktickit/pull/77) | `sprint4/role-dashboards-ui` | `lab4-staging` | Closes #67 | Approved | @jiraphat-j |
 | [#78](https://github.com/thanapornboont-star/toktickit/pull/78) | `sprint4/responsive-visual-qa` | `lab4-staging` | Closes #68 | Approved | @jiraphat-j |
 | [#79](https://github.com/thanapornboont-star/toktickit/pull/79) | `sprint4/e2e-traceability` | `lab4-staging` | Closes #69 | Approved | @jiraphat-j |
-| TBD | `sprint4/release-integration` | `lab4-staging` | Issue #70 | Planned | @jiraphat-j |
+| [#81](https://github.com/thanapornboont-star/toktickit/pull/81) | `sprint4/release-integration` | `lab4-staging` | Closes #70 | Under Review | @jiraphat-j |
 | TBD | `lab4-staging` | `main` | Release Lab 4 | Planned | @thanapornboont-star |
 
 ---
