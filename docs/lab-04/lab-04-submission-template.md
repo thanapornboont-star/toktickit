@@ -6,8 +6,8 @@
 **Student ID:** 67070507204  
 **Repository:** https://github.com/thanapornboont-star/toktickit  
 **Base Branch:** lab4-staging  
-**Final main commit:** [commit_hash]  
-**Demo date:** [date]  
+**Final main commit:** [3d0a1df](https://github.com/thanapornboont-star/toktickit/commit/3d0a1df54e7b3aaa2f59f4a08a7df973a5663fd3)  
+**Demo date:** 12 ตุลาคม 2026  
 
 ---
 

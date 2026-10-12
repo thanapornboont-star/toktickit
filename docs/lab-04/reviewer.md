@@ -19,7 +19,7 @@
 | [#78](https://github.com/thanapornboont-star/toktickit/pull/78) | `sprint4/responsive-visual-qa` | `lab4-staging` | Closes #68 | Approved | @jiraphat-j |
 | [#79](https://github.com/thanapornboont-star/toktickit/pull/79) | `sprint4/e2e-traceability` | `lab4-staging` | Closes #69 | Approved | @jiraphat-j |
 | [#81](https://github.com/thanapornboont-star/toktickit/pull/81) | `sprint4/release-integration` | `lab4-staging` | Closes #70 | Approved | @jiraphat-j |
-| TBD | `lab4-staging` | `main` | Release Lab 4 | Planned | @thanapornboont-star |
+| [#82](https://github.com/thanapornboont-star/toktickit/pull/82) | `lab4-staging` | `main` | Release Lab 4 | Approved & Merged | @thanapornboont-star |
 
 ---
 
