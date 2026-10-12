@@ -48,7 +48,7 @@ flowchart TD
 | **#67** | **IT Staff & Requester Dashboards UI** | `sprint4/role-dashboards-ui` | Responsive dashboard views, metric summary cards, drill-down routing to filtered queue/detail, empty states, Vitest tests. | [PR #77](https://github.com/thanapornboont-star/toktickit/pull/77) | Done |
 | **#68** | **Zen Green Polish, Responsive Layouts & Accessibility** | `sprint4/responsive-visual-qa` | Responsive audit (Desktop/Tablet/Mobile), touch targets ≥44px, keyboard focus, color-contrast compliance, cleanup of legacy artifacts. | [PR #78](https://github.com/thanapornboont-star/toktickit/pull/78) | Done |
 | **#69** | **Sprint 4 E2E Test Suites & Traceability Closure** | `sprint4/e2e-traceability` | Playwright suites for Actions Taken flow, ticket resolution, and dashboards; update `tests.md` matrix with PASS evidence. | [PR #79](https://github.com/thanapornboont-star/toktickit/pull/79) | Done |
-| **#70** | **Release Integration, Reviewer Audit & Evidence Pack** | `sprint4/release-integration` | `reviewer.md` with partner PR approvals, `ai-use.md` with prompts and reflection, screenshots, merge `lab4-staging` to `main`. | [PR #80](https://github.com/thanapornboont-star/toktickit/pull/80) | Done |
+| **#70** | **Release Integration, Reviewer Audit & Evidence Pack** | `sprint4/release-integration` | `reviewer.md` with partner PR approvals, `ai-use.md` with prompts and reflection, screenshots, merge `lab4-staging` to `main`. | [PR #81](https://github.com/thanapornboont-star/toktickit/pull/81) | Done |
 
 ---
 
