@@ -4,7 +4,7 @@ import { getPrisma } from "../prisma.js";
 import { authenticateSessionOrDev } from "../middleware/auth.js";
 import { generateTicketNumber } from "../services/ticketNumber.js";
 import { upload, handleUploadErrors, hasAllowedFileSignature } from "../middleware/upload.js";
-import { RequestedPriority, Prisma, Role } from "@prisma/client";
+import { RequestedPriority, Prisma, Role, TicketStatus } from "@prisma/client";
 
 export const ticketRouter = Router();
 
@@ -390,9 +390,9 @@ ticketRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
-// POST /api/tickets/:id/indicate-resolved - Indicate problem appears resolved
+// POST & PATCH /api/tickets/:id/indicate-resolved - Indicate problem appears resolved
 // ---------------------------------------------------------------------------
-ticketRouter.post("/:id/indicate-resolved", async (req: Request, res: Response) => {
+const handleIndicateResolved = async (req: Request, res: Response) => {
   if (!isRequester(req)) {
     return res.status(403).json({
       error: {
@@ -421,9 +421,11 @@ ticketRouter.post("/:id/indicate-resolved", async (req: Request, res: Response) 
       });
     }
 
+    const indicated = req.body?.indicated !== undefined ? Boolean(req.body.indicated) : true;
+
     const updated = await prisma.ticket.update({
       where: { id: ticketId },
-      data: { requesterIndicatedResolved: true },
+      data: { requesterIndicatedResolved: indicated },
     });
 
     return res.status(200).json({
@@ -432,13 +434,19 @@ ticketRouter.post("/:id/indicate-resolved", async (req: Request, res: Response) 
         id: updated.id,
         requesterIndicatedResolved: updated.requesterIndicatedResolved,
       },
+      ticketId: updated.id,
+      requesterIndicatedResolved: updated.requesterIndicatedResolved,
+      status: updated.status,
     });
   } catch (error) {
     return res.status(500).json({
       error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to indicate problem resolved." },
     });
   }
-});
+};
+
+ticketRouter.post("/:id/indicate-resolved", handleIndicateResolved);
+ticketRouter.patch("/:id/indicate-resolved", handleIndicateResolved);
 
 // ---------------------------------------------------------------------------
 // Public Comments Endpoints
@@ -862,4 +870,434 @@ ticketRouter.all("/:id/internal-notes", (req: Request, res: Response) => {
     },
   });
 });
+
+// ---------------------------------------------------------------------------
+// Lab 4: Ticket Status Transition, Resolution Gate & Concurrency Control (BR-09, BR-11, BR-12)
+// ---------------------------------------------------------------------------
+const PERMITTED_STATUS_TRANSITIONS: Record<TicketStatus, TicketStatus[]> = {
+  NEW: [TicketStatus.OPEN, TicketStatus.IN_PROGRESS, TicketStatus.CANCELLED],
+  OPEN: [
+    TicketStatus.IN_PROGRESS,
+    TicketStatus.WAITING_FOR_REQUESTER,
+    TicketStatus.RESOLVED,
+    TicketStatus.CANCELLED,
+  ],
+  IN_PROGRESS: [
+    TicketStatus.WAITING_FOR_REQUESTER,
+    TicketStatus.RESOLVED,
+    TicketStatus.CANCELLED,
+  ],
+  WAITING_FOR_REQUESTER: [
+    TicketStatus.IN_PROGRESS,
+    TicketStatus.RESOLVED,
+    TicketStatus.CANCELLED,
+  ],
+  RESOLVED: [TicketStatus.CLOSED, TicketStatus.REOPENED],
+  REOPENED: [
+    TicketStatus.IN_PROGRESS,
+    TicketStatus.RESOLVED,
+    TicketStatus.CANCELLED,
+  ],
+  CLOSED: [],
+  CANCELLED: [],
+};
+
+// PATCH /api/tickets/:id/status
+ticketRouter.patch("/:id/status", async (req: Request, res: Response) => {
+  if (!isStaffOrAdmin(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: only IT Staff and Administrators can formally update ticket status.",
+      },
+    });
+  }
+
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    const { status, clientUpdatedAt } = req.body;
+    const validStatuses = Object.values(TicketStatus) as string[];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: `Invalid status value. Must be one of: ${validStatuses.join(", ")}`,
+        },
+      });
+    }
+
+    const nextStatus = status as TicketStatus;
+    const currentStatus = ticket.status as TicketStatus;
+
+    // Validate state transition matrix
+    if (currentStatus !== nextStatus) {
+      const allowed = PERMITTED_STATUS_TRANSITIONS[currentStatus] ?? [];
+      if (!allowed.includes(nextStatus)) {
+        return res.status(400).json({
+          error: {
+            code: "BAD_REQUEST",
+            message: `Status transition from ${currentStatus} to ${nextStatus} is not permitted.`,
+          },
+        });
+      }
+    }
+
+    // Optimistic concurrency control (BR-12, AC-08)
+    if (clientUpdatedAt) {
+      const clientTime = new Date(clientUpdatedAt).getTime();
+      const serverTime = new Date(ticket.updatedAt).getTime();
+      if (Math.abs(clientTime - serverTime) > 1000) {
+        return res.status(409).json({
+          error: {
+            code: "CONFLICT",
+            message: "Ticket has been updated by another user. Please refresh and retry.",
+            currentUpdatedAt: ticket.updatedAt.toISOString(),
+          },
+        });
+      }
+    }
+
+    const updated = await prisma.ticket.update({
+      where: { id: ticketId },
+      data: { status: nextStatus },
+    });
+
+    return res.status(200).json({
+      message: "Status updated successfully",
+      ticket: {
+        id: updated.id,
+        ticketNumber: updated.ticketNumber,
+        status: updated.status,
+        updatedAt: updated.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("PATCH /api/tickets/:id/status error:", error);
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to update ticket status." },
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Lab 4: Actions Taken REST APIs (FR-01..FR-05, BR-01..BR-07, AC-01..AC-04)
+// ---------------------------------------------------------------------------
+
+// GET /api/tickets/:id/actions-taken
+ticketRouter.get("/:id/actions-taken", async (req: Request, res: Response) => {
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: ticketId },
+    });
+
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    // Requester can view only owned tickets; otherwise 404 (safe isolation)
+    if (isRequester(req) && ticket.requesterId !== req.user!.id) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    const actions = await prisma.actionTaken.findMany({
+      where: { ticketId },
+      include: {
+        performedBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+      orderBy: { actionDateTime: "asc" },
+    });
+
+    return res.status(200).json({
+      actions,
+      totalCount: actions.length,
+    });
+  } catch (error) {
+    console.error("GET /api/tickets/:id/actions-taken error:", error);
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to fetch actions taken." },
+    });
+  }
+});
+
+// POST /api/tickets/:id/actions-taken
+ticketRouter.post("/:id/actions-taken", async (req: Request, res: Response) => {
+  if (!isStaffOrAdmin(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: insufficient permissions for role. Only IT Staff and Administrators can record actions taken.",
+      },
+    });
+  }
+
+  const ticketId = parseInt(req.params.id, 10);
+  if (isNaN(ticketId) || ticketId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket not found." },
+    });
+  }
+
+  const {
+    description,
+    result,
+    isFollowUpRequired,
+    followUpNote,
+    attachmentNotes,
+    actionDateTime,
+  } = req.body;
+
+  // Validation: description (3-2000)
+  if (typeof description !== "string" || description.trim().length < 3 || description.trim().length > 2000) {
+    return res.status(400).json({
+      error: {
+        code: "BAD_REQUEST",
+        message: "Action description must be between 3 and 2000 characters.",
+        details: { description: "Action description must be between 3 and 2000 characters." },
+      },
+    });
+  }
+
+  // Validation: result (3-2000)
+  if (typeof result !== "string" || result.trim().length < 3 || result.trim().length > 2000) {
+    return res.status(400).json({
+      error: {
+        code: "BAD_REQUEST",
+        message: "Action result must be between 3 and 2000 characters.",
+        details: { result: "Action result must be between 3 and 2000 characters." },
+      },
+    });
+  }
+
+  const followUpRequired = Boolean(isFollowUpRequired);
+
+  // Validation: followUpNote required when isFollowUpRequired is true (BR-04, AC-02)
+  if (followUpRequired) {
+    if (typeof followUpNote !== "string" || followUpNote.trim().length < 3 || followUpNote.trim().length > 1000) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Follow-up note is required when follow-up is needed (3-1000 characters).",
+          details: { followUpNote: "Follow-up note is required when follow-up is needed." },
+        },
+      });
+    }
+  }
+
+  // Validation: actionDateTime
+  let parsedDate = new Date();
+  if (actionDateTime) {
+    const d = new Date(actionDateTime);
+    if (isNaN(d.getTime())) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Invalid actionDateTime format.",
+        },
+      });
+    }
+    // Cannot be > 5 minutes in future
+    if (d.getTime() > Date.now() + 5 * 60 * 1000) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Action date/time cannot be in the future beyond 5 minutes.",
+        },
+      });
+    }
+    parsedDate = d;
+  }
+
+  try {
+    const prisma = getPrisma();
+    const ticket = await prisma.ticket.findUnique({ where: { id: ticketId } });
+    if (!ticket) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Ticket not found." },
+      });
+    }
+
+    const action = await prisma.actionTaken.create({
+      data: {
+        ticketId,
+        actionDateTime: parsedDate,
+        description: description.trim(),
+        result: result.trim(),
+        performedById: req.user!.id, // Auto-recorded from session (BR-02, BR-03)
+        isFollowUpRequired: followUpRequired,
+        followUpNote: followUpRequired && followUpNote ? followUpNote.trim() : null,
+        attachmentNotes: typeof attachmentNotes === "string" && attachmentNotes.trim() ? attachmentNotes.trim().slice(0, 500) : null,
+      },
+      include: {
+        performedBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return res.status(201).json({ action });
+  } catch (error) {
+    console.error("POST /api/tickets/:id/actions-taken error:", error);
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to create action taken." },
+    });
+  }
+});
+
+// PUT /api/tickets/:id/actions-taken/:actionId
+ticketRouter.put("/:id/actions-taken/:actionId", async (req: Request, res: Response) => {
+  if (!isStaffOrAdmin(req)) {
+    return res.status(403).json({
+      error: {
+        code: "FORBIDDEN",
+        message: "Access denied: only IT Staff and Administrators can edit actions taken.",
+      },
+    });
+  }
+
+  const ticketId = parseInt(req.params.id, 10);
+  const actionId = parseInt(req.params.actionId, 10);
+  if (isNaN(ticketId) || isNaN(actionId) || ticketId <= 0 || actionId <= 0) {
+    return res.status(404).json({
+      error: { code: "NOT_FOUND", message: "Ticket or Action Taken not found." },
+    });
+  }
+
+  const {
+    description,
+    result,
+    isFollowUpRequired,
+    followUpNote,
+    attachmentNotes,
+    actionDateTime,
+  } = req.body;
+
+  if (description !== undefined) {
+    if (typeof description !== "string" || description.trim().length < 3 || description.trim().length > 2000) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Action description must be between 3 and 2000 characters.",
+        },
+      });
+    }
+  }
+
+  if (result !== undefined) {
+    if (typeof result !== "string" || result.trim().length < 3 || result.trim().length > 2000) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Action result must be between 3 and 2000 characters.",
+        },
+      });
+    }
+  }
+
+  const followUpRequired = isFollowUpRequired !== undefined ? Boolean(isFollowUpRequired) : undefined;
+  if (followUpRequired === true) {
+    if (typeof followUpNote !== "string" || followUpNote.trim().length < 3 || followUpNote.trim().length > 1000) {
+      return res.status(400).json({
+        error: {
+          code: "BAD_REQUEST",
+          message: "Follow-up note is required when follow-up is needed (3-1000 characters).",
+        },
+      });
+    }
+  }
+
+  try {
+    const prisma = getPrisma();
+    const existing = await prisma.actionTaken.findFirst({
+      where: { id: actionId, ticketId },
+    });
+
+    if (!existing) {
+      return res.status(404).json({
+        error: { code: "NOT_FOUND", message: "Action taken not found under this ticket." },
+      });
+    }
+
+    let parsedDate = existing.actionDateTime;
+    if (actionDateTime) {
+      const d = new Date(actionDateTime);
+      if (isNaN(d.getTime()) || d.getTime() > Date.now() + 5 * 60 * 1000) {
+        return res.status(400).json({
+          error: { code: "BAD_REQUEST", message: "Invalid actionDateTime or date in future." },
+        });
+      }
+      parsedDate = d;
+    }
+
+    const updated = await prisma.actionTaken.update({
+      where: { id: actionId },
+      data: {
+        description: description !== undefined ? description.trim() : existing.description,
+        result: result !== undefined ? result.trim() : existing.result,
+        actionDateTime: parsedDate,
+        isFollowUpRequired: followUpRequired !== undefined ? followUpRequired : existing.isFollowUpRequired,
+        followUpNote: followUpRequired === true ? (followUpNote ? followUpNote.trim() : existing.followUpNote) : (followUpRequired === false ? null : existing.followUpNote),
+        attachmentNotes: attachmentNotes !== undefined ? (attachmentNotes ? attachmentNotes.trim().slice(0, 500) : null) : existing.attachmentNotes,
+      },
+      include: {
+        performedBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({ action: updated });
+  } catch (error) {
+    console.error("PUT /api/tickets/:id/actions-taken/:actionId error:", error);
+    return res.status(500).json({
+      error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to update action taken." },
+    });
+  }
+});
+
 

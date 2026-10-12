@@ -6,6 +6,7 @@ import { ticketRouter } from "./routes/tickets.js";
 import { authRouter } from "./routes/auth.js";
 import { staffRouter } from "./routes/staff.js";
 import { adminRouter } from "./routes/admin.js";
+import { dashboardRouter } from "./routes/dashboard.js";
 import { Router } from "express";
 import { authenticateToken, requirePasswordChangeCompleted, requireRole } from "./middleware/auth.js";
 import { Role } from "@prisma/client";
@@ -106,5 +107,10 @@ adminGuardRouter.use(requirePasswordChangeCompleted);
 adminGuardRouter.use(requireRole(Role.ADMINISTRATOR));
 adminGuardRouter.use("/", adminRouter);
 app.use("/api/admin", adminGuardRouter);
+
+// ---------------------------------------------------------------------------
+// Operational Dashboard Endpoints (Lab 4: Issue #64)
+// ---------------------------------------------------------------------------
+app.use("/api/dashboard", dashboardRouter);
 
 export default app;

@@ -15,6 +15,7 @@ import {
   getInternalNotes,
   createInternalNote,
 } from "../api.js";
+import { ActionsTakenSection } from "./ActionsTakenSection.js";
 
 const PERMITTED_STATUS_TRANSITIONS: Record<string, string[]> = {
   NEW: ["OPEN", "IN_PROGRESS", "CANCELLED"],
@@ -111,7 +112,16 @@ export function StaffTicketDetail({
     setActionErrorMsg("");
     try {
       const updated = await updateTicketOwner(ticketId, authUser.id);
-      setTicket((prev) => (prev ? { ...prev, ownerId: updated.ownerId, owner: updated.owner as any } : null));
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              ownerId: updated.ownerId,
+              owner: updated.owner as any,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
       setSelectedOwnerId(String(authUser.id));
       setActionSuccessMsg(`Ticket assigned to you (${authUser.name}).`);
     } catch (err: any) {
@@ -125,7 +135,16 @@ export function StaffTicketDetail({
     try {
       const ownerId = newOwnerIdStr === "" ? null : Number(newOwnerIdStr);
       const updated = await updateTicketOwner(ticketId, ownerId);
-      setTicket((prev) => (prev ? { ...prev, ownerId: updated.ownerId, owner: updated.owner as any } : null));
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              ownerId: updated.ownerId,
+              owner: updated.owner as any,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
       setSelectedOwnerId(newOwnerIdStr);
       setActionSuccessMsg(
         ownerId === null
@@ -144,7 +163,15 @@ export function StaffTicketDetail({
     setActionErrorMsg("");
     try {
       const updated = await updateTicketPriority(ticketId, newPriority as "LOW" | "MEDIUM" | "HIGH");
-      setTicket((prev) => (prev ? { ...prev, itPriority: updated.itPriority as any } : null));
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              itPriority: updated.itPriority as any,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
       setSelectedPriority(updated.itPriority);
       setActionSuccessMsg(`IT Priority updated to ${updated.itPriority}.`);
     } catch (err: any) {
@@ -158,14 +185,54 @@ export function StaffTicketDetail({
     setActionSuccessMsg("");
     setActionErrorMsg("");
     try {
-      const updated = await updateTicketStatus(ticketId, selectedNextStatus);
-      setTicket((prev) => (prev ? { ...prev, status: updated.status } : null));
+      const updated = await updateTicketStatus(ticketId, selectedNextStatus, ticket?.updatedAt);
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: updated.status,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
 
       const nextTransitions = PERMITTED_STATUS_TRANSITIONS[updated.status] ?? [];
       setSelectedNextStatus(nextTransitions[0] ?? "");
       setActionSuccessMsg(`Ticket status updated to ${STATUS_LABELS[updated.status] ?? updated.status}.`);
     } catch (err: any) {
-      setActionErrorMsg(err?.message || "Failed to update status.");
+      if (err.status === 409 || err.code === "CONFLICT") {
+        setActionErrorMsg("Ticket has been updated by another user. Please refresh and retry.");
+      } else {
+        setActionErrorMsg(err?.message || "Failed to update status.");
+      }
+    }
+  };
+
+  // Handle Formal Resolution via Advisory Banner
+  const handleFormallyResolve = async () => {
+    setActionSuccessMsg("");
+    setActionErrorMsg("");
+    try {
+      const updated = await updateTicketStatus(ticketId, "RESOLVED", ticket?.updatedAt);
+      setTicket((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: updated.status,
+              updatedAt: updated.updatedAt || prev.updatedAt,
+            }
+          : null
+      );
+
+      const nextTransitions = PERMITTED_STATUS_TRANSITIONS[updated.status] ?? [];
+      setSelectedNextStatus(nextTransitions[0] ?? "");
+      setActionSuccessMsg("Ticket formally resolved successfully.");
+    } catch (err: any) {
+      if (err.status === 409 || err.code === "CONFLICT") {
+        setActionErrorMsg("Ticket has been updated by another user. Please refresh and retry.");
+      } else {
+        setActionErrorMsg(err?.message || "Failed to resolve ticket.");
+      }
     }
   };
 
@@ -294,9 +361,29 @@ export function StaffTicketDetail({
         </div>
 
         {ticket.requesterIndicatedResolved && (
-          <div className="alert alert-info py-2 mb-3 d-flex align-items-center gap-2" role="status">
-            <span>✓</span>
-            <strong>Requester has indicated that this problem appears resolved.</strong>
+          <div
+            className="alert alert-warning py-3 mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2"
+            role="status"
+            data-testid="advisory-resolution-banner"
+          >
+            <div>
+              <strong className="d-block mb-1">
+                ⚠️ Requester Feedback: The requester has indicated that this problem appears resolved.
+              </strong>
+              <small className="text-muted">
+                Please review the Actions Taken and formally resolve this ticket.
+              </small>
+            </div>
+            {permittedTransitions.includes("RESOLVED") && (
+              <button
+                type="button"
+                className="btn btn-success btn-sm text-nowrap"
+                onClick={() => void handleFormallyResolve()}
+                data-testid="formally-resolve-btn"
+              >
+                Formally Resolve Ticket
+              </button>
+            )}
           </div>
         )}
 
@@ -442,6 +529,13 @@ export function StaffTicketDetail({
           </div>
         </div>
       </section>
+ 
+      {/* Actions Taken Section (Lab 4: Work Item 5) */}
+      <ActionsTakenSection
+        ticketId={ticket.id}
+        currentUser={authUser}
+        isReadOnly={false}
+      />
 
       {/* Communications: Public Comments vs Internal Notes */}
       <div className="row g-4 mb-4">

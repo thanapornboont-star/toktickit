@@ -426,8 +426,93 @@ async function main() {
         });
       }
     }
+
+    // Seed sample Actions Taken for Lab 4
+    if (t.ticketNumber === "TKT-2026-000101") {
+      const existingActions = await prisma.actionTaken.findMany({ where: { ticketId: ticket.id } });
+      if (existingActions.length === 0) {
+        await prisma.actionTaken.createMany({
+          data: [
+            {
+              ticketId: ticket.id,
+              actionDateTime: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+              description: "Diagnosed Dell corporate laptop battery health report and verified AC adapter voltage.",
+              result: "Battery wear level measured at 78% capacity loss. Motherboard charging circuit operating normally.",
+              performedById: staffAlex.id,
+              isFollowUpRequired: true,
+              followUpNote: "Retrieve new replacement battery pack from IT storage shelf B-3 and schedule installation.",
+              attachmentNotes: "Refer to battery-report-diagnostic.pdf in attachments.",
+            },
+            {
+              ticketId: ticket.id,
+              actionDateTime: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+              description: "Installed genuine OEM replacement battery pack and performed full charge cycle test.",
+              result: "Battery discharge rate stabilized to 8% per hour during simulated Teams 1080p video call.",
+              performedById: staffEmily.id, // Different IT staff member (BR-02)
+              isFollowUpRequired: false,
+              followUpNote: null,
+              attachmentNotes: "Vendor replacement serial number barcode logged.",
+            },
+          ],
+        });
+      }
+    } else if (t.ticketNumber === "TKT-2026-000102") {
+      const existingActions = await prisma.actionTaken.findMany({ where: { ticketId: ticket.id } });
+      if (existingActions.length === 0) {
+        await prisma.actionTaken.createMany({
+          data: [
+            {
+              ticketId: ticket.id,
+              actionDateTime: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+              description: "Reviewed firewall gateway logs for Cisco AnyConnect SSL VPN tunnel drops.",
+              result: "Identified MTU packet fragmentation issue on ISP gateway route.",
+              performedById: staffMarcus.id,
+              isFollowUpRequired: true,
+              followUpNote: "Reconfigure RADIUS timeout window and request requester test from mobile hotspot.",
+              attachmentNotes: "Firewall log extract saved in IT audit repository.",
+            },
+          ],
+        });
+      }
+    } else if (t.ticketNumber === "TKT-2026-000104") {
+      const existingActions = await prisma.actionTaken.findMany({ where: { ticketId: ticket.id } });
+      if (existingActions.length === 0) {
+        await prisma.actionTaken.createMany({
+          data: [
+            {
+              ticketId: ticket.id,
+              actionDateTime: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2 days ago
+              description: "Re-aligned CB3 4th floor wireless access point antennas and updated channel frequency.",
+              result: "Signal strength improved from -78dBm to -52dBm across hallway.",
+              performedById: staffEmily.id,
+              isFollowUpRequired: false,
+              followUpNote: null,
+              attachmentNotes: "Wi-Fi heatmap screenshot saved.",
+            },
+          ],
+        });
+      }
+    } else if (t.ticketNumber === "TKT-2026-000105") {
+      const existingActions = await prisma.actionTaken.findMany({ where: { ticketId: ticket.id } });
+      if (existingActions.length === 0) {
+        await prisma.actionTaken.createMany({
+          data: [
+            {
+              ticketId: ticket.id,
+              actionDateTime: new Date(Date.now() - 72 * 60 * 60 * 1000), // 3 days ago
+              description: "Cleared paper jam in duplex feed roller and replaced black toner cartridge (HP 58A).",
+              result: "Printed 15-page diagnostic test document without jams or streaking. Reset printer maintenance count.",
+              performedById: staffMarcus.id,
+              isFollowUpRequired: false,
+              followUpNote: null,
+              attachmentNotes: "Test printout verified.",
+            },
+          ],
+        });
+      }
+    }
   }
-  console.log("Successfully seeded Sample Tickets, Public Comments, and Internal Notes.");
+  console.log("Successfully seeded Sample Tickets, Public Comments, Internal Notes, and Actions Taken.");
 }
 
 main()

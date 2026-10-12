@@ -241,6 +241,69 @@ textarea:focus-visible {
   border-radius: 6px;
 }
 
+/* Status Badges */
+.badge-status-new {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+}
+
+.badge-status-open {
+  background-color: #0dcaf0 !important;
+  color: #000000 !important;
+}
+
+.badge-status-inprogress {
+  background-color: #ffc107 !important;
+  color: #000000 !important;
+}
+
+.badge-status-waiting {
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+}
+
+.badge-status-resolved {
+  background-color: var(--zen-primary) !important;
+  color: #ffffff !important;
+}
+
+.badge-status-closed {
+  background-color: #343a40 !important;
+  color: #ffffff !important;
+}
+
+.badge-status-reopened {
+  background-color: #fd7e14 !important;
+  color: #ffffff !important;
+}
+
+.badge-status-cancelled {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+}
+
+/* Priority Badges */
+.badge-priority-low {
+  background-color: #198754 !important;
+  color: #ffffff !important;
+}
+
+.badge-priority-medium {
+  background-color: #ffc107 !important;
+  color: #000000 !important;
+}
+
+.badge-priority-high {
+  background-color: #fd7e14 !important;
+  color: #ffffff !important;
+}
+
+.badge-priority-critical {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+}
+
+
 .user-profile-pill {
   display: flex;
   align-items: center;
@@ -398,15 +461,28 @@ textarea:focus-visible {
     min-height: 60vh;
   }
 
-  /* Touch-friendly buttons — minimum 44x44px */
+  /* Touch-friendly buttons & interactive elements — minimum 44x44px */
   .btn {
     min-height: 44px;
     padding-top: 10px;
     padding-bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-sm {
-    min-height: 36px;
+    min-height: 44px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  /* Navigation links touch target on mobile */
+  .main-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
   }
 
   /* Queue mobile card background */
@@ -424,5 +500,60 @@ textarea:focus-visible {
   /* All tables prevent mega-grid overflow */
   .table-responsive {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile zero horizontal overflow */
+  body, .app-page, .shell-content {
+    overflow-x: hidden;
   }
 }
+
+/* Tablet Responsive Layout (768px - 991.98px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .metric-card {
+    margin-bottom: 8px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Metric Cards & Dashboard Styles (Work Item 7 & 8) */
+.metric-card {
+  transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border-radius: 12px;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 107, 60, 0.12) !important;
+}
+
+.metric-card:focus-visible {
+  outline: 3px solid var(--zen-primary);
+  outline-offset: 2px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Accessibility & Color Contrast Polish (WCAG AA Compliance) */
+.text-muted {
+  color: #4a5e55 !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--zen-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--zen-pale);
+}
+
+
